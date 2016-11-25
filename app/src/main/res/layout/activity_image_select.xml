@@ -1,0 +1,83 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#f7f7f7"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        style="@style/Widget.MyApp.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:layout_scrollFlags="scroll|enterAlways" />
+
+    <TextView
+        android:id="@+id/txtDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar"
+        android:padding="10dp"
+        android:textSize="15dp"
+        android:gravity="center"
+        android:background="#4d4d4d"
+        android:textColor="#ffffff"
+        android:text="발송하실 홍보 이미지를 선택하세요."/>
+
+    <LinearLayout
+        android:id="@+id/layoutFilter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:layout_below="@+id/txtDescription"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="카테고리 : "/>
+
+        <TextView
+            android:id="@+id/txtCategory"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/bg_category"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:text="가맹점 홍보이미지"/>
+
+        <ImageButton
+            android:id="@+id/btnChange"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/btn_category"
+            android:background="@android:color/transparent"/>
+
+    </LinearLayout>
+
+    
+
+    <ListView
+        android:layout_below="@+id/layoutFilter"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/imageListView"
+        android:divider="#e9e9e9"
+        android:dividerHeight="1dp"
+        android:cacheColorHint="#00000000"/>
+
+    <TextView
+        android:id="@+id/txtMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="등록이 홍보 이미지가 없습니다."
+        android:layout_centerInParent="true"
+        android:textSize="14dp"
+        android:textStyle="bold"
+        android:visibility="gone"/>
+
+</RelativeLayout>

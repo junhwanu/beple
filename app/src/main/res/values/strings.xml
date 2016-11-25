@@ -1,0 +1,84 @@
+<resources>
+
+    <string name="app_name">베플</string>
+
+    <string-array name="array_location">
+        <item>02(서울)</item>
+        <item>031(경기)</item>
+        <item>032(인천)</item>
+        <item>051(부산)</item>
+        <item>053(대구)</item>
+        <item>062(광주)</item>
+        <item>042(대전)</item>
+        <item>052(울산)</item>
+        <item>033(강원)</item>
+        <item>055(경남)</item>
+        <item>054(경북)</item>
+        <item>061(전남)</item>
+        <item>063(전북)</item>
+        <item>041(충남)</item>
+        <item>043(충북)</item>
+        <item>064(제주)</item>
+        <item>044(세종)</item>
+    </string-array>
+
+    <string-array name="array_location_values">
+        <item>02</item>
+        <item>031</item>
+        <item>032</item>
+        <item>051</item>
+        <item>053</item>
+        <item>062</item>
+        <item>042</item>
+        <item>052</item>
+        <item>033</item>
+        <item>055</item>
+        <item>054</item>
+        <item>061</item>
+        <item>063</item>
+        <item>041</item>
+        <item>043</item>
+        <item>064</item>
+        <item>044</item>
+    </string-array>
+
+    <string-array name="array_user_position">
+        <item>사원</item>
+        <item>팀장</item>
+        <item>지부장</item>
+        <item>본부장</item>
+    </string-array>
+
+    <string-array name="array_user_position_value">
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+    </string-array>
+
+    <string name="item_main">초기화면</string>
+    <string name="item_about">관리자 페이지</string>
+    <string name="item_lotto_event">로또 발송</string>
+    <string name="item_sms_event">그룹문자발송</string>
+    <string name="item_send_message">간편 전송</string>
+    <string name="item_image_manage">이미지 관리</string>
+    <string name="item_notices">홈페이지</string>
+    <string name="item_login">로그인</string>
+    <string name="item_logout">로그아웃</string>
+    <string name="item_payment">결재안내</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="openDrawer">Navigation View Closed</string>
+    <string name="closeDrawer">Navigation View</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="cannot_connect_server">서버에 접속할 수 없습니다.</string>
+    <string name="no_permission">권한이 없습니다. 앱을 종료 후 다시 한번 실행해 주시기 바랍니다.</string>
+
+    <string name="onKey_back_msg">\'뒤로\'버튼을 한번 더 누르시면 종료됩니다.</string>
+    <string name="alert_title">알림</string>
+
+    <string name="lotto_event_description">"로또 이벤트 발송은 가맹점 관리자 웹에서 생성한 로또 이벤트를 스마트폰의 MMS을 이용하여 보내는 기능입니다. 설정하신 문자 내용과 홍보 이미지를 함께 전송할 수 있습니다."</string>
+    <string name="sms_event_description">"문자 이벤트 발송은 가맹점 관리자 웹에서 생성한 문자 보내기 작업을 스마트폰의 MMS을 이용하여 보내는 기능입니다. 설정하신 문자 내용과 홍보 이미지를 함께 전송할 수 있습니다."</string>
+    <string name="customer_list_header">문자 메세지를 받을 고객 목록 입니다.</string>
+</resources>

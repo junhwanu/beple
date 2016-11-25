@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/item_lotto_event"
+            android:checked="false"
+            android:icon="@drawable/ic_menu_lotto"
+            android:visible="false"
+            android:title="@string/item_lotto_event" />
+
+        <item
+            android:id="@+id/item_sms_event"
+            android:checked="false"
+            android:icon="@drawable/ic_menu_sms"
+            android:visible="false"
+            android:title="@string/item_sms_event" />
+
+        <item
+            android:id="@+id/item_send_mms"
+            android:checked="false"
+            android:icon="@drawable/ic_menu_sms"
+            android:visible="false"
+            android:title="@string/item_send_message" />
+
+
+        <item
+            android:id="@+id/item_image_manage"
+            android:checked="false"
+            android:icon="@drawable/ic_menu_pic"
+            android:visible="false"
+            android:title="@string/item_image_manage" />
+
+
+        <item
+            android:id="@+id/item_notices"
+            android:checked="false"
+            android:icon="@drawable/ic_menu_notices"
+            android:visible="false"
+            android:title="@string/item_notices" />
+
+        <item
+            android:id="@+id/item_about"
+            android:checked="false"
+            android:icon="@drawable/ic_menu_info"
+            android:visible="false"
+            android:title="@string/item_about" />
+
+        <item
+            android:id="@+id/item_payment"
+            android:checked="false"
+            android:icon="@drawable/ic_menu_notices"
+            android:title="@string/item_payment" />
+
+        <item
+            android:id="@+id/item_logout"
+            android:checked="false"
+            android:icon="@drawable/ic_menu_logout"
+            android:title="@string/item_logout" />
+
+    </group>
+</menu>

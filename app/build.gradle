@@ -1,0 +1,60 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "23.0.3"
+
+    defaultConfig {
+        applicationId "kr.co.bsmsoft.beple_shop"
+        minSdkVersion 21
+        targetSdkVersion 23
+        versionCode 6
+        versionName "1.7.7"
+    }
+    /*
+    signingConfigs {
+        debug {
+            storeFile file("d:/Work/AndroidstudioProjects/keystore/brady_debug_keystore")
+        }
+        release {
+            storeFile file("d:/Work/AndroidstudioProjects/keystore/brady_keystore")
+            storePassword "qwer1234"
+            keyAlias "my city"
+            keyPassword "qwer1234"
+        }
+    }
+*/
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    //useLibrary 'org.apache.http.legacy'
+}
+
+allprojects {
+    repositories {
+        mavenCentral()
+        maven {
+            url 'https://oss.sonatype.org/content/repositories/snapshots/'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile 'com.android.support:appcompat-v7:23.3.0'
+    compile 'com.android.support:design:23.3.0'
+    compile 'com.android.support:cardview-v7:23.3.0'
+    compile 'com.android.support:recyclerview-v7:23.3.0'
+    compile 'cn.pedant.sweetalert:library:1.3'
+    //    compile files('libs/android-async-http-1.4.4.jar')
+    compile files('libs/gcm.jar')
+    compile project(':library')
+    // 이미지 다운로더
+    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.1'
+    compile 'com.felipecsl:gifimageview:2.0.0'
+    compile 'com.loopj.android:android-async-http:1.4.9'
+}

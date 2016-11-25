@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        is-multidex="true"
+        jar="C:\Users\Office\AndroidStudioProjects\Beple_200161113\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.3.0\jars\libs\internal_impl-23.3.0.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.3"
+        sha1="4da5a4d697d32497c6f85567a5112e62fdfd0676">
+        <dex dex="C:\Users\Office\AndroidStudioProjects\Beple_200161113\app\build\intermediates\transforms\dex\debug\folders\1000\10\internal_impl-23.3.0_36171b87d82bb10212dffdc53d7479e0d96bd0cb\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Office\AndroidStudioProjects\Beple_200161113\app\build\intermediates\exploded-aar\com.android.support\recyclerview-v7\23.3.0\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.3"
+        sha1="debf30ce0a7560396b6235edef77e447006454c2">
+        <dex dex="C:\Users\Office\AndroidStudioProjects\Beple_200161113\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-recyclerview-v7-23.3.0_95cb7397f53a854346253b3278b4b875c4f3b0c2\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Office\AndroidStudioProjects\Beple_200161113\app\build\intermediates\exploded-aar\com.android.support\animated-vector-drawable\23.3.0\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.3"
+        sha1="23be6993826b8fd88bbc8d14928bb3b8960d3d4e">
+        <dex dex="C:\Users\Office\AndroidStudioProjects\Beple_200161113\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-animated-vector-drawable-23.3.0_934a8769a7d4e0c3e0978424bd034d5a6c8e5206\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Office\.gradle\caches\modules-2\files-2.1\com.koushikdutta.async\androidasync\1.1.6\7ed2f65ce1d88cc22be93ca60178d18728a28b55\androidasync-1.1.6.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.3"
+        sha1="7ed2f65ce1d88cc22be93ca60178d18728a28b55">
+        <dex dex="C:\Users\Office\AndroidStudioProjects\Beple_200161113\app\build\intermediates\transforms\dex\debug\folders\1000\10\androidasync-1.1.6_c78f2e1ad154adfcc55341f0435c2dfeb55c84dd\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Office\AndroidStudioProjects\Beple_200161113\app\build\intermediates\exploded-aar\com.android.support\cardview-v7\23.3.0\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.3"
+        sha1="82ce13fd19cdfde0e392f03c27edeba8d4333648">
+        <dex dex="C:\Users\Office\AndroidStudioProjects\Beple_200161113\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-cardview-v7-23.3.0_4996d57ed4295c23d7f420bd1e7731960ce96f54\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Office\AndroidStudioProjects\Beple_200161113\app\build\intermediates\incremental-runtime-classes\debug\instant-run.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.3"
+        sha1="36b89dfba1d463d1fa939e8c05baf24547858f59">
+        <dex dex="C:\Users\Office\AndroidStudioProjects\Beple_200161113\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run_675c7fbd9e0af3fa9b146096cfad1defb2a93221\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Office\AndroidStudioProjects\Beple_200161113\app\build\intermediates\exploded-aar\com.felipecsl\gifimageview\2.0.0\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.3"
+        sha1="e739330288642e9e8d865b72f6dc23706c245a1d">
+        <dex dex="C:\Users\Office\AndroidStudioProjects\Beple_200161113\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.felipecsl-gifimageview-2.0.0_7c8a3a660d3b57f8e6f20479e056393162c3f8e4\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Office\AndroidStudioProjects\Beple_200161113\app\build\intermediates\exploded-aar\com.android.support\support-vector-drawable\23.3.0\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.3"
+        sha1="a0b5d60246cd9d4f3f2443611b3b4c25265840b5">
+        <dex dex="C:\Users\Office\AndroidStudioProjects\Beple_200161113\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-support-vector-drawable-23.3.0_584a85c61814ad7862ee91042ef22e9de52d2d36\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Office\AndroidStudioProjects\Beple_200161113\app\build\intermediates\exploded-aar\cn.pedant.sweetalert\library\1.3\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.3"
+        sha1="0c3529d9491be892952749d252ae1defa9b1f937">
+        <dex dex="C:\Users\Office\AndroidStudioProjects\Beple_200161113\app\build\intermediates\transforms\dex\debug\folders\1000\10\cn.pedant.sweetalert-library-1.3_77042365bf7e4d726d8e666156e3e75a85324a18\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Office\.gradle\caches\modules-2\files-2.1\com.loopj.android\android-async-http\1.4.9\386a4339ffe52d5d63e80f9bed8d2b1d1a418249\android-async-http-1.4.9.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.3"
+        sha1="386a4339ffe52d5d63e80f9bed8d2b1d1a418249">
+        <dex dex="C:\Users\Office\AndroidStudioProjects\Beple_200161113\app\build\intermediates\transforms\dex\debug\folders\1000\10\android-async-http-1.4.9_ea38233f83d4f36cc24dcb4ca4ff46f893aaab34\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Office\AndroidStudioProjects\Beple_200161113\app\build\intermediates\exploded-aar\com.android.support\design\23.3.0\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.3"
+        sha1="f0001e71cea6ae432a00021c6f727f5ef0f3d27e">
+        <dex dex="C:\Users\Office\AndroidStudioProjects\Beple_200161113\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-design-23.3.0_7ee62eadf651794ce37884489843fa05b9858c5d\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Office\AndroidStudioProjects\Beple_200161113\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\23.3.0\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.3"
+        sha1="1b8e03daaa43fb0a4cd57e378167c2fd70454c1e">
+        <dex dex="C:\Users\Office\AndroidStudioProjects\Beple_200161113\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-appcompat-v7-23.3.0_8c29d65d4820a4bdcb68599b0083f283f1af5819\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Office\.gradle\caches\modules-2\files-2.1\com.koushikdutta.ion\ion\1.1.7\32557ac9789fb0e5be4215132e9728d0996b46d4\ion-1.1.7.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.3"
+        sha1="32557ac9789fb0e5be4215132e9728d0996b46d4">
+        <dex dex="C:\Users\Office\AndroidStudioProjects\Beple_200161113\app\build\intermediates\transforms\dex\debug\folders\1000\10\ion-1.1.7_10b12f2919ffc453533c751e6a9d6ab47909bce5\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Office\.gradle\caches\modules-2\files-2.1\com.squareup.okhttp\okhttp\2.5.0\4de2b4ed3445c37ec1720a7d214712e845a24636\okhttp-2.5.0.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.3"
+        sha1="4de2b4ed3445c37ec1720a7d214712e845a24636">
+        <dex dex="C:\Users\Office\AndroidStudioProjects\Beple_200161113\app\build\intermediates\transforms\dex\debug\folders\1000\10\okhttp-2.5.0_7fed0734ebd96ac2dfa3492df2a87d1ea1e635fa\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Office\.gradle\caches\modules-2\files-2.1\com.squareup.okio\okio\1.6.0\98476622f10715998eacf9240d6b479f12c66143\okio-1.6.0.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.3"
+        sha1="98476622f10715998eacf9240d6b479f12c66143">
+        <dex dex="C:\Users\Office\AndroidStudioProjects\Beple_200161113\app\build\intermediates\transforms\dex\debug\folders\1000\10\okio-1.6.0_19f3520bc689a48cfc3c1421789915f8be6f2d9d\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Office\AndroidStudioProjects\Beple_200161113\app\build\intermediates\incremental-classes\debug\instant-run-bootstrap.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.3"
+        sha1="90a20168418941bee5a0ca4b6a5a216a9ee09445">
+        <dex dex="C:\Users\Office\AndroidStudioProjects\Beple_200161113\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run-bootstrap_460c7176a530735540d8991184aa33b04e371989\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Office\.gradle\caches\modules-2\files-2.1\com.google.code.gson\gson\2.3\5fc52c41ef0239d1093a1eb7c3697036183677ce\gson-2.3.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.3"
+        sha1="5fc52c41ef0239d1093a1eb7c3697036183677ce">
+        <dex dex="C:\Users\Office\AndroidStudioProjects\Beple_200161113\app\build\intermediates\transforms\dex\debug\folders\1000\10\gson-2.3_bc594d40ab9eff030cc154cf823bcc9482dba466\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Program Files\Android\Android Studio\gradle\m2repository\commons-io\commons-io\2.4\commons-io-2.4.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.3"
+        sha1="b1b6ea3b7e4aa4f492509a4952029cd8e48019ad">
+        <dex dex="C:\Users\Office\AndroidStudioProjects\Beple_200161113\app\build\intermediates\transforms\dex\debug\folders\1000\10\commons-io-2.4_b2955a73e8fdec69863902c786dced8321b28c5c\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Office\AppData\Local\Android\sdk\extras\android\m2repository\com\android\support\support-annotations\23.3.0\support-annotations-23.3.0.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.3"
+        sha1="db7791d75a07fef9844d06236c1c59ba7bf6997c">
+        <dex dex="C:\Users\Office\AndroidStudioProjects\Beple_200161113\app\build\intermediates\transforms\dex\debug\folders\1000\10\support-annotations-23.3.0_c6d002dbcad5d11f1c0e7ff3df8b0882664ee1c1\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Office\AndroidStudioProjects\Beple_200161113\app\libs\gcm.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.3"
+        sha1="a6d7bce795a14c7f86111756c4ceb44b79de14aa">
+        <dex dex="C:\Users\Office\AndroidStudioProjects\Beple_200161113\app\build\intermediates\transforms\dex\debug\folders\1000\2\gcm_0b2cd1a7df0cae5ac8cc6ddc2a460c105021faea\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Office\.gradle\caches\modules-2\files-2.1\com.squareup.okhttp\okhttp-urlconnection\2.5.0\d737653459be272e881d51024274fa4785225641\okhttp-urlconnection-2.5.0.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.3"
+        sha1="d737653459be272e881d51024274fa4785225641">
+        <dex dex="C:\Users\Office\AndroidStudioProjects\Beple_200161113\app\build\intermediates\transforms\dex\debug\folders\1000\10\okhttp-urlconnection-2.5.0_5d217cff58120e46fa586196a31041dc3b6b2979\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Office\.gradle\caches\modules-2\files-2.1\com.nostra13.universalimageloader\universal-image-loader\1.9.1\296dfb44fbf31397c0306e60cb62e06ca40df07f\universal-image-loader-1.9.1.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.3"
+        sha1="296dfb44fbf31397c0306e60cb62e06ca40df07f">
+        <dex dex="C:\Users\Office\AndroidStudioProjects\Beple_200161113\app\build\intermediates\transforms\dex\debug\folders\1000\10\universal-image-loader-1.9.1_ed61f0cc48189dae0f6e81608e2c5148421157d3\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Office\AndroidStudioProjects\Beple_200161113\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.3.0\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.3"
+        sha1="8a034dd16c0dfd75fe86c52c2cd581592acc684a">
+        <dex dex="C:\Users\Office\AndroidStudioProjects\Beple_200161113\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-support-v4-23.3.0_dba507496619febf1dbe407989c1b50fe85cd73c\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Office\.gradle\caches\modules-2\files-2.1\com.klinkerapps\logger\1.0.3-SNAPSHOT\5345acd398619db0dadcbf44d4ec5a684f058e2b\logger-1.0.3-SNAPSHOT.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.3"
+        sha1="5345acd398619db0dadcbf44d4ec5a684f058e2b">
+        <dex dex="C:\Users\Office\AndroidStudioProjects\Beple_200161113\app\build\intermediates\transforms\dex\debug\folders\1000\10\logger-1.0.3-SNAPSHOT_6219be667c9796bdc4d6eb4425a971e26d00ab64\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Office\AndroidStudioProjects\Beple_200161113\app\build\intermediates\exploded-aar\com.pnikosis\materialish-progress\1.0\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.3"
+        sha1="57487745ce450899f9f250d5ae5c092a682cd041">
+        <dex dex="C:\Users\Office\AndroidStudioProjects\Beple_200161113\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.pnikosis-materialish-progress-1.0_ed84ba5019c9f5c9ab306ee4f3316adedbf7a594\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Office\.gradle\caches\modules-2\files-2.1\cz.msebera.android\httpclient\4.3.6\526a9f794eab830eae4f23a62c572878b3f491ab\httpclient-4.3.6.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.3"
+        sha1="526a9f794eab830eae4f23a62c572878b3f491ab">
+        <dex dex="C:\Users\Office\AndroidStudioProjects\Beple_200161113\app\build\intermediates\transforms\dex\debug\folders\1000\10\httpclient-4.3.6_d360eda84fcd56cf37507f7752e4870eda573e15\classes.dex" />
+    </item>
+
+</items>

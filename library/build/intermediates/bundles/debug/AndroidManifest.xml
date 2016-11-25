@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.klinker.android.send_message" >
+
+    <uses-sdk
+        android:minSdkVersion="14"
+        android:targetSdkVersion="23" />
+
+    <application>
+        <provider
+            android:name="com.klinker.android.send_message.MmsFileProvider"
+            android:authorities="com.klinker.android.messaging.MmsFileProvider"
+            android:enabled="true"
+            android:exported="false"
+            android:grantUriPermissions="true" />
+
+        <receiver android:name="com.klinker.android.send_message.MmsSentReceiver" >
+            <intent-filter>
+                <action android:name="com.klinker.android.messaging.MMS_SENT" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name="com.klinker.android.send_message.MmsReceivedReceiver" >
+            <intent-filter>
+                <action android:name="com.klinker.android.messaging.MMS_RECEIVED" />
+            </intent-filter>
+        </receiver>
+    </application>
+
+</manifest>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<apns version="8">
+    <apn carrier="SKT LTE INTERNET" mcc="450" mnc="05" apn="lte.sktelecom.com" type="ia,default,mms,supl,fota,cbs" mmsc="http://omms.nate.com:9082/oma_mms" mmsproxy="smart.nate.com" mmsport="9093" server="*" mimetype="text/plain"/>
+    <apn carrier="SKT 3G INTERNET" mcc="450" mnc="05" apn="web.sktelecom.com" type="default,mms,supl,fota,cbs" mmsc="http://omms.nate.com:9082/oma_mms" mmsproxy="smart.nate.com" mmsport="9093" server="*" mimetype="text/plain"/>
+    <apn carrier="SKT LTE Roaming" mcc="450" mnc="05" apn="lte-roaming.sktelecom.com" mmsc="http://omms.nate.com:9082/oma_mms" mmsproxy="smart.nate.com" mmsport="9093" server="*" mimetype="text/plain"/>
+    <apn carrier="SKT 3G Roaming" mcc="450" mnc="05" apn="roaming.sktelecom.com" mmsc="http://omms.nate.com:9082/oma_mms" mmsproxy="smart.nate.com" mmsport="9093" server="*" mimetype="text/plain"/>
+    <apn carrier="SKT 3G INTERNET" mcc="450" mnc="11" apn="web.sktelecom.com" type="default,mms,supl,fota,cbs" mmsc="http://omms.nate.com:9082/oma_mms" mmsproxy="smart.nate.com" mmsport="9093" server="*" mimetype="text/plain"/>
+    <apn carrier="SKT LTE Roaming" mcc="450" mnc="11" apn="lte-roaming.sktelecom.com" mmsc="http://omms.nate.com:9082/oma_mms" mmsproxy="smart.nate.com" mmsport="9093" server="*" mimetype="text/plain"/>
+    <apn carrier="SKT 3G Roaming" mcc="450" mnc="11" apn="roaming.sktelecom.com" mmsc="http://omms.nate.com:9082/oma_mms" mmsproxy="smart.nate.com" mmsport="9093" server="*" mimetype="text/plain"/>
+    <apn carrier="LG uplus IMS" mcc="450" mnc="06" apn="ims.lguplus.co.kr" type="ia,ims" mmsc="http://omammsc.uplus.co.kr:9084" protocol="IPV4V6" mmsport="9084" mimetype="text/plain"/>
+    <apn carrier="LG uplus" mcc="450" mnc="06" apn="internet.lguplus.co.kr" type="default,mms,supl,fota,cbs" mmsc="http://omammsc.uplus.co.kr:9084" protocol="IPV4V6" mmsport="9084" mimetype="text/plain"/>
+    <apn carrier="LG uplus LTE Roaming" mcc="450" mnc="06" apn="lte-roaming.lguplus.co.kr" mmsc="http://omammsc.uplus.co.kr:9084" authtype="0" mmsport="9084" mimetype="text/plain"/>
+    <apn carrier="LG uplus Roaming" mcc="450" mnc="06" apn="wroaming.lguplus.co.kr" mmsc="http://omammsc.uplus.co.kr:9084" authtype="0" mimetype="text/plain"/>
+    <apn carrier="KT LTE INTERNET" mcc="450" mnc="08" apn="lte150.ktfwing.com" type="ia,default,mms,supl,fota,cbs" mmsc="http://mmsc.ktfwing.com:9082" port="80" server="*" mimetype="text/html"/>
+    <apn carrier="KT 3G INTERNET" mcc="450" mnc="08" apn="alwayson-r6.ktfwing.com" type="default,mms,supl,fota,cbs" mmsc="http://mmsc.ktfwing.com:9082" port="80" server="*" mimetype="text/html"/>
+</apns>
