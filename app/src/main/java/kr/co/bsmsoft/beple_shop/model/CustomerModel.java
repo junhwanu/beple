@@ -17,7 +17,7 @@ public class CustomerModel implements Parcelable {
     private int groupId;
     private String regDt;
     private String updDt;
-    private int isSelected = 1; // 앱 안에서만 사용, 기본값은 1 (선택)
+    private int isSelected = 0; // 앱 안에서만 사용, 기본값은 1 (선택)
 
     public CustomerModel() {}
 
@@ -105,7 +105,7 @@ public class CustomerModel implements Parcelable {
     }
 
     public void setPhone(String phone) {
-        this.phone = phone;
+        this.phone = phone.replaceAll("-","");
     }
 
     public String getBirth() {

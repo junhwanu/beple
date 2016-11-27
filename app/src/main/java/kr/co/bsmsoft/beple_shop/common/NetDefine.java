@@ -101,7 +101,7 @@ public interface NetDefine {
     public final static String KEY_USER_ID= "user_id";
     public final static String KEY_USER_TYPE= "user_type";
     public final static String KEY_KIND= "kind";
-
+    public final static String KEY_REQUEST_CODE= "request_code";
 
     public final static String MOBILE_URL = "/api/mobile/";
     public final static String SMS_URL = "/api/sms/";
@@ -128,4 +128,6 @@ public interface NetDefine {
     public static final int USER_TYPE_SHOP = 1;        // 가맹점
     public static final int USER_TYPE_AGENCY = 2;      // 영업점
 
+    public static final String LABEL_CONTACT = "전화번호 추가";
+    public static final String LABEL_CONTACT_GROUP = "전화번호 그룹 추가";
 }

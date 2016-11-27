@@ -14,21 +14,22 @@ import java.util.ArrayList;
 import kr.co.bsmsoft.beple_shop.R;
 import kr.co.bsmsoft.beple_shop.common.NetDefine;
 import kr.co.bsmsoft.beple_shop.model.ContactGroupModel;
+import kr.co.bsmsoft.beple_shop.model.CustomerModel;
 
 /**
  * Created by Office on 2016-11-18.
  */
 
-public class ContactGroupListAdapter extends ArrayAdapter<ContactGroupModel> implements NetDefine {
+public class ContactListAdapter extends ArrayAdapter<CustomerModel> implements NetDefine {
 
-    private final static String TAG = "ContactGroupListAdapter";
+    private final static String TAG = "ContactListAdapter";
 
     private Context context;
-    private ArrayList<ContactGroupModel> items = new ArrayList<ContactGroupModel>();
+    private ArrayList<CustomerModel> items = new ArrayList<CustomerModel>();
     private LayoutInflater vi;
     private ListView mListView;
 
-    public ContactGroupListAdapter(Context context, ArrayList<ContactGroupModel> data, ListView listview) {
+    public ContactListAdapter(Context context, ArrayList<CustomerModel> data, ListView listview) {
         super(context, R.layout.cell_customer_list);
         this.context = context;
         this.items = data;
@@ -37,29 +38,29 @@ public class ContactGroupListAdapter extends ArrayAdapter<ContactGroupModel> imp
     }
 
     class ViewHolder {
-        TextView txtGroupName;
-        TextView txtGroupCount;
+        TextView txtPhone;
+        TextView txtCustomerName;
         CheckBox chkSelected;
     }
 
-    public void addAll(ArrayList<ContactGroupModel> groups) {
+    public void addAll(ArrayList<CustomerModel> groups) {
         items.addAll(groups);
         notifyDataSetChanged();
     }
 
-    public ArrayList<ContactGroupModel> getItems() {
+    public ArrayList<CustomerModel> getItems() {
 
         return items;
     }
 
-    public void addItem(ContactGroupModel item) {
+    public void addItem(CustomerModel item) {
         items.add(item);
     }
 
     public void removeItem(int position) {
         items.remove(position);
     }
-    public ContactGroupModel getItem(int position) {
+    public CustomerModel getItem(int position) {
 
         return items.get(position);
     }
@@ -75,13 +76,13 @@ public class ContactGroupListAdapter extends ArrayAdapter<ContactGroupModel> imp
 
     private View createView(int position) {
 
-        ContactGroupListAdapter.ViewHolder holder = null;
+        ContactListAdapter.ViewHolder holder = null;
         View v = null;
-        holder = new ContactGroupListAdapter.ViewHolder();
+        holder = new ContactListAdapter.ViewHolder();
 
         v = vi.inflate(R.layout.cell_customer_list, null);
-        holder.txtGroupName = (TextView) v.findViewById(R.id.txtPhone);
-        holder.txtGroupCount = (TextView) v.findViewById(R.id.txtCustomerName);
+        holder.txtPhone = (TextView) v.findViewById(R.id.txtPhone);
+        holder.txtCustomerName = (TextView) v.findViewById(R.id.txtCustomerName);
         holder.chkSelected = (CheckBox) v.findViewById(R.id.checkBox);
         holder.chkSelected.setOnClickListener(mOnMenuClickListener);
 
@@ -96,7 +97,7 @@ public class ContactGroupListAdapter extends ArrayAdapter<ContactGroupModel> imp
 
             View parent = (View)v.getParent();
             int position = mListView.getPositionForView(parent);
-            ContactGroupModel customer = items.get(position);
+            CustomerModel customer = items.get(position);
 
             CheckBox chk = (CheckBox)v;
             if (chk.isChecked()) {
@@ -122,22 +123,22 @@ public class ContactGroupListAdapter extends ArrayAdapter<ContactGroupModel> imp
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        ContactGroupListAdapter.ViewHolder holder = null;
+        ContactListAdapter.ViewHolder holder = null;
         View v = convertView;
-        ContactGroupModel item = items.get(position);
+        CustomerModel item = items.get(position);
 
         if (v == null) {
 
             v = createView(position);
-            holder = (ContactGroupListAdapter.ViewHolder) v.getTag();
+            holder = (ContactListAdapter.ViewHolder) v.getTag();
 
         } else{
 
-            holder = (ContactGroupListAdapter.ViewHolder) v.getTag();
+            holder = (ContactListAdapter.ViewHolder) v.getTag();
         }
 
-        holder.txtGroupName.setText(item.getGroupName());
-        holder.txtGroupCount.setText(String.valueOf(item.getGroupMemberCount()));
+        holder.txtPhone.setText(item.getPhone());
+        holder.txtCustomerName.setText(String.valueOf(item.getCustomerName()));
 
         if (item.isSelected() == 1) {
             holder.chkSelected.setChecked(true);

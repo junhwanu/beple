@@ -138,9 +138,9 @@ public class AddPhoneNumberActivity extends AppCompatActivity implements NetDefi
 
         }else if (view.getId() == R.id.btnContact) {
 
-            Intent mIntent = new Intent(Intent.ACTION_PICK);
-            mIntent.setData(ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
-            startActivityForResult(mIntent, REQUEST_CODE_CONTACTS_GROUP_ACTIVITY);
+            Intent mIntent = new Intent(AddPhoneNumberActivity.this, AddContactGroupActivity.class);
+            mIntent.putExtra(KEY_REQUEST_CODE, REQUEST_CODE_CONTACTS_ACTIVITY);
+            startActivityForResult(mIntent, REQUEST_CODE_CONTACTS_ACTIVITY);
         }else if (view.getId() == R.id.btnContactGroup) {
 /*
             LayoutInflater inflater = (LayoutInflater) AddPhoneNumberActivity.this
@@ -153,7 +153,8 @@ public class AddPhoneNumberActivity extends AppCompatActivity implements NetDefi
             pwContact.showAtLocation(layout, Gravity.CENTER, 0, 0);
             */
             Intent mIntent = new Intent(AddPhoneNumberActivity.this, AddContactGroupActivity.class);
-            startActivityForResult(mIntent, REQUEST_CODE_CONTACTS_ACTIVITY);
+            mIntent.putExtra(KEY_REQUEST_CODE, REQUEST_CODE_CONTACTS_GROUP_ACTIVITY);
+            startActivityForResult(mIntent, REQUEST_CODE_CONTACTS_GROUP_ACTIVITY);
         }
     }
 
@@ -180,26 +181,27 @@ public class AddPhoneNumberActivity extends AppCompatActivity implements NetDefi
 
                 if (resultCode != RESULT_OK) return;
 
-                Cursor cursor = getContentResolver().query(data.getData(),
-                    new String[]{ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
-                ContactsContract.CommonDataKinds.Phone.NUMBER}, null, null, null);
-                cursor.moveToFirst();
-                String sName = cursor.getString(0);
-                String sNumber = cursor.getString(1);
-                sNumber = sNumber.replaceAll("-", "");
+                ArrayList<CustomerModel> contactList = data.getParcelableArrayListExtra(KEY_CUSTOMER_LIST);
+                for(CustomerModel customer : contactList) {
+                    if(customer.isSelected() == 1) adapter.addItem(customer);
+                }
 
-                addPhoneNumber(sNumber, sName);
-                cursor.close();
+                adapter.notifyDataSetChanged();
                 break;
             }
 
             case REQUEST_CODE_CONTACTS_GROUP_ACTIVITY: {
 
-                if(requestCode == RESULT_OK) {
+                if(resultCode == RESULT_OK) {
+                    String TAG = "AddPhoneNumber";
+                    Log.i(TAG, "REQUEST_CODE_CONTACTS_GROUP_ACTIVITY, RESULT_OK");
                     ArrayList<ContactGroupModel> contactGroupModels = data.getParcelableArrayListExtra(KEY_CUSTOMER_GROUP_LIST);
+                    Log.i(TAG, "contactGroupList count is " + contactGroupModels.size());
                     for(ContactGroupModel contactGroup : contactGroupModels) {
-                        for(CustomerModel customer : contactGroup.getGroupMember()) {
-                            adapter.addItem(customer);
+                        if(contactGroup.isSelected() == 1) {
+                            for (CustomerModel customer : contactGroup.getGroupMember()) {
+                                adapter.addItem(customer);
+                            }
                         }
                     }
 

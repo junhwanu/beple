@@ -11,7 +11,7 @@ public class ContactGroupModel implements Parcelable {
     private String groupName;
     private String groupId;
     private ArrayList<CustomerModel> groupMember = new ArrayList<>();
-    private int isSelected = 1; // 앱 안에서만 사용, 기본값은 1 (선택)
+    private int isSelected = 0; // 앱 안에서만 사용, 기본값은 1 (선택)
 
     public ContactGroupModel() {}
 
