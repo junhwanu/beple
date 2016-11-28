@@ -1,6 +1,7 @@
 package kr.co.bsmsoft.beple_shop.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -127,19 +128,27 @@ public class ContactListAdapter extends ArrayAdapter<CustomerModel> implements N
         View v = convertView;
         CustomerModel item = items.get(position);
 
-        if (v == null) {
+        if(!item.isVisible()) return vi.inflate(R.layout.cell_null_item, null);
 
+        v = createView(position);
+        holder = (ContactListAdapter.ViewHolder) v.getTag();
+
+        /*
+        if (v == null) {
             v = createView(position);
             holder = (ContactListAdapter.ViewHolder) v.getTag();
-
         } else{
-
             holder = (ContactListAdapter.ViewHolder) v.getTag();
+        }*/
+
+        try {
+            holder.txtPhone.setText(item.getPhone());
+            holder.txtCustomerName.setText(String.valueOf(item.getCustomerName()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.i(TAG, "item.getPhone : " + item.getPhone());
+            Log.i(TAG, "item.getCustomerName : " + item.getCustomerName());
         }
-
-        holder.txtPhone.setText(item.getPhone());
-        holder.txtCustomerName.setText(String.valueOf(item.getCustomerName()));
-
         if (item.isSelected() == 1) {
             holder.chkSelected.setChecked(true);
         }else{

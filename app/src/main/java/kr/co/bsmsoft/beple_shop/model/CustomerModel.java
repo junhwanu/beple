@@ -18,6 +18,7 @@ public class CustomerModel implements Parcelable {
     private String regDt;
     private String updDt;
     private int isSelected = 0; // 앱 안에서만 사용, 기본값은 1 (선택)
+    private boolean isVisible = true;
 
     public CustomerModel() {}
 
@@ -178,5 +179,13 @@ public class CustomerModel implements Parcelable {
 
     public void isSelected(int isSelected) {
         this.isSelected = isSelected;
+    }
+
+    public boolean isVisible() {
+        return isVisible;
+    }
+
+    public void setVisible(boolean visible) {
+        isVisible = visible;
     }
 }

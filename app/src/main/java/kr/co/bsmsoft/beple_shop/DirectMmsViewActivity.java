@@ -501,13 +501,7 @@ public class DirectMmsViewActivity extends AppCompatActivity implements NetDefin
                 .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                     @Override
                     public void onClick(SweetAlertDialog sDialog) {
-
-                        image.setLocalPath(null);
-                        image.setServerAddress(null);
-                        image.setFileUrl(null);
-                        adapter.clear(); // 내용 지우는거 확인 요망
-                        adapter.notifyDataSetChanged();
-                        adapter.add(image);
+                        setGridAdapter();
                         adapter.notifyDataSetChanged();
                         sDialog.dismissWithAnimation();
                     }

@@ -8,10 +8,13 @@ import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -22,6 +25,7 @@ import kr.co.bsmsoft.beple_shop.adapter.ContactGroupListAdapter;
 import kr.co.bsmsoft.beple_shop.adapter.ContactListAdapter;
 import kr.co.bsmsoft.beple_shop.common.Helper;
 import kr.co.bsmsoft.beple_shop.common.NetDefine;
+import kr.co.bsmsoft.beple_shop.common.SoundSearcher;
 import kr.co.bsmsoft.beple_shop.model.ContactGroupModel;
 import kr.co.bsmsoft.beple_shop.model.CustomerModel;
 
@@ -36,6 +40,7 @@ public class AddContactGroupActivity extends AppCompatActivity implements NetDef
     private ArrayList<ContactGroupModel> contactGroupList;
     private ArrayList<CustomerModel> contactList;
     private Button btnOK, btnClose;
+    private EditText editSearchString;
     private int requestCode;
 
     @Override
@@ -84,6 +89,45 @@ public class AddContactGroupActivity extends AppCompatActivity implements NetDef
         btnClose = (Button) findViewById(R.id.btnContactGroupClose);
         btnOK.setOnClickListener(this);
         btnClose.setOnClickListener(this);
+        editSearchString = (EditText) findViewById(R.id.editSearchString);
+        editSearchString.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                Log.i(TAG, "editSearchString : afterTextChanged func is called.");
+                switch (requestCode) {
+                    case REQUEST_CODE_CONTACTS_ACTIVITY:
+                        for(CustomerModel item : contactList) {
+                            if(SoundSearcher.matchString(item.getCustomerName(), editSearchString.getText().toString())) {
+                                item.setVisible(true);
+                            } else {
+                                item.setVisible(false);
+                            }
+                        }
+                        contactAdapter.notifyDataSetChanged();
+                        break;
+                    case REQUEST_CODE_CONTACTS_GROUP_ACTIVITY:
+                        for(ContactGroupModel item : contactGroupList) {
+                            if(SoundSearcher.matchString(item.getGroupName(), editSearchString.getText().toString())) {
+                                item.setVisible(true);
+                            } else {
+                                item.setVisible(false);
+                            }
+                        }
+                        adapter.notifyDataSetChanged();
+                        break;
+                }
+            }
+        });
     }
 
     @Override

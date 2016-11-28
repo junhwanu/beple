@@ -126,15 +126,10 @@ public class ContactGroupListAdapter extends ArrayAdapter<ContactGroupModel> imp
         View v = convertView;
         ContactGroupModel item = items.get(position);
 
-        if (v == null) {
+        if(!item.isVisible()) return vi.inflate(R.layout.cell_null_item, null);
+        v = createView(position);
+        holder = (ContactGroupListAdapter.ViewHolder) v.getTag();
 
-            v = createView(position);
-            holder = (ContactGroupListAdapter.ViewHolder) v.getTag();
-
-        } else{
-
-            holder = (ContactGroupListAdapter.ViewHolder) v.getTag();
-        }
 
         holder.txtGroupName.setText(item.getGroupName());
         holder.txtGroupCount.setText(String.valueOf(item.getGroupMemberCount()));

@@ -12,6 +12,7 @@ public class ContactGroupModel implements Parcelable {
     private String groupId;
     private ArrayList<CustomerModel> groupMember = new ArrayList<>();
     private int isSelected = 0; // 앱 안에서만 사용, 기본값은 1 (선택)
+    private boolean isVisible = true;
 
     public ContactGroupModel() {}
 
@@ -94,5 +95,13 @@ public class ContactGroupModel implements Parcelable {
 
     public void isSelected(int isSelected) {
         this.isSelected = isSelected;
+    }
+
+    public boolean isVisible() {
+        return isVisible;
+    }
+
+    public void setVisible(boolean visible) {
+        isVisible = visible;
     }
 }

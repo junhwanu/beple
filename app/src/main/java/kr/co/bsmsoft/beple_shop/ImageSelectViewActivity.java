@@ -332,7 +332,8 @@ public class ImageSelectViewActivity extends AppCompatActivity implements NetDef
                         return F_ERR;
                     }
 
-                    InputStream input = new BufferedInputStream(url.openStream());
+                    InputStream input = new BufferedInputStream(connection.getInputStream());
+                    //InputStream input = new BufferedInputStream(url.openStream());
                     OutputStream output = new FileOutputStream(outputFile);
 
                     byte data[] = new byte[1024];

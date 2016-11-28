@@ -103,6 +103,7 @@ public class AddPhoneNumberActivity extends AppCompatActivity implements NetDefi
                 mWidthPixels = realSize.x;
                 mHeightPixels = realSize.y;
             } catch (Exception ignored) {
+
             }
     }
 
