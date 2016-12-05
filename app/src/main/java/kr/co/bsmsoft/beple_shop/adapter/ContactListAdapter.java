@@ -29,6 +29,7 @@ public class ContactListAdapter extends ArrayAdapter<CustomerModel> implements N
     private ArrayList<CustomerModel> items = new ArrayList<CustomerModel>();
     private LayoutInflater vi;
     private ListView mListView;
+    private int selctedPosition = -1;
 
     public ContactListAdapter(Context context, ArrayList<CustomerModel> data, ListView listview) {
         super(context, R.layout.cell_customer_list);
@@ -82,10 +83,10 @@ public class ContactListAdapter extends ArrayAdapter<CustomerModel> implements N
         holder = new ContactListAdapter.ViewHolder();
 
         v = vi.inflate(R.layout.cell_customer_list, null);
-        holder.txtPhone = (TextView) v.findViewById(R.id.txtPhone);
         holder.txtCustomerName = (TextView) v.findViewById(R.id.txtCustomerName);
+        holder.txtPhone = (TextView) v.findViewById(R.id.txtPhone);
         holder.chkSelected = (CheckBox) v.findViewById(R.id.checkBox);
-        holder.chkSelected.setOnClickListener(mOnMenuClickListener);
+        //holder.chkSelected.setOnClickListener(mOnMenuClickListener);
 
         v.setTag(holder);
         return v;
@@ -142,8 +143,8 @@ public class ContactListAdapter extends ArrayAdapter<CustomerModel> implements N
         }*/
 
         try {
-            holder.txtPhone.setText(item.getPhone());
             holder.txtCustomerName.setText(String.valueOf(item.getCustomerName()));
+            holder.txtPhone.setText(item.getPhone());
         } catch (Exception e) {
             e.printStackTrace();
             Log.i(TAG, "item.getPhone : " + item.getPhone());
@@ -157,6 +158,10 @@ public class ContactListAdapter extends ArrayAdapter<CustomerModel> implements N
 
         return v;
 
+    }
+
+    public void selectedItem(int position) {
+        this.selctedPosition = position;
     }
 
 }

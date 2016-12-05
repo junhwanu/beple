@@ -19,11 +19,14 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import kr.co.bsmsoft.beple_shop.adapter.ContactGroupListAdapter;
@@ -87,6 +90,7 @@ public class AddContactGroupActivity extends AppCompatActivity implements NetDef
                 contactAdapter = new ContactListAdapter(this, contactList, contactListView);
                 contactListView.setAdapter(contactAdapter);
                 if(contactList.isEmpty()) new GetContactListTask().execute();
+                else for(CustomerModel item : contactList) item.isSelected(0);
                 contactAdapter.notifyDataSetChanged();
                 break;
             case REQUEST_CODE_CONTACTS_GROUP_ACTIVITY:
@@ -94,6 +98,7 @@ public class AddContactGroupActivity extends AppCompatActivity implements NetDef
                 adapter = new ContactGroupListAdapter(this, contactGroupList, contactListView);
                 contactListView.setAdapter(adapter);
                 if(contactGroupList.isEmpty()) new GetContactListTask().execute();
+                else for(ContactGroupModel item : contactGroupList) item.isSelected(0);
                 break;
         }
     }
@@ -108,6 +113,25 @@ public class AddContactGroupActivity extends AppCompatActivity implements NetDef
         if(contactGroupList == null) contactGroupList = new ArrayList<ContactGroupModel>();
         contactListView = (ListView) findViewById(R.id.contactGroupListView);
         contactListView.setDivider(null);
+        Log.i(TAG, "contactListView.setOnItemClickListener.");
+        contactListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                switch (requestCode) {
+                    case REQUEST_CODE_CONTACTS_ACTIVITY:
+                        Log.i(TAG, "contactList.get(position).isSelected() : " + contactList.get(position).isSelected());
+                        if( contactList.get(position).isSelected() == 1 ) contactList.get(position).isSelected(0);
+                        else contactList.get(position).isSelected(1);
+                        contactAdapter.notifyDataSetChanged();
+                        break;
+                    case REQUEST_CODE_CONTACTS_GROUP_ACTIVITY:
+                        if( contactGroupList.get(position).isSelected() == 1) contactGroupList.get(position).isSelected(0);
+                        else contactGroupList.get(position).isSelected(1);
+                        adapter.notifyDataSetChanged();
+                        break;
+                }
+            }
+        });
         
         btnOK = (Button) findViewById(R.id.btnContactGroupOk);
         btnClose = (Button) findViewById(R.id.btnContactGroupClose);
@@ -298,6 +322,26 @@ public class AddContactGroupActivity extends AppCompatActivity implements NetDef
         }
     }
 
+    static class GroupNameAscCompare implements Comparator<ContactGroupModel> {
+
+        @Override
+        public int compare(ContactGroupModel arg0, ContactGroupModel arg1) {
+            // TODO Auto-generated method stub
+            return arg0.getGroupName().compareTo(arg1.getGroupName());
+        }
+
+    }
+
+    static class NameAscCompare implements Comparator<CustomerModel> {
+
+        @Override
+        public int compare(CustomerModel arg0, CustomerModel arg1) {
+            // TODO Auto-generated method stub
+            return arg0.getCustomerName().compareTo(arg1.getCustomerName());
+        }
+
+    }
+
     private class GetContactListTask extends AsyncTask<String, Void, String> {
 
         @Override
@@ -305,9 +349,11 @@ public class AddContactGroupActivity extends AppCompatActivity implements NetDef
             switch (requestCode) {
                 case REQUEST_CODE_CONTACTS_ACTIVITY:
                     contactList.addAll(getContactList(null));
+                    Collections.sort(contactList, new NameAscCompare());
                     break;
                 case REQUEST_CODE_CONTACTS_GROUP_ACTIVITY:
                     getContactGroupList();
+                    Collections.sort(contactGroupList, new GroupNameAscCompare());
                     break;
             }
 

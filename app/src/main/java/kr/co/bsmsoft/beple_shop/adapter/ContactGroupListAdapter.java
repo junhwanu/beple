@@ -80,10 +80,10 @@ public class ContactGroupListAdapter extends ArrayAdapter<ContactGroupModel> imp
         holder = new ContactGroupListAdapter.ViewHolder();
 
         v = vi.inflate(R.layout.cell_customer_list, null);
-        holder.txtGroupName = (TextView) v.findViewById(R.id.txtPhone);
-        holder.txtGroupCount = (TextView) v.findViewById(R.id.txtCustomerName);
+        holder.txtGroupName = (TextView) v.findViewById(R.id.txtCustomerName);
+        holder.txtGroupCount = (TextView) v.findViewById(R.id.txtPhone);
         holder.chkSelected = (CheckBox) v.findViewById(R.id.checkBox);
-        holder.chkSelected.setOnClickListener(mOnMenuClickListener);
+        //holder.chkSelected.setOnClickListener(mOnMenuClickListener);
 
         v.setTag(holder);
         return v;

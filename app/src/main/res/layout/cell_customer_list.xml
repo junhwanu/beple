@@ -4,7 +4,8 @@
     android:layout_height="wrap_content"
     android:padding="12dp"
     android:background="#ffffff"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:descendantFocusability="blocksDescendants">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -23,21 +24,21 @@
             android:id="@+id/checkBox" />
 
         <TextView
-            android:id="@+id/txtPhone"
+            android:id="@+id/txtCustomerName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:textStyle="bold"
             android:singleLine="true"
             android:textColor="#013c74"
-            android:textSize="17dp"/>
+            android:textSize="20dp"/>
 
         <TextView
-            android:id="@+id/txtCustomerName"
+            android:id="@+id/txtPhone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/ColorAccent"
-            android:textSize="14dp"/>
+            android:textSize="18dp"/>
 
     </LinearLayout>
 
