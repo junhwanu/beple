@@ -4,14 +4,20 @@
 package kr.co.bsmsoft.beple_shop.fragment;
 
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.MediaController;
 import android.widget.TextView;
+import android.widget.VideoView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -31,20 +37,23 @@ import kr.co.bsmsoft.beple_shop.common.NetDefine;
 import kr.co.bsmsoft.beple_shop.globalVar;
 import kr.co.bsmsoft.beple_shop.model.MenuModel;
 import kr.co.bsmsoft.beple_shop.model.ShopModel;
+import kr.co.bsmsoft.beple_shop.util.mVideoView;
 
 
 /**
  * Created by brady on 15. 8. 24..
  */
 public class MainFragment extends AbFragment implements NetDefine, AdapterView.OnItemClickListener, View.OnClickListener {
-
+    private final static String TAG = "MainFragment";
     private MainMenuGridViewAdapter adapter;
     private GridView gridMenuView;
     private MainApp mainApp;
     private DisplayImageOptions options;
     private ImageView imageShop;
+    private mVideoView videoMain;
     private TextView txtTitle, txtNotice, txtSmsPoint, txtLottoPoint;
     private View layoutNotice;
+    //private LinearLayout videoLayout;
 
     public static MainFragment newInstance() {
 
@@ -70,6 +79,8 @@ public class MainFragment extends AbFragment implements NetDefine, AdapterView.O
                 .build();
 
         imageShop = (ImageView)rootView.findViewById(R.id.imageShop);
+        //videoMain = (mVideoView)rootView.findViewById(R.id.videoMain);
+        //videoLayout = (LinearLayout) rootView.findViewById(R.id.videoLayout);
         txtTitle = (TextView)rootView.findViewById(R.id.txtTitle);
         layoutNotice = rootView.findViewById(R.id.layout_notice);
         txtNotice = (TextView)rootView.findViewById(R.id.txtNotice);
@@ -179,6 +190,7 @@ public class MainFragment extends AbFragment implements NetDefine, AdapterView.O
 
         String shopImage = shop.getImage();
 
+
         if (CommonUtil.isStringNullOrEmptyCheck(shopImage)) {
 
             String imageServerPath = String.format("%s/%s", SERVER_URL, shopImage);
@@ -188,6 +200,19 @@ public class MainFragment extends AbFragment implements NetDefine, AdapterView.O
         }else{
             imageShop.setImageResource(R.drawable.bg_default_photo);
         }
+
+        /*
+        int width = videoLayout.getMeasuredWidth();
+        int height = videoLayout.getMeasuredHeight();
+
+        videoMain.setDimensions(width, height);
+        videoMain.getHolder().setFixedSize(width, height);
+        Log.i(TAG, "width : " + width + " / height : " + height);
+        videoMain.setVideoURI(Uri.parse(VIDEO_URL));
+        videoMain.setMediaController(new MediaController(getActivity()));
+        videoMain.seekTo(0);
+        videoMain.start();
+        */
     }
 
     public static long diffOfDate(String begin) throws Exception

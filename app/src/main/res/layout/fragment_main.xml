@@ -21,12 +21,24 @@
                 android:layout_height="match_parent"
                 android:layout_weight="0.6">
 
+
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="fitXY"
                     android:src="@drawable/bg_default_photo"
                     android:id="@+id/imageShop"/>
+
+                <!--<LinearLayout
+                    android:id="@+id/videoLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <kr.co.bsmsoft.beple_shop.util.mVideoView
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:id="@+id/videoMain"/>
+                </LinearLayout>-->
+
 
                 <TextView
                     android:id="@+id/txtTitle"

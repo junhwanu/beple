@@ -24,7 +24,7 @@ dependencies {
     compile 'com.koushikdutta.ion:ion:1.1.7'
     compile 'com.squareup.okhttp:okhttp:2.5.0'
     compile 'com.squareup.okhttp:okhttp-urlconnection:2.5.0'
-    compile 'org.apache.directory.studio:org.apache.commons.io:2.4'
+    compile 'commons-io:commons-io:2.4'
 }
 
 android {

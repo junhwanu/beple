@@ -1,4 +1,4 @@
-package kr.co.bsmsoft.beple_shop.common;
+package kr.co.bsmsoft.beple_shop.util;
 
 public class SoundSearcher
 {

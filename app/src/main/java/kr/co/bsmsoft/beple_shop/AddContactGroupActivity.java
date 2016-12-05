@@ -1,10 +1,16 @@
 package kr.co.bsmsoft.beple_shop;
 
-import android.content.ContentResolver;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Build;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.ContactsContract;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -18,14 +24,12 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import java.util.ArrayList;
-import java.util.regex.Pattern;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import kr.co.bsmsoft.beple_shop.adapter.ContactGroupListAdapter;
 import kr.co.bsmsoft.beple_shop.adapter.ContactListAdapter;
-import kr.co.bsmsoft.beple_shop.common.Helper;
 import kr.co.bsmsoft.beple_shop.common.NetDefine;
-import kr.co.bsmsoft.beple_shop.common.SoundSearcher;
+import kr.co.bsmsoft.beple_shop.util.SoundSearcher;
 import kr.co.bsmsoft.beple_shop.model.ContactGroupModel;
 import kr.co.bsmsoft.beple_shop.model.CustomerModel;
 
@@ -33,22 +37,41 @@ public class AddContactGroupActivity extends AppCompatActivity implements NetDef
 
     private final static String TAG = "AddContactGroupActivity";
 
+    private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
+
     private Toolbar toolbar;
     private ListView contactListView;
     private ContactGroupListAdapter adapter;
     private ContactListAdapter contactAdapter;
-    private ArrayList<ContactGroupModel> contactGroupList;
-    private ArrayList<CustomerModel> contactList;
+    private static ArrayList<ContactGroupModel> contactGroupList;
+    private static ArrayList<CustomerModel> contactList;
     private Button btnOK, btnClose;
     private EditText editSearchString;
     private int requestCode;
+    SweetAlertDialog pDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_contact_group);
 
-        init();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(android.Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{android.Manifest.permission.READ_CONTACTS}, PERMISSIONS_REQUEST_READ_CONTACTS);
+            //After this point you wait for callback in onRequestPermissionsResult(int, String[], int[]) overriden method
+        } else {
+            init();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                           int[] grantResults) {
+        if (requestCode == PERMISSIONS_REQUEST_READ_CONTACTS) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission is granted
+                init();
+            }
+        }
     }
 
     @Override
@@ -58,20 +81,19 @@ public class AddContactGroupActivity extends AppCompatActivity implements NetDef
         requestCode = getIntent().getIntExtra(KEY_REQUEST_CODE, 0);
         Log.i(TAG, "requestCode : " + requestCode);
 
-
         switch (requestCode) {
             case REQUEST_CODE_CONTACTS_ACTIVITY:
                 setTitle(LABEL_CONTACT);
                 contactAdapter = new ContactListAdapter(this, contactList, contactListView);
                 contactListView.setAdapter(contactAdapter);
-                if(contactList.isEmpty()) contactList.addAll(getContactList(null));
+                if(contactList.isEmpty()) new GetContactListTask().execute();
                 contactAdapter.notifyDataSetChanged();
                 break;
             case REQUEST_CODE_CONTACTS_GROUP_ACTIVITY:
                 setTitle(LABEL_CONTACT_GROUP);
                 adapter = new ContactGroupListAdapter(this, contactGroupList, contactListView);
                 contactListView.setAdapter(adapter);
-                if(contactGroupList.isEmpty()) getContactGroupList();
+                if(contactGroupList.isEmpty()) new GetContactListTask().execute();
                 break;
         }
     }
@@ -81,10 +103,12 @@ public class AddContactGroupActivity extends AppCompatActivity implements NetDef
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        contactList = new ArrayList<CustomerModel>();
-        contactGroupList = new ArrayList<ContactGroupModel>();
+        pDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
+        if(contactList == null) contactList = new ArrayList<CustomerModel>();
+        if(contactGroupList == null) contactGroupList = new ArrayList<ContactGroupModel>();
         contactListView = (ListView) findViewById(R.id.contactGroupListView);
-
+        contactListView.setDivider(null);
+        
         btnOK = (Button) findViewById(R.id.btnContactGroupOk);
         btnClose = (Button) findViewById(R.id.btnContactGroupClose);
         btnOK.setOnClickListener(this);
@@ -182,8 +206,6 @@ public class AddContactGroupActivity extends AppCompatActivity implements NetDef
                 Log.i(TAG, "getContactGroupList() : count[" + count + "]");
             }
         }
-
-        adapter.notifyDataSetChanged();
     }
 
     public ArrayList<CustomerModel> getContactList(String groupID) {
@@ -275,4 +297,55 @@ public class AddContactGroupActivity extends AppCompatActivity implements NetDef
                 return super.onOptionsItemSelected(item);
         }
     }
+
+    private class GetContactListTask extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+            switch (requestCode) {
+                case REQUEST_CODE_CONTACTS_ACTIVITY:
+                    contactList.addAll(getContactList(null));
+                    break;
+                case REQUEST_CODE_CONTACTS_GROUP_ACTIVITY:
+                    getContactGroupList();
+                    break;
+            }
+
+            Message msg = UIUpdateHandler.obtainMessage();
+            UIUpdateHandler.sendMessage(msg);
+
+            return "";
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            pDialog.dismissWithAnimation();
+        }
+
+        @Override
+        protected void onPreExecute() {
+            pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
+            pDialog.setTitleText("연락처를 불러오는 중입니다.");
+            pDialog.setCancelable(false);
+            pDialog.show();
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {}
+    }
+
+    final Handler UIUpdateHandler = new Handler()
+    {
+        public void handleMessage(Message msg)
+        {
+            switch (requestCode) {
+                case REQUEST_CODE_CONTACTS_ACTIVITY:
+                    contactAdapter.notifyDataSetChanged();
+                    break;
+                case REQUEST_CODE_CONTACTS_GROUP_ACTIVITY:
+                    adapter.notifyDataSetChanged();
+                    break;
+            }
+        }
+    };
 }

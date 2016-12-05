@@ -130,4 +130,6 @@ public interface NetDefine {
 
     public static final String LABEL_CONTACT = "전화번호 추가";
     public static final String LABEL_CONTACT_GROUP = "전화번호 그룹 추가";
+
+    public final static String VIDEO_URL = "http://sites.google.com/site/ubiaccessmobile/sample_video.mp4";
 }
