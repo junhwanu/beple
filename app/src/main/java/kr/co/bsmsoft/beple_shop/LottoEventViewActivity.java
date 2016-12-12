@@ -31,6 +31,7 @@ import kr.co.bsmsoft.beple_shop.mms.MmsManager;
 import kr.co.bsmsoft.beple_shop.model.CustomerModel;
 import kr.co.bsmsoft.beple_shop.model.EventModel;
 import kr.co.bsmsoft.beple_shop.model.ImageModel;
+import kr.co.bsmsoft.beple_shop.model.LottoSetModel;
 import kr.co.bsmsoft.beple_shop.net.AbServerTask;
 import kr.co.bsmsoft.beple_shop.net.EventTask;
 
@@ -74,7 +75,7 @@ public class LottoEventViewActivity extends AppCompatActivity implements NetDefi
                                 int code = EventTask.responseCode(ret);
                                 if (code == RESPONSE_OK) {
 
-                                    EventModel event = EventTask.parseEventDetail(ret);
+                                    EventModel event  = EventTask.parseEventDetail(ret);
 
                                     if (event != null) {
                                         updateView(event);
@@ -113,7 +114,8 @@ public class LottoEventViewActivity extends AppCompatActivity implements NetDefi
                     pDialog.setCancelable(false);
                     pDialog.show();
 
-                    messageManager = new MessageManager(msgBody, address, images, LottoEventViewActivity.this);
+                    //messageManager = new MessageManager(msgBody, address, images, LottoEventViewActivity.this);
+                    messageManager = new MessageManager(msgBody, currentEvent.getCustomers(), currentEvent.getLottoSet(), false, images, LottoEventViewActivity.this);
                     messageManager.mCallbacks = LottoEventViewActivity.this;
                     messageManager.execute();
                     break;
@@ -177,9 +179,13 @@ public class LottoEventViewActivity extends AppCompatActivity implements NetDefi
             case REQUEST_CODE_IMAGE_SELECT_ACTIVITY: {
 
                 String filePath = data.getStringExtra(KEY_IMAGE_PATH);
+                String serverURL = data.getStringExtra(KEY_SERVER_ADDR);
+                String fileURL = data.getStringExtra(KEY_FILE_URL);
                 if (filePath != null) {
                     ImageModel image = adapter.getItem(selectedPhoto);
                     image.setLocalPath(filePath);
+                    image.setServerAddress(serverURL);
+                    image.setFileUrl(fileURL);
                     adapter.notifyDataSetChanged();
                 }
                 break;
@@ -302,7 +308,7 @@ public class LottoEventViewActivity extends AppCompatActivity implements NetDefi
                     @Override
                     public void onClick(SweetAlertDialog sDialog) {
 
-                        image.setLocalPath(null);
+                        setGridAdapter();
                         adapter.notifyDataSetChanged();
                         sDialog.dismissWithAnimation();
                     }

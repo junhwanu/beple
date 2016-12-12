@@ -167,9 +167,13 @@ public class SmsEventViewActivity extends AppCompatActivity implements NetDefine
             case REQUEST_CODE_IMAGE_SELECT_ACTIVITY: {
 
                 String filePath = data.getStringExtra(KEY_IMAGE_PATH);
+                String serverURL = data.getStringExtra(KEY_SERVER_ADDR);
+                String fileURL = data.getStringExtra(KEY_FILE_URL);
                 if (filePath != null) {
                     ImageModel image = adapter.getItem(selectedPhoto);
                     image.setLocalPath(filePath);
+                    image.setServerAddress(serverURL);
+                    image.setFileUrl(fileURL);
                     adapter.notifyDataSetChanged();
                 }
                 break;
@@ -285,7 +289,7 @@ public class SmsEventViewActivity extends AppCompatActivity implements NetDefine
                     @Override
                     public void onClick(SweetAlertDialog sDialog) {
 
-                        image.setLocalPath(null);
+                        setGridAdapter();
                         adapter.notifyDataSetChanged();
                         sDialog.dismissWithAnimation();
                     }

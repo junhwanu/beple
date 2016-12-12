@@ -22,7 +22,7 @@ public class EventModel {
     private int cCount;
     private int times;
     private int numberOfLotto;
-
+    private LottoSetModel lottoSet;
     private ArrayList<CustomerModel> customers = new ArrayList<CustomerModel>();
 
     public EventModel() {}
@@ -146,5 +146,13 @@ public class EventModel {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public LottoSetModel getLottoSet() {
+        return lottoSet;
+    }
+
+    public void setLottoSet(LottoSetModel lottoSet) {
+        this.lottoSet = lottoSet;
     }
 }

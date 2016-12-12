@@ -49,6 +49,7 @@ public interface NetDefine {
 
     public final static String KEY_EVENT = "event";
     public final static String KEY_CUSTOMER_NM = "customer_nm";
+    public final static String KEY_CUSTOMER_ID = "customer_id";
     public final static String KEY_BIRTH = "birth";
     public final static String KEY_GENDER = "gender";
     public final static String KEY_ADDRESS = "address";
@@ -57,6 +58,9 @@ public interface NetDefine {
     public final static String KEY_NUM_OF_LOTTO = "num_of_lotto";
     public final static String KEY_LOTTO_URL= "lotto_url";
     public final static String KEY_LOTTO_MSG= "lotto_msg";
+    public final static String KEY_LOTTO_SET= "lotto_set";
+    public final static String KEY_LOTTO_NUM= "lotto_num";
+    public final static String KEY_LOTTO_TIMES= "times";
     public final static String KEY_EXPIRED= "expired";
     public final static String KEY_EXPIRED_DT= "expired_dt";
 
@@ -78,6 +82,7 @@ public interface NetDefine {
     public final static String KEY_SEND_TYPE= "send_type";
     public final static String KEY_UPD_DT= "upd_dt";
     public final static String KEY_SEND_DT= "send_dt";
+    public final static String KEY_SEND_RESULT= "send_result";
     public final static String KEY_IMAGE_LIST= "image_list";
     public final static String KEY_FILE_URL= "path";
     public final static String KEY_FILE_DESC= "file_desc";

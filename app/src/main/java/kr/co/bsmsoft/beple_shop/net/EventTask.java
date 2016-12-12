@@ -1,5 +1,7 @@
 package kr.co.bsmsoft.beple_shop.net;
 
+import android.util.Log;
+
 import com.loopj.android.http.RequestParams;
 
 import cz.msebera.android.httpclient.Header;
@@ -12,6 +14,8 @@ import java.util.ArrayList;
 import kr.co.bsmsoft.beple_shop.common.NetDefine;
 import kr.co.bsmsoft.beple_shop.model.CustomerModel;
 import kr.co.bsmsoft.beple_shop.model.EventModel;
+import kr.co.bsmsoft.beple_shop.model.LottoModel;
+import kr.co.bsmsoft.beple_shop.model.LottoSetModel;
 
 public class EventTask extends AbServerTask implements NetDefine {
 
@@ -111,6 +115,7 @@ public class EventTask extends AbServerTask implements NetDefine {
     public static EventModel parseEventDetail(JSONObject json) {
 
         EventModel event = null;
+        Log.i("EventTask", "parseEventDetail : " + json.toString());
         JSONObject jsonEvent = json.optJSONObject(KEY_EVENT);
         if (jsonEvent != null) {
             event = parseEvent(jsonEvent);
@@ -121,11 +126,29 @@ public class EventTask extends AbServerTask implements NetDefine {
             for (int i = 0; i < length; i++) {
                 try {
                     CustomerModel customer = parseCustomer(arrayCustomerList.getJSONObject(i));
+                    customer.isSelected(1);
                     event.addCustomer(customer);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
+
+            JSONArray arrayLottoSet = jsonEvent.optJSONArray(KEY_LOTTO_SET);
+
+            length = arrayLottoSet.length();
+            LottoSetModel lottoSet = new LottoSetModel();
+
+            for( int i = 0; i < length; i++) {
+                try {
+                    LottoModel lotto = parseLotto(arrayLottoSet.getJSONObject(i));
+                    lottoSet.setTimes(lotto.getTimes());
+                    lottoSet.addLotto(lotto);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            event.setLottoSet(lottoSet);
         }
         return event;
     }
@@ -151,6 +174,19 @@ public class EventTask extends AbServerTask implements NetDefine {
         return event;
     }
 
+    public static LottoModel parseLotto(JSONObject json) {
+        LottoModel lotto = new LottoModel();
+
+        lotto.setId(json.optInt(KEY_ID, 0));
+        lotto.setShop_id(json.optInt(KEY_SHOP_ID));
+        lotto.setCustomer_id(json.optInt(KEY_CUSTOMER_ID));
+        lotto.setLotto_num(json.optString(KEY_LOTTO_NUM));
+        lotto.setTimes(json.optInt(KEY_LOTTO_TIMES));
+        lotto.setReg_dt(json.optString(KEY_REG_DT));
+        lotto.setSend_result(json.optInt(KEY_SEND_RESULT));
+
+        return lotto;
+    }
 
     public static CustomerModel parseCustomer(JSONObject json) {
 

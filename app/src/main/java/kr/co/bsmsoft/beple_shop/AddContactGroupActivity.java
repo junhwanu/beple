@@ -90,7 +90,7 @@ public class AddContactGroupActivity extends AppCompatActivity implements NetDef
                 contactAdapter = new ContactListAdapter(this, contactList, contactListView);
                 contactListView.setAdapter(contactAdapter);
                 if(contactList.isEmpty()) new GetContactListTask().execute();
-                else for(CustomerModel item : contactList) item.isSelected(0);
+                else for(CustomerModel item : contactList) { item.isSelected(0); item.setVisible(true); }
                 contactAdapter.notifyDataSetChanged();
                 break;
             case REQUEST_CODE_CONTACTS_GROUP_ACTIVITY:
@@ -98,7 +98,7 @@ public class AddContactGroupActivity extends AppCompatActivity implements NetDef
                 adapter = new ContactGroupListAdapter(this, contactGroupList, contactListView);
                 contactListView.setAdapter(adapter);
                 if(contactGroupList.isEmpty()) new GetContactListTask().execute();
-                else for(ContactGroupModel item : contactGroupList) item.isSelected(0);
+                else for(ContactGroupModel item : contactGroupList) { item.isSelected(0); item.setVisible(true); }
                 break;
         }
     }

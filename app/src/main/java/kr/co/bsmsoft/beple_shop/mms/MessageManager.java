@@ -25,6 +25,9 @@ import java.util.Date;
 import java.util.Enumeration;
 
 import kr.co.bsmsoft.beple_shop.common.Helper;
+import kr.co.bsmsoft.beple_shop.model.CustomerModel;
+import kr.co.bsmsoft.beple_shop.model.LottoModel;
+import kr.co.bsmsoft.beple_shop.model.LottoSetModel;
 import kr.co.bsmsoft.beple_shop.nokia.IMMConstants;
 import kr.co.bsmsoft.beple_shop.nokia.MMContent;
 import kr.co.bsmsoft.beple_shop.nokia.MMEncoder;
@@ -41,11 +44,16 @@ public class MessageManager extends MmsManager {
 
     private String messageBody;
     private ArrayList<String> address;
+    private ArrayList<CustomerModel> customerModels;
+    private LottoSetModel lottoSet;
+    private ArrayList<String> name;
     private ArrayList<String> imageList = new ArrayList<String> ();
     private Context context;
     private Settings settings;
     private boolean isWifiEnabled;
     private WifiManager wifi;
+    private Boolean useName = false;
+    private Boolean addLotto = false;
 
     private void initSettings() {
 
@@ -68,6 +76,30 @@ public class MessageManager extends MmsManager {
         this.address = address;
         this.imageList = imageList;
         this.context = context;
+    }
+
+    public MessageManager(String message,
+                          ArrayList<String> address, ArrayList<String> name,
+                          ArrayList<String> imageList, Context context) {
+
+        this.messageBody = message;
+        this.address = address;
+        this.name = name;
+        this.imageList = imageList;
+        this.context = context;
+    }
+
+    public MessageManager(String message,
+                          ArrayList<CustomerModel> customerModels, LottoSetModel lottoSet, Boolean useName,
+                          ArrayList<String> imageList, Context context) {
+
+        this.messageBody = message;
+        this.customerModels = customerModels;
+        this.lottoSet = lottoSet;
+        this.context = context;
+        this.imageList = imageList;
+        this.useName = useName;
+        addLotto = true;
     }
 
     @Override
@@ -118,7 +150,8 @@ public class MessageManager extends MmsManager {
 
                 String mmsc = settings.getMmsc();
 
-                sendMMSForKT();
+                if(addLotto) sendMMSwithLottoSet();
+                else sendMMSForKT();
 /*
                 if (mmsc.contains("ktfwing")) {
                     sendMMSForKT();
@@ -134,6 +167,7 @@ public class MessageManager extends MmsManager {
         return 0;
     }
 
+    /*
     private void sendMMS() {
 
         String[] arrayAddress = address.toArray(new String[0]);
@@ -172,6 +206,129 @@ public class MessageManager extends MmsManager {
 
             //message.addVideo();
             transaction.sendNewMessage(message, Transaction.NO_THREAD_ID);
+
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+
+            }
+        }
+
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+
+        }
+    }
+*/
+    private void sendMMSwithLottoSet() {
+        // 이미지 로드
+        Bitmap[] images = null;
+        if (imageList != null && imageList.size() > 0) {
+            images = new Bitmap[imageList.size()];
+
+            for (int i = 0; i < imageList.size(); i++) {
+                String imagePath = imageList.get(i);
+                images[i] = BitmapFactory.decodeFile(imagePath);
+            }
+        }
+
+        //for (int i = 0; i < customerModels.size(); i++) {
+        for(CustomerModel model : customerModels) {
+
+            // 선택되지 않은 Customer
+            if(model.isSelected() == 0) continue;
+
+            MMMessage mm = new MMMessage();
+            SetMessage(mm, model.getPhone(), "");
+
+            // add lotto set to messageBody
+            String msgLotto = createLottoMessage(lottoSet.getLottoSetByCustomerID(model.getId()));
+
+            // add message
+            AddText(mm, messageBody + "\n" + msgLotto, 0);
+
+            // add images
+            if (imageList != null && imageList.size() > 0) {
+                try {
+
+                    for (int k=0; k<images.length; k++) {
+                        String imagePath = imageList.get(k);
+
+                        byte[] byteArray = null;
+                        File file = new File(imagePath);
+                        InputStream inputStream = new FileInputStream(file);
+                        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                        byte[] b = new byte[1024 * 8];
+                        int bytesRead = 0;
+
+                        while ((bytesRead = inputStream.read(b)) != -1) {
+                            bos.write(b, 0, bytesRead);
+                        }
+
+                        byteArray = bos.toByteArray();
+
+                        String fileName = file.getName().toLowerCase();
+                        String fileExt = fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length());
+
+                        String imageType = IMMConstants.CT_IMAGE_JPEG;
+                        if (fileExt.equals("gif")) {
+                            imageType = IMMConstants.CT_IMAGE_GIF;
+                        }else if (fileExt.equals("png")) {
+                            imageType = IMMConstants.CT_IMAGE_PNG;
+                        }
+
+                        AddImage(mm, byteArray, k+1, imageType);
+                    }
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            // add image
+            //for (int k=0; k<images.length; k++) {
+            //    AddImage(mm, images[k], k+1);
+            //}
+
+
+            MMEncoder encoder = new MMEncoder();
+            encoder.setMessage(mm);
+
+            try {
+                encoder.encodeMessage();
+                byte[] out = encoder.getMessage();
+
+                MMSender sender = new MMSender();
+                String MMSProxy = settings.getMmsProxy();
+                int MMSPort = Integer.valueOf(settings.getMmsPort());
+                final Boolean isProxySet = (MMSProxy != null) && (MMSProxy.trim().length() != 0);
+
+                sender.setMMSCURL(settings.getMmsc());
+                sender.addHeader("X-NOKIA-MMSC-Charging", "100");
+
+                MMResponse mmResponse = sender.send(out, isProxySet, MMSProxy, MMSPort);
+                Log.d(TAG, "Message sent to " + sender.getMMSCURL());
+                Log.d(TAG, "Response code: " + mmResponse.getResponseCode() + " " + mmResponse.getResponseMessage());
+
+                Enumeration keys = mmResponse.getHeadersList();
+                while (keys.hasMoreElements()) {
+                    String key = (String) keys.nextElement();
+                    String value = (String) mmResponse.getHeaderValue(key);
+                    Log.d(TAG, (key + ": " + value));
+                }
+
+                if (mmResponse.getResponseCode() == 200) {
+                    // 200 Successful, disconnect and reset.
+                    //endMmsConnectivity();
+                    //mSending = false;
+                    //mListening = false;
+                } else {
+
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
             try {
                 Thread.sleep(1000);
@@ -427,5 +584,20 @@ public class MessageManager extends MmsManager {
         }
 
         return null;
+    }
+
+    private String createLottoMessage(ArrayList<LottoModel> lottoModelArrayList) {
+        int index = 1;
+        String msg = "[ ";
+        msg = msg + lottoSet.getTimes() + "회차 로또 발행 번호입니다. ]\n";
+        for(LottoModel model : lottoModelArrayList) {
+            msg = msg + index++ + "차 : ";
+            for(int i=0;i<6;i++) {
+                msg = msg + model.getLotto_num().get(i);
+                if(i < 5) msg = msg + ", ";
+            }
+            msg = msg + "\n";
+        }
+        return msg;
     }
 }

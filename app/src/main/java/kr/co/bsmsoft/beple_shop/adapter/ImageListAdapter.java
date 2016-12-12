@@ -165,7 +165,7 @@ public class ImageListAdapter extends ArrayAdapter<ImageModel> implements NetDef
                 imageView.setBytes(bytes);
                 imageView.startAnimation();
             }
-        }.execute(item.getServerAddress() + "/" + item.getFileUrl());
+        }.execute(imageServerPath);
         /*
         holder.cardview.setOnClickListener(new View.OnClickListener() {
             @Override
