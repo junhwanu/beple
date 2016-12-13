@@ -48,11 +48,11 @@ public class LottoEventViewActivity extends AppCompatActivity implements NetDefi
     private EventModel currentEvent;
     private int selectedPhoto = 0;
 
-    private ArrayList<String> address;  // 전체 대상
     private ArrayList<String> images;
     private String msgBody;
     private SweetAlertDialog pDialog;
     private MmsManager messageManager;
+    ArrayList<CustomerModel> checked_customer;
 
     private final static int MSG_LOAD_EVENT = 1;
     private final static int MSG_SEND_MESSAGE = 2;
@@ -341,14 +341,15 @@ public class LottoEventViewActivity extends AppCompatActivity implements NetDefi
             }
 
             // 메시지 대상
-            address = new ArrayList<String>();
+            checked_customer = new ArrayList<>();
+
             for (CustomerModel customer : currentEvent.getCustomers()) {
                 if (customer.isSelected() == 1) {
-                    address.add(customer.getPhone());
+                    checked_customer.add(customer);
                 }
             }
 
-            if (address == null || address.size() == 0) {
+            if (checked_customer == null || checked_customer.size() == 0) {
                 Helper.sweetAlert("메세지를 받을 대상이 없습니다.", "알림", SweetAlertDialog.WARNING_TYPE, this);
                 return;
             }

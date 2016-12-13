@@ -95,13 +95,15 @@ public class PhotoGridViewAdapter extends ArrayAdapter<ImageModel> implements Ne
 
             v = createView(position);
             holder = (ViewHolder) v.getTag();
+            imageView = holder.imgPhoto;
 
         } else{
 
             holder = (ViewHolder) v.getTag();
+            imageView = holder.imgPhoto;
+            imageView.clear();
         }
 
-        imageView = holder.imgPhoto;
         if (item.getFileUrl() != null) {
 
             new GifDataDownloader() {

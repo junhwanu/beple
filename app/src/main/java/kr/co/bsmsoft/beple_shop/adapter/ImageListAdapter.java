@@ -133,10 +133,13 @@ public class ImageListAdapter extends ArrayAdapter<ImageModel> implements NetDef
 
             v = createView(position);
             holder = (ViewHolder) v.getTag();
+            imageView = holder.image;
 
         } else{
 
             holder = (ViewHolder) v.getTag();
+            imageView = holder.image;
+            imageView.clear();
         }
 
         String imageServerPath = String.format("%s/%s", item.getServerAddress(), item.getFileUrl());
@@ -158,14 +161,19 @@ public class ImageListAdapter extends ArrayAdapter<ImageModel> implements NetDef
             }
         });
 
-        imageView = holder.image;
+        /*imageView = holder.image;*/
         new GifDataDownloader() {
             @Override
             protected void onPostExecute(final byte[] bytes) {
-                imageView.setBytes(bytes);
-                imageView.startAnimation();
+                try {
+                    imageView.setBytes(bytes);
+                    imageView.startAnimation();
+                } catch (Exception e) {
+                    e.toString();
+                }
             }
         }.execute(imageServerPath);
+
         /*
         holder.cardview.setOnClickListener(new View.OnClickListener() {
             @Override

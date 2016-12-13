@@ -133,22 +133,27 @@ public class EventTask extends AbServerTask implements NetDefine {
                 }
             }
 
-            JSONArray arrayLottoSet = jsonEvent.optJSONArray(KEY_LOTTO_SET);
+            try {
+                JSONArray arrayLottoSet = jsonEvent.optJSONArray(KEY_LOTTO_SET);
 
-            length = arrayLottoSet.length();
-            LottoSetModel lottoSet = new LottoSetModel();
+                length = arrayLottoSet.length();
 
-            for( int i = 0; i < length; i++) {
-                try {
-                    LottoModel lotto = parseLotto(arrayLottoSet.getJSONObject(i));
-                    lottoSet.setTimes(lotto.getTimes());
-                    lottoSet.addLotto(lotto);
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                LottoSetModel lottoSet = new LottoSetModel();
+
+                for (int i = 0; i < length; i++) {
+                    try {
+                        LottoModel lotto = parseLotto(arrayLottoSet.getJSONObject(i));
+                        lottoSet.setTimes(lotto.getTimes());
+                        lottoSet.addLotto(lotto);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
 
-            event.setLottoSet(lottoSet);
+                event.setLottoSet(lottoSet);
+            } catch(Exception e) {
+                e.printStackTrace();
+            }
         }
         return event;
     }

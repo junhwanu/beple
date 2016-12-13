@@ -60,7 +60,6 @@ public class DirectMmsViewActivity extends AppCompatActivity implements NetDefin
 
     private Button btnSend, btnClose, btnAddPhone;
     private int selectedPhoto = 0;
-    private ArrayList<String> address = new ArrayList<String>();
     private ArrayList<String> images;
     private String msgBody;
     private SweetAlertDialog pDialog;
@@ -101,7 +100,11 @@ public class DirectMmsViewActivity extends AppCompatActivity implements NetDefin
                     pDialog.setCancelable(false);
                     pDialog.show();
 
-                    messageManager = new MessageManager(msgBody, address, images, DirectMmsViewActivity.this);
+                    Log.i(TAG,"phoneList size is " + phoneList.size());
+                    for(CustomerModel item : phoneList) {
+                        Log.i(TAG, "customer : " + item.getPhone());
+                    }
+                    messageManager = new MessageManager(msgBody, phoneList, false, images, DirectMmsViewActivity.this);
                     messageManager.mCallbacks = DirectMmsViewActivity.this;
                     messageManager.execute();
                     break;
@@ -537,12 +540,7 @@ public class DirectMmsViewActivity extends AppCompatActivity implements NetDefin
                 return;
             }
 
-            // 메시지 대상
-            for(CustomerModel item : phoneList) {
-                address.add(item.getPhone());
-            }
-
-            if (address == null || address.size() == 0) {
+            if ( phoneList == null || phoneList.size() == 0) {
                 Helper.sweetAlert("메세지를 받을 대상이 없습니다.", "알림", SweetAlertDialog.WARNING_TYPE, this);
                 return;
             }

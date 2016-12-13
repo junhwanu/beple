@@ -90,6 +90,19 @@ public class MessageManager extends MmsManager {
     }
 
     public MessageManager(String message,
+                          ArrayList<CustomerModel> customerModels, Boolean useName,
+                          ArrayList<String> imageList, Context context) {
+
+        this.messageBody = message;
+        this.customerModels = customerModels;
+        this.context = context;
+        this.imageList = imageList;
+        this.useName = useName;
+        addLotto = false;
+    }
+
+
+    public MessageManager(String message,
                           ArrayList<CustomerModel> customerModels, LottoSetModel lottoSet, Boolean useName,
                           ArrayList<String> imageList, Context context) {
 
@@ -150,8 +163,8 @@ public class MessageManager extends MmsManager {
 
                 String mmsc = settings.getMmsc();
 
-                if(addLotto) sendMMSwithLottoSet();
-                else sendMMSForKT();
+                sendMMSwithLottoSet();
+                //sendMMSForKT();
 /*
                 if (mmsc.contains("ktfwing")) {
                     sendMMSForKT();
@@ -242,11 +255,17 @@ public class MessageManager extends MmsManager {
             MMMessage mm = new MMMessage();
             SetMessage(mm, model.getPhone(), "");
 
-            // add lotto set to messageBody
-            String msgLotto = createLottoMessage(lottoSet.getLottoSetByCustomerID(model.getId()));
+            if(useName) {
 
-            // add message
-            AddText(mm, messageBody + "\n" + msgLotto, 0);
+            }
+
+            if(addLotto) {
+                // add lotto set to messageBody
+                String msgLotto = createLottoMessage(lottoSet.getLottoSetByCustomerID(model.getId()));
+
+                // add message
+                AddText(mm, messageBody + "\n" + msgLotto, 0);
+            }
 
             // add images
             if (imageList != null && imageList.size() > 0) {
