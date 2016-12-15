@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
 
+import kr.co.bsmsoft.beple_shop.R;
 import kr.co.bsmsoft.beple_shop.common.Helper;
 import kr.co.bsmsoft.beple_shop.model.CustomerModel;
 import kr.co.bsmsoft.beple_shop.model.LottoModel;
@@ -248,6 +249,7 @@ public class MessageManager extends MmsManager {
 
         //for (int i = 0; i < customerModels.size(); i++) {
         for(CustomerModel model : customerModels) {
+            String _messageBody = messageBody;
 
             // 선택되지 않은 Customer
             if(model.isSelected() == 0) continue;
@@ -256,7 +258,13 @@ public class MessageManager extends MmsManager {
             SetMessage(mm, model.getPhone(), "");
 
             if(useName) {
-
+                if(model.getCustomerName() != null && model.getCustomerName().length() > 0) {
+                    _messageBody = _messageBody.replace(context.getString(R.string.str_name), model.getCustomerName());
+                }
+                else if(model.getPhone() != null && model.getPhone().length() > 0)
+                    _messageBody = _messageBody.replace(context.getString(R.string.str_name), model.getPhone());
+                else
+                    _messageBody = _messageBody.replace(context.getString(R.string.str_name), "");
             }
 
             if(addLotto) {
@@ -264,8 +272,10 @@ public class MessageManager extends MmsManager {
                 String msgLotto = createLottoMessage(lottoSet.getLottoSetByCustomerID(model.getId()));
 
                 // add message
-                AddText(mm, messageBody + "\n" + msgLotto, 0);
+                _messageBody = _messageBody + "\n" + msgLotto;
             }
+
+            AddText(mm, _messageBody, 0);
 
             // add images
             if (imageList != null && imageList.size() > 0) {
@@ -606,17 +616,26 @@ public class MessageManager extends MmsManager {
     }
 
     private String createLottoMessage(ArrayList<LottoModel> lottoModelArrayList) {
-        int index = 1;
-        String msg = "[ ";
-        msg = msg + lottoSet.getTimes() + "회차 로또 발행 번호입니다. ]\n";
+        String msg = "";
+
+        // add header
+        msg += context.getString(R.string.str_lotto_header);
+        msg.replace("000", String.valueOf(lottoSet.getTimes()));
+        //msg.replace("yyyy/mm/dd", 추첨일);
+
+        // add body
         for(LottoModel model : lottoModelArrayList) {
-            msg = msg + index++ + "차 : ";
+
             for(int i=0;i<6;i++) {
                 msg = msg + model.getLotto_num().get(i);
                 if(i < 5) msg = msg + ", ";
             }
             msg = msg + "\n";
         }
+
+        // add tail
+        msg += ( context.getString(R.string.str_lotto_tail).replace("url", "real_url"));
+
         return msg;
     }
 }

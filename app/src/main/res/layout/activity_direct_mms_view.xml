@@ -26,14 +26,33 @@
             android:layout_margin="16dp"
             android:orientation="vertical">
 
-            <TextView
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="16dp"
-                android:textStyle="bold"
-                android:textColor="@color/ColorAccent"
-                android:layout_marginBottom="5dp"
-                android:text="메시지 내용"/>
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:textSize="16dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/ColorAccent"
+                    android:layout_marginBottom="5dp"
+                    android:text="메시지 내용"/>
+
+                <Button
+                    android:id="@+id/btnAddName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:background="@color/ColorAccent"
+                    android:minHeight="0dp"
+                    android:textColor="#ffffff"
+                    android:text="현재 위치에 고객명 추가"/>
+
+            </RelativeLayout>
 
             <EditText
                 android:id="@+id/editMessage"
@@ -42,6 +61,30 @@
                 android:textSize="14dp"
                 android:padding="10dp"
                 android:background="@drawable/text_form"/>
+
+            <RelativeLayout
+                android:layout_marginTop="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_alignParentLeft="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/ColorAccent"
+                    android:text="고객명 추가 사용"/>
+
+                <Switch
+                    android:layout_alignParentRight="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/swUseName"/>
+
+            </RelativeLayout>
 
             <TextView
                 android:layout_width="match_parent"

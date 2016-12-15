@@ -23,8 +23,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import org.json.JSONException;
@@ -57,8 +59,10 @@ public class DirectMmsViewActivity extends AppCompatActivity implements NetDefin
     private PhotoGridViewAdapter adapter;
     private EditText editMessage;
     private TextView txtCount;
+    private Switch swUseName;
+    private Boolean useName;
 
-    private Button btnSend, btnClose, btnAddPhone;
+    private Button btnSend, btnClose, btnAddPhone, btnAddName;
     private int selectedPhoto = 0;
     private ArrayList<String> images;
     private String msgBody;
@@ -104,7 +108,7 @@ public class DirectMmsViewActivity extends AppCompatActivity implements NetDefin
                     for(CustomerModel item : phoneList) {
                         Log.i(TAG, "customer : " + item.getPhone());
                     }
-                    messageManager = new MessageManager(msgBody, phoneList, false, images, DirectMmsViewActivity.this);
+                    messageManager = new MessageManager(msgBody, phoneList, useName, images, DirectMmsViewActivity.this);
                     messageManager.mCallbacks = DirectMmsViewActivity.this;
                     messageManager.execute();
                     break;
@@ -213,11 +217,24 @@ public class DirectMmsViewActivity extends AppCompatActivity implements NetDefin
         btnSend = (Button)findViewById(R.id.btnSend);
         btnClose = (Button)findViewById(R.id.btnClose);
         btnAddPhone = (Button)findViewById(R.id.btnAddPhone);
+        btnAddName = (Button)findViewById(R.id.btnAddName);
         txtCount = (TextView)findViewById(R.id.txtCount);
+        swUseName = (Switch) findViewById(R.id.swUseName);
 
         btnSend.setOnClickListener(this);
         btnClose.setOnClickListener(this);
         btnAddPhone.setOnClickListener(this);
+        btnAddName.setOnClickListener(this);
+        btnAddName.setVisibility(View.INVISIBLE);
+        swUseName.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                useName = isChecked;
+                if(isChecked) btnAddName.setVisibility(View.VISIBLE);
+                else btnAddName.setVisibility(View.INVISIBLE);
+                Log.i(TAG, "swUseName isChecked : " + isChecked);
+            }
+        });
 
         setGridAdapter();
 
@@ -578,8 +595,15 @@ public class DirectMmsViewActivity extends AppCompatActivity implements NetDefin
             Intent i = new Intent(this, AddPhoneNumberActivity.class);
             i.putExtra(KEY_CUSTOMER_LIST, phoneList);
             startActivityForResult(i, REQUEST_CODE_PHONE_LIST_ACTIVITY);
+        }else if (view.getId() == R.id.btnAddName) {
+            try {
+                int curStart = editMessage.getSelectionStart();
+                int curEnd = editMessage.getSelectionEnd();
+                editMessage.getText().replace(Math.min(curStart, curEnd), Math.max(curStart, curEnd), getString(R.string.str_name), 0, getString(R.string.str_name).length());
+            }catch (Exception e) {
+                e.printStackTrace();
+            }
         }
-
     }
 
     @Override
