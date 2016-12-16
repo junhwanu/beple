@@ -86,4 +86,6 @@
 
     <string name="str_lotto_header">[ 000회차 로또 발행 번호입니다. 추첨일 : yyyy/mm/dd ]\n</string>
     <string name="str_lotto_tail">[ 로또식 경품응모권 사용안내 : 본 경품응모권은 복권이 아니며, 경품 이벤트를 위한 공정한 추첨방식으로 활용되는 추첨용입니다. 상세내용 링크 : url ]</string>
+    <string name="str_lotto_url">http://beple.or.kr/event/lotto</string>
+    <string name="str_lotto_1">\?phone&#61;</string>
 </resources>

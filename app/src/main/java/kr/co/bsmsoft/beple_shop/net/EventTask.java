@@ -189,6 +189,7 @@ public class EventTask extends AbServerTask implements NetDefine {
         lotto.setTimes(json.optInt(KEY_LOTTO_TIMES));
         lotto.setReg_dt(json.optString(KEY_REG_DT));
         lotto.setSend_result(json.optInt(KEY_SEND_RESULT));
+        lotto.setSort_dt(json.optString(KEY_SORT_DT));
 
         return lotto;
     }

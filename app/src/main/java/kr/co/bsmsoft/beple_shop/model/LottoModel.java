@@ -15,6 +15,7 @@ public class LottoModel {
     private int times;
     private String reg_dt;
     private int send_result;
+    private String sort_dt;
 
     public int getId() {
         return id;
@@ -82,5 +83,13 @@ public class LottoModel {
 
     public void setSend_result(int send_result) {
         this.send_result = send_result;
+    }
+
+    public String getSort_dt() {
+        return sort_dt;
+    }
+
+    public void setSort_dt(String sort_dt) {
+        this.sort_dt = sort_dt;
     }
 }

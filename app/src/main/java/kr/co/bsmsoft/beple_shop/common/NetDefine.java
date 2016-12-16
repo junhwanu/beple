@@ -83,6 +83,7 @@ public interface NetDefine {
     public final static String KEY_UPD_DT= "upd_dt";
     public final static String KEY_SEND_DT= "send_dt";
     public final static String KEY_SEND_RESULT= "send_result";
+    public final static String KEY_SORT_DT= "sort_dt";
     public final static String KEY_IMAGE_LIST= "image_list";
     public final static String KEY_FILE_URL= "path";
     public final static String KEY_FILE_DESC= "file_desc";

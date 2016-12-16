@@ -11,7 +11,7 @@ android {
         versionCode 8
         versionName "1.7.9"
     }
-
+/*
     signingConfigs {
         debug {
             storeFile file("C:/Users/Office/AndroidStudioProjects/keystore/brady_debug_keystore")
@@ -23,7 +23,7 @@ android {
             keyPassword "qwer1234"
         }
     }
-
+*/
     buildTypes {
         release {
             minifyEnabled false

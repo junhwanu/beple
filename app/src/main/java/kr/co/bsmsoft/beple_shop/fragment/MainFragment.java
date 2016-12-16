@@ -4,6 +4,7 @@
 package kr.co.bsmsoft.beple_shop.fragment;
 
 import android.graphics.Bitmap;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -50,10 +51,9 @@ public class MainFragment extends AbFragment implements NetDefine, AdapterView.O
     private MainApp mainApp;
     private DisplayImageOptions options;
     private ImageView imageShop;
-    private mVideoView videoMain;
+    private VideoView videoMain;
     private TextView txtTitle, txtNotice, txtSmsPoint, txtLottoPoint;
     private View layoutNotice;
-    //private LinearLayout videoLayout;
 
     public static MainFragment newInstance() {
 
@@ -79,7 +79,7 @@ public class MainFragment extends AbFragment implements NetDefine, AdapterView.O
                 .build();
 
         imageShop = (ImageView)rootView.findViewById(R.id.imageShop);
-        //videoMain = (mVideoView)rootView.findViewById(R.id.videoMain);
+        videoMain = (VideoView)rootView.findViewById(R.id.videoMain);
         //videoLayout = (LinearLayout) rootView.findViewById(R.id.videoLayout);
         txtTitle = (TextView)rootView.findViewById(R.id.txtTitle);
         layoutNotice = rootView.findViewById(R.id.layout_notice);
@@ -201,18 +201,18 @@ public class MainFragment extends AbFragment implements NetDefine, AdapterView.O
             imageShop.setImageResource(R.drawable.bg_default_photo);
         }
 
-        /*
-        int width = videoLayout.getMeasuredWidth();
-        int height = videoLayout.getMeasuredHeight();
-
-        videoMain.setDimensions(width, height);
-        videoMain.getHolder().setFixedSize(width, height);
-        Log.i(TAG, "width : " + width + " / height : " + height);
         videoMain.setVideoURI(Uri.parse(VIDEO_URL));
         videoMain.setMediaController(new MediaController(getActivity()));
         videoMain.seekTo(0);
+        videoMain.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+                mp.setLooping(true);
+            }
+        });
+
         videoMain.start();
-        */
+
     }
 
     public static long diffOfDate(String begin) throws Exception

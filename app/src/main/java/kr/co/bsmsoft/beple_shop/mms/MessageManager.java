@@ -269,7 +269,7 @@ public class MessageManager extends MmsManager {
 
             if(addLotto) {
                 // add lotto set to messageBody
-                String msgLotto = createLottoMessage(lottoSet.getLottoSetByCustomerID(model.getId()));
+                String msgLotto = createLottoMessage(lottoSet.getLottoSetByCustomerID(model.getId()), model.getPhone());
 
                 // add message
                 _messageBody = _messageBody + "\n" + msgLotto;
@@ -615,13 +615,13 @@ public class MessageManager extends MmsManager {
         return null;
     }
 
-    private String createLottoMessage(ArrayList<LottoModel> lottoModelArrayList) {
+    private String createLottoMessage(ArrayList<LottoModel> lottoModelArrayList, String phone) {
         String msg = "";
 
         // add header
         msg += context.getString(R.string.str_lotto_header);
-        msg.replace("000", String.valueOf(lottoSet.getTimes()));
-        //msg.replace("yyyy/mm/dd", 추첨일);
+        msg = msg.replace("000", String.valueOf(lottoSet.getTimes()));
+        msg = msg.replace("yyyy/mm/dd", String.valueOf(lottoModelArrayList.get(0).getSort_dt()));
 
         // add body
         for(LottoModel model : lottoModelArrayList) {
@@ -634,7 +634,7 @@ public class MessageManager extends MmsManager {
         }
 
         // add tail
-        msg += ( context.getString(R.string.str_lotto_tail).replace("url", "real_url"));
+        msg += ( context.getString(R.string.str_lotto_tail).replace("url", context.getString(R.string.str_lotto_url) + context.getString(R.string.str_lotto_1) + phone));
 
         return msg;
     }
