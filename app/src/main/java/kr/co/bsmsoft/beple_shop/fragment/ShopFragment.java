@@ -155,7 +155,7 @@ public class ShopFragment extends AbFragment implements NetDefine {
 
             String imageServerPath = String.format("%s/%s", SERVER_URL, shopImage);
             ImageLoader imageLoader = ImageLoader.getInstance();
-            imageLoader.init(ImageLoaderConfiguration.createDefault(getActivity()));
+            if(!imageLoader.isInited()) imageLoader.init(ImageLoaderConfiguration.createDefault(getActivity()));
             imageLoader.displayImage(imageServerPath, imageShop, options);
         }else{
             imageShop.setImageResource(R.drawable.bg_default_photo);

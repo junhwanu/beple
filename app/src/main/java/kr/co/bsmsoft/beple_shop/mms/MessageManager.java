@@ -618,23 +618,31 @@ public class MessageManager extends MmsManager {
     private String createLottoMessage(ArrayList<LottoModel> lottoModelArrayList, String phone) {
         String msg = "";
 
-        // add header
+        // Add header
         msg += context.getString(R.string.str_lotto_header);
+
+        // Change temp times and date to real value
         msg = msg.replace("000", String.valueOf(lottoSet.getTimes()));
-        msg = msg.replace("yyyy/mm/dd", String.valueOf(lottoModelArrayList.get(0).getSort_dt()));
 
-        // add body
+        String date = lottoModelArrayList.get(0).getSort_dt();
+        String ymd[] = date.split("-");
+        msg = msg.replace("yyyy",ymd[0]);
+        msg = msg.replace("mm",ymd[1]);
+        msg = msg.replace("dd",ymd[2]);
+
+        // Add body
+        int index = 1;
         for(LottoModel model : lottoModelArrayList) {
-
+            msg = msg + "【응모" + index++ + "】 ";
             for(int i=0;i<6;i++) {
                 msg = msg + model.getLotto_num().get(i);
-                if(i < 5) msg = msg + ", ";
+                if(i < 5) msg = msg + ",";
             }
             msg = msg + "\n";
         }
 
-        // add tail
-        msg += ( context.getString(R.string.str_lotto_tail).replace("url", context.getString(R.string.str_lotto_url) + context.getString(R.string.str_lotto_1) + phone));
+        // Add tail
+        msg += context.getString(R.string.str_lotto_tail);
 
         return msg;
     }

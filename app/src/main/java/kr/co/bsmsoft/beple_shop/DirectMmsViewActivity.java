@@ -60,7 +60,7 @@ public class DirectMmsViewActivity extends AppCompatActivity implements NetDefin
     private EditText editMessage;
     private TextView txtCount;
     private Switch swUseName;
-    private Boolean useName;
+    private Boolean useName = false;
 
     private Button btnSend, btnClose, btnAddPhone, btnAddName;
     private int selectedPhoto = 0;
@@ -238,6 +238,7 @@ public class DirectMmsViewActivity extends AppCompatActivity implements NetDefin
 
         setGridAdapter();
 
+        /*
         mConnMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -269,6 +270,7 @@ public class DirectMmsViewActivity extends AppCompatActivity implements NetDefin
                 e.printStackTrace();
             }
         }
+        */
     }
 
     private void beginMmsConnectivityForLollipop() {
@@ -608,7 +610,7 @@ public class DirectMmsViewActivity extends AppCompatActivity implements NetDefin
 
     @Override
     public void onComplete() {
-
+        /*
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 
             releaseRequestLocked();
@@ -619,6 +621,7 @@ public class DirectMmsViewActivity extends AppCompatActivity implements NetDefin
                 unregisterReceiver(mReceiver);
             }
         }
+        */
 
 
         int count = phoneList.size();

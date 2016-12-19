@@ -143,9 +143,12 @@ public class ImageListAdapter extends ArrayAdapter<ImageModel> implements NetDef
         }
 
         String imageServerPath = String.format("%s/%s", item.getServerAddress(), item.getFileUrl());
+
+        /*
         ImageLoader imageLoader = ImageLoader.getInstance();
-        imageLoader.init(ImageLoaderConfiguration.createDefault(context));
+        if(!imageLoader.isInited()) imageLoader.init(ImageLoaderConfiguration.createDefault(context));
         imageLoader.displayImage(imageServerPath, holder.image, options);
+        */
 
         holder.title.setText(item.getFileDesc());
         holder.regDt.setText(Helper.formatTimeString(item.getRegDt()));

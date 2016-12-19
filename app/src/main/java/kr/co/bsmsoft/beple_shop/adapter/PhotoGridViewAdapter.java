@@ -101,6 +101,7 @@ public class PhotoGridViewAdapter extends ArrayAdapter<ImageModel> implements Ne
 
             holder = (ViewHolder) v.getTag();
             imageView = holder.imgPhoto;
+            imageView.clear();
         }
 
         if (item.getFileUrl() != null) {

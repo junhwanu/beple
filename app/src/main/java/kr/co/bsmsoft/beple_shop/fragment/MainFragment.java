@@ -17,6 +17,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.MediaController;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.VideoView;
 
@@ -51,6 +52,7 @@ public class MainFragment extends AbFragment implements NetDefine, AdapterView.O
     private MainApp mainApp;
     private DisplayImageOptions options;
     private ImageView imageShop;
+    private RelativeLayout videoLayout;
     private VideoView videoMain;
     private TextView txtTitle, txtNotice, txtSmsPoint, txtLottoPoint;
     private View layoutNotice;
@@ -80,7 +82,7 @@ public class MainFragment extends AbFragment implements NetDefine, AdapterView.O
 
         imageShop = (ImageView)rootView.findViewById(R.id.imageShop);
         videoMain = (VideoView)rootView.findViewById(R.id.videoMain);
-        //videoLayout = (LinearLayout) rootView.findViewById(R.id.videoLayout);
+        videoLayout = (RelativeLayout)rootView.findViewById(R.id.videoLayout);
         txtTitle = (TextView)rootView.findViewById(R.id.txtTitle);
         layoutNotice = rootView.findViewById(R.id.layout_notice);
         txtNotice = (TextView)rootView.findViewById(R.id.txtNotice);
@@ -201,18 +203,35 @@ public class MainFragment extends AbFragment implements NetDefine, AdapterView.O
             imageShop.setImageResource(R.drawable.bg_default_photo);
         }
 
-        videoMain.setVideoURI(Uri.parse(VIDEO_URL));
-        videoMain.setMediaController(new MediaController(getActivity()));
-        videoMain.seekTo(0);
+        imageShop.setVisibility(View.VISIBLE);
+        videoLayout.setVisibility(View.INVISIBLE);
+        try {
+            // Start the MediaController
+            MediaController mediacontroller = new MediaController(getActivity());
+            mediacontroller.setAnchorView(videoMain);
+            // Get the URL from String VideoURL
+            Uri video = Uri.parse(VIDEO_URL);
+            videoMain.setMediaController(mediacontroller);
+            videoMain.setVideoURI(video);
+
+        } catch (Exception e) {
+            Log.e("Error", e.getMessage());
+            e.printStackTrace();
+        }
+
+        videoMain.requestFocus();
         videoMain.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-            @Override
+            // Close the progress bar and play the video
             public void onPrepared(MediaPlayer mp) {
+                Log.i(TAG, "videoMain onPreared.");
                 mp.setLooping(true);
+                mp.setVolume(0f, 0f);
+                imageShop.setVisibility(View.INVISIBLE);
+                videoLayout.setVisibility(View.VISIBLE);
+                videoMain.start();
+                Log.i(TAG, "videoMain start.");
             }
         });
-
-        videoMain.start();
-
     }
 
     public static long diffOfDate(String begin) throws Exception

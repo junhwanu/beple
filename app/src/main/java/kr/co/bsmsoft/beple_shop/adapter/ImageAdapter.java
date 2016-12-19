@@ -92,7 +92,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
 
         String imageServerPath = String.format("%s/%s", SERVER_URL, item.getFileUrl());
         ImageLoader imageLoader = ImageLoader.getInstance();
-        imageLoader.init(ImageLoaderConfiguration.createDefault(context));
+        if(!imageLoader.isInited()) imageLoader.init(ImageLoaderConfiguration.createDefault(context));
         imageLoader.displayImage(imageServerPath, holder.image, options);
 
         holder.title.setText(item.getFileDesc());

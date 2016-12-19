@@ -8,22 +8,22 @@ android {
         applicationId "kr.co.bsmsoft.beple_shop"
         minSdkVersion 21
         targetSdkVersion 23
-        versionCode 8
-        versionName "1.7.9"
+        versionCode 11
+        versionName "1.8.2"
     }
-/*
+
     signingConfigs {
         debug {
-            storeFile file("C:/Users/Office/AndroidStudioProjects/keystore/brady_debug_keystore")
+            storeFile file("C:/Users/Jinmo/StudioProjects/keystore/brady_debug_keystore")
         }
         release {
-            storeFile file("C:/Users/Office/AndroidStudioProjects/keystore/brady_keystore")
+            storeFile file("C:/Users/Jinmo/StudioProjects/keystore/brady_keystore")
             storePassword "qwer1234"
             keyAlias "my city"
             keyPassword "qwer1234"
         }
     }
-*/
+
     buildTypes {
         release {
             minifyEnabled false
@@ -55,6 +55,6 @@ dependencies {
     compile project(':library')
     // 이미지 다운로더
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.1'
-    compile 'com.felipecsl:gifimageview:2.0.0'
+    compile 'com.felipecsl:gifimageview:2.1.0'
     compile 'com.loopj.android:android-async-http:1.4.9'
 }
