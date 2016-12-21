@@ -84,8 +84,8 @@
 
     <string name="str_name">[이름]</string>
 
-    <string name="str_lotto_header">■로또식경품 응모권 사용안내■\n본 경품응모권은 복권이 아니며, 경품이벤트를 위한 공정한 추첨방식으로만 활용되는 추첨용입니다.</string>
-    <string name="str_lotto_times">▶추첨회차 : 000회차</string>
-    <string name="str_lotto_day">▶추 첨 일 : yyyy년 mm월 dd일</string>
-    <string name="str_lotto_tail">◈경품이벤트 상세내용◈\nhttp://beple.or.kr/event/lotto_detail\n▣로또식경품 종합응모현황▣\nhttp://www.beple.or.kr/m_event</string>
+    <string name="str_lotto_header">■로또식경품 응모권 사용안내■\n본 경품응모권은 복권이 아니며, 경품이벤트를 위한 공정한 추첨방식으로만 활용되는 추첨용입니다.\n</string>
+    <string name="str_lotto_times">▶추첨회차 : 000회차\n</string>
+    <string name="str_lotto_day">▶추 첨 일 : yyyy-mm-dd\n\n</string>
+    <string name="str_lotto_tail">\n◈경품이벤트 상세내용◈\nhttp://beple.or.kr/event/lotto_detail\n▣로또식경품 종합응모현황▣\nhttp://www.beple.or.kr/m_event</string>
 </resources>
