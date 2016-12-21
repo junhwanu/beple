@@ -8,16 +8,15 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ImageView;
 
-import com.felipecsl.gifimageview.library.GifImageView;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.SimpleBitmapDisplayer;
 
 import kr.co.bsmsoft.beple_shop.common.NetDefine;
-import util.gifimageview.GifDataDownloader;
 
 public class PhotoViewActivity extends AppCompatActivity implements NetDefine, OnClickListener {
 
@@ -43,25 +42,11 @@ public class PhotoViewActivity extends AppCompatActivity implements NetDefine, O
 		Intent i = getIntent();
 		String imagePath = i.getStringExtra(KEY_IMAGE_PATH);
 
-		//TouchImageView mImageView = (TouchImageView) findViewById(R.id.imagePhoto);
-		final GifImageView mImageView = (GifImageView) findViewById(R.id.imagePhoto);
-
+		ImageView imageView = (ImageView) findViewById(R.id.imagePhoto);
 		Button btnClose = (Button) findViewById(R.id.btnClose);
 		btnClose.setOnClickListener(this);
 
-		/*
-		ImageLoader imageLoader = ImageLoader.getInstance();
-		imageLoader.init(ImageLoaderConfiguration.createDefault(PhotoViewActivity.this));
-		imageLoader.displayImage(imagePath, mImageView, options);
-		 */
-
-		new GifDataDownloader() {
-			@Override
-			protected void onPostExecute(final byte[] bytes) {
-				mImageView.setBytes(bytes);
-				mImageView.startAnimation();
-			}
-		}.execute(imagePath);
+		Glide.with(this).load(imagePath).placeholder(R.drawable.bg_default_photo).diskCacheStrategy(DiskCacheStrategy.SOURCE).into(imageView);
 	}
 
 	@Override

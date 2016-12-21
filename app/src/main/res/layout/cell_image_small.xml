@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <com.felipecsl.gifimageview.library.GifImageView
+        <ImageView
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_margin="10dp"

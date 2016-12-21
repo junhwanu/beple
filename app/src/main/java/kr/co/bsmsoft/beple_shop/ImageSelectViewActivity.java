@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.Network;
@@ -23,6 +24,10 @@ import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.gif.GifDrawable;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -253,7 +258,7 @@ public class ImageSelectViewActivity extends AppCompatActivity implements NetDef
 
                         sDialog.dismiss();
                         try{Thread.sleep(200);}catch(Exception e){}
-                        new DownloadTask().execute(item);
+                        new DownloadTask(sDialog.getContext()).execute(item);
                     }
                 })
                 .show();
@@ -276,7 +281,7 @@ public class ImageSelectViewActivity extends AppCompatActivity implements NetDef
 
                         sDialog.dismiss();
                         try{Thread.sleep(200);}catch(Exception e){}
-                        new DownloadTask().execute(item);
+                        new DownloadTask(sDialog.getContext()).execute(item);
                     }
                 })
                 .show();
@@ -287,9 +292,15 @@ public class ImageSelectViewActivity extends AppCompatActivity implements NetDef
 
         private static final int S_OK = 1;
         private static final int F_ERR = 0;
+        private Context mContext;
         private File outputFile = null;
         private SweetAlertDialog pDialog;
         private ImageModel image;
+
+        public DownloadTask(Context mContext) {
+            this.mContext = mContext;
+        }
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -313,7 +324,7 @@ public class ImageSelectViewActivity extends AppCompatActivity implements NetDef
             if (outputFile.exists()) {
                 return S_OK;
             }else {
-
+/*
                 try {
                     String imageServerPath = String.format("%s/%s", image.getServerAddress(), image.getFileUrl());
                     URL url = new URL(imageServerPath);
@@ -353,6 +364,24 @@ public class ImageSelectViewActivity extends AppCompatActivity implements NetDef
                     e.printStackTrace();
                     return F_ERR;
                 }
+                */
+                try {
+                    String imageServerPath = String.format("%s/%s", image.getServerAddress(), image.getFileUrl());
+                    Log.i(getClass().getName(), "Download gifImage : " + imageServerPath);
+                    GifDrawable drawable = Glide.with(mContext).load(imageServerPath).asGif().diskCacheStrategy(DiskCacheStrategy.SOURCE).into(1, 1).get();
+                    OutputStream output = new FileOutputStream(outputFile);
+
+                    byte data[] = drawable.getData();
+
+                    output.write(data);
+
+                    output.flush();
+                    output.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return F_ERR;
+                }
+
             }
 
             return S_OK;

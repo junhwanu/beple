@@ -11,13 +11,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.felipecsl.gifimageview.library.GifImageView;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.SimpleBitmapDisplayer;
 
@@ -28,7 +28,6 @@ import kr.co.bsmsoft.beple_shop.R;
 import kr.co.bsmsoft.beple_shop.common.Helper;
 import kr.co.bsmsoft.beple_shop.common.NetDefine;
 import kr.co.bsmsoft.beple_shop.model.ImageModel;
-import util.gifimageview.GifDataDownloader;
 
 public class ImageListAdapter extends ArrayAdapter<ImageModel> implements NetDefine {
 
@@ -60,7 +59,7 @@ public class ImageListAdapter extends ArrayAdapter<ImageModel> implements NetDef
     }
 
     class ViewHolder {
-        GifImageView image;
+        ImageView imageView;
         TextView title;
         TextView regDt;
         Button btnSelect;
@@ -100,7 +99,7 @@ public class ImageListAdapter extends ArrayAdapter<ImageModel> implements NetDef
         holder = new ViewHolder();
 
         v = vi.inflate(R.layout.cell_image_small, null);
-        holder.image = (GifImageView) v.findViewById(R.id.image);
+        holder.imageView = (ImageView) v.findViewById(R.id.image);
         holder.title = (TextView) v.findViewById(R.id.txtTitle);
         holder.regDt = (TextView) v.findViewById(R.id.txtRegDt);
         holder.btnSelect = (Button) v.findViewById(R.id.btnSelect);
@@ -126,34 +125,23 @@ public class ImageListAdapter extends ArrayAdapter<ImageModel> implements NetDef
 
         ViewHolder holder = null;
         View v = convertView;
-        final GifImageView imageView;
         final ImageModel item = items.get(position);
 
         if (v == null) {
 
             v = createView(position);
             holder = (ViewHolder) v.getTag();
-            imageView = holder.image;
 
         } else{
 
             holder = (ViewHolder) v.getTag();
-            imageView = holder.image;
-            imageView.clear();
         }
 
         String imageServerPath = String.format("%s/%s", item.getServerAddress(), item.getFileUrl());
 
-        /*
-        ImageLoader imageLoader = ImageLoader.getInstance();
-        if(!imageLoader.isInited()) imageLoader.init(ImageLoaderConfiguration.createDefault(context));
-        imageLoader.displayImage(imageServerPath, holder.image, options);
-        */
-
         holder.title.setText(item.getFileDesc());
         holder.regDt.setText(Helper.formatTimeString(item.getRegDt()));
-
-        holder.image.setOnClickListener(new View.OnClickListener() {
+        holder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -164,31 +152,16 @@ public class ImageListAdapter extends ArrayAdapter<ImageModel> implements NetDef
             }
         });
 
-        /*imageView = holder.image;*/
-        new GifDataDownloader() {
-            @Override
-            protected void onPostExecute(final byte[] bytes) {
-                try {
-                    imageView.setBytes(bytes);
-                    imageView.startAnimation();
-                } catch (Exception e) {
-                    e.toString();
-                }
-            }
-        }.execute(imageServerPath);
-
-        /*
-        holder.cardview.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                mCallbacks.onSelectedItem(item);
-            }
-        });
-       */
+        Glide
+                .with(context)
+                .load(imageServerPath)
+                .centerCrop()
+                .placeholder(R.drawable.bg_default_photo)
+                .crossFade()
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .into(holder.imageView);
 
         return v;
-
     }
 
     public ListView getListView() {

@@ -8,14 +8,14 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 
-import com.felipecsl.gifimageview.library.GifImageView;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.util.ArrayList;
 
 import kr.co.bsmsoft.beple_shop.R;
 import kr.co.bsmsoft.beple_shop.common.NetDefine;
 import kr.co.bsmsoft.beple_shop.model.ImageModel;
-import util.gifimageview.GifDataDownloader;
 
 public class PhotoGridViewAdapter extends ArrayAdapter<ImageModel> implements NetDefine {
 
@@ -34,7 +34,7 @@ public class PhotoGridViewAdapter extends ArrayAdapter<ImageModel> implements Ne
     }
 
     class ViewHolder {
-        GifImageView imgPhoto;
+        ImageView imgPhoto;
         ImageView imgRemove;
     }
 
@@ -69,7 +69,7 @@ public class PhotoGridViewAdapter extends ArrayAdapter<ImageModel> implements Ne
         holder = new ViewHolder();
 
         v = vi.inflate(R.layout.cell_grid_photo, null);
-        holder.imgPhoto = (GifImageView) v.findViewById(R.id.imgPhoto);
+        holder.imgPhoto = (ImageView) v.findViewById(R.id.imgPhoto);
         v.setTag(holder);
         return v;
     }
@@ -86,7 +86,6 @@ public class PhotoGridViewAdapter extends ArrayAdapter<ImageModel> implements Ne
     
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        final GifImageView imageView;
         ViewHolder holder = null;
         View v = convertView;
         ImageModel item = items.get(position);
@@ -95,28 +94,22 @@ public class PhotoGridViewAdapter extends ArrayAdapter<ImageModel> implements Ne
 
             v = createView(position);
             holder = (ViewHolder) v.getTag();
-            imageView = holder.imgPhoto;
 
         } else{
-
             holder = (ViewHolder) v.getTag();
-            imageView = holder.imgPhoto;
         }
 
         if (item.getFileUrl() != null) {
-
-            new GifDataDownloader() {
-                @Override
-                protected void onPostExecute(final byte[] bytes) {
-                    imageView.setBytes(bytes);
-                    imageView.startAnimation();
-                }
-            }.execute(item.getServerAddress() + "/" + item.getFileUrl());
-            //holder.imgPhoto.setImageBitmap(BitmapFactory.decodeFile(item.getLocalPath()));
-
+            Glide
+                    .with(context)
+                    .load(item.getServerAddress() + "/" + item.getFileUrl())
+                    .centerCrop()
+                    .placeholder(R.drawable.bg_default_photo)
+                    .crossFade()
+                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                    .into(holder.imgPhoto);
         }else {
-
-            //holder.imgPhoto.setImageBitmap(null);
+            holder.imgPhoto.setImageBitmap(null);
         }
 
         return v;
