@@ -8,22 +8,22 @@ android {
         applicationId "kr.co.bsmsoft.beple_shop"
         minSdkVersion 21
         targetSdkVersion 23
-        versionCode 9
-        versionName "1.8.0"
+        versionCode 12
+        versionName "1.8.3"
     }
-/*
+
     signingConfigs {
         debug {
-            storeFile file("C:/Users/Office/AndroidStudioProjects/keystore/brady_debug_keystore")
+            storeFile file("C:/Users/Jinmo/StudioProjects/keystore/brady_debug_keystore")
         }
         release {
-            storeFile file("C:/Users/Office/AndroidStudioProjects/keystore/brady_keystore")
+            storeFile file("C:/Users/Jinmo/StudioProjects/keystore/brady_keystore")
             storePassword "qwer1234"
             keyAlias "my city"
             keyPassword "qwer1234"
         }
     }
-*/
+
     buildTypes {
         release {
             minifyEnabled false
