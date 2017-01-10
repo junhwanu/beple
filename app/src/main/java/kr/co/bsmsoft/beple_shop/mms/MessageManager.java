@@ -267,12 +267,14 @@ public class MessageManager extends MmsManager {
                     _messageBody = _messageBody.replace(context.getString(R.string.str_name), "");
             }
 
+            _messageBody = _messageBody.replace("\n", "\r\n");
+
             if(addLotto) {
                 // add lotto set to messageBody
                 String msgLotto = createLottoMessage(lottoSet.getLottoSetByCustomerID(model.getId()), model.getPhone());
 
                 // add message
-                _messageBody = _messageBody + "\n" + msgLotto;
+                _messageBody = _messageBody + "\r\n" + msgLotto;
             }
 
             AddText(mm, _messageBody, 0);
@@ -538,7 +540,8 @@ public class MessageManager extends MmsManager {
 
         String mmsc = settings.getMmsc();
         if (mmsc.contains("ktfwing")) {
-            part1.setType(settings.getMmsMimetype());
+            //part1.setType(settings.getMmsMimetype());
+            part1.setType(settings.getMmsMimetype() + ";charset=\"euc-kr\";");
         }else{
             part1.setType(settings.getMmsMimetype() + ";charset=\"euc-kr\";");
         }
@@ -632,12 +635,12 @@ public class MessageManager extends MmsManager {
         // Add body
         int index = 1;
         for(LottoModel model : lottoModelArrayList) {
-            msg = msg + "【응모권" + index++ + "】\n";
+            msg = msg + "【응모권" + index++ + "】\r\n";
             for(int i=0;i<6;i++) {
                 msg = msg + model.getLotto_num().get(i);
                 if(i < 5) msg = msg + ", ";
             }
-            msg = msg + "\n";
+            msg = msg + "\r\n";
         }
 
         // Add tail

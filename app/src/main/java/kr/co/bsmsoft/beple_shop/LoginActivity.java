@@ -56,7 +56,7 @@ public class LoginActivity extends AppCompatActivity implements NetDefine, OnCli
 
                     String isExpired = mainApp.getShopInfo().getExpired();
                     if ("Y".equals(isExpired)) {
-                        Helper.sweetAlert("사용승인이 되어있지 않거나 사용기간이 만료되었습니다.\n관리자에게 문의하시기 바랍니다.", getString(R.string.alert_title), SweetAlertDialog.WARNING_TYPE, LoginActivity.this);
+                        Helper.sweetAlert("사용승인이 되어있지 않거나 사용기간이 만료되었습니다.\r\n관리자에게 문의하시기 바랍니다.", getString(R.string.alert_title), SweetAlertDialog.WARNING_TYPE, LoginActivity.this);
                     }else{
                         startActivity(new Intent(LoginActivity.this,
                                 MainActivity.class));

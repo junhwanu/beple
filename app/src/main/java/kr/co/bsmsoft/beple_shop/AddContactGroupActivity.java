@@ -267,6 +267,7 @@ public class AddContactGroupActivity extends AppCompatActivity implements NetDef
                         data.setPhone(pCur
                                 .getString(pCur
                                         .getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
+                        data.isSelected(1);
                         contactList.add(data);
                         break; // 최상위 번호 1개만 추가
                     }

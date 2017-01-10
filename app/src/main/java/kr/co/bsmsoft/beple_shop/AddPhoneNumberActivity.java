@@ -167,6 +167,8 @@ public class AddPhoneNumberActivity extends AppCompatActivity implements NetDefi
         if (name.length() > 0) {
             customer.setCustomerName(name);
         }
+
+        customer.isSelected(1);
         adapter.addItem(customer);
         adapter.notifyDataSetChanged();
     }

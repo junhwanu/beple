@@ -142,7 +142,7 @@ public class SplashActivity extends Activity implements NetDefine {
                     } else {
 
                         String msg = InitInfoTask.responseMessage(ret);
-                        String msgFormat = String.format("Error Code : %d\r\n%s", code, msg);
+                        String msgFormat = String.format("Error Code : %d\r\r\n%s", code, msg);
                         Helper.finishAlert(msgFormat, SplashActivity.this);
                     }
 
