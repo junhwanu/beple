@@ -164,6 +164,10 @@ public class MessageManager extends MmsManager {
 
                 String mmsc = settings.getMmsc();
 
+                Log.i(TAG, "Test!!" + settings.getMmsc());
+                Log.i(TAG, "Test!!" + settings.getMmsMimetype());
+                Log.i(TAG, "Test!!" + settings.getMmsPort());
+                Log.i(TAG, "Test!!" + settings.getMmsProxy());
                 sendMMSwithLottoSet();
                 //sendMMSForKT();
 /*
@@ -338,6 +342,7 @@ public class MessageManager extends MmsManager {
                 sender.setMMSCURL(settings.getMmsc());
                 sender.addHeader("X-NOKIA-MMSC-Charging", "100");
 
+                Log.d(TAG, "Message Body is " + _messageBody);
                 MMResponse mmResponse = sender.send(out, isProxySet, MMSProxy, MMSPort);
                 Log.d(TAG, "Message sent to " + sender.getMMSCURL());
                 Log.d(TAG, "Response code: " + mmResponse.getResponseCode() + " " + mmResponse.getResponseMessage());
