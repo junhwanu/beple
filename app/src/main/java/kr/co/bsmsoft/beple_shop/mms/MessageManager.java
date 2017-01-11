@@ -164,10 +164,13 @@ public class MessageManager extends MmsManager {
 
                 String mmsc = settings.getMmsc();
 
+                /*
                 Log.i(TAG, "Test!!" + settings.getMmsc());
                 Log.i(TAG, "Test!!" + settings.getMmsMimetype());
                 Log.i(TAG, "Test!!" + settings.getMmsPort());
                 Log.i(TAG, "Test!!" + settings.getMmsProxy());
+                */
+
                 sendMMSwithLottoSet();
                 //sendMMSForKT();
 /*
@@ -271,14 +274,12 @@ public class MessageManager extends MmsManager {
                     _messageBody = _messageBody.replace(context.getString(R.string.str_name), "");
             }
 
-            _messageBody = _messageBody.replace("\n", "\r\n");
-
             if(addLotto) {
                 // add lotto set to messageBody
                 String msgLotto = createLottoMessage(lottoSet.getLottoSetByCustomerID(model.getId()), model.getPhone());
 
                 // add message
-                _messageBody = _messageBody + "\r\n" + msgLotto;
+                _messageBody = _messageBody + "\n" + msgLotto;
             }
 
             AddText(mm, _messageBody, 0);
@@ -342,6 +343,7 @@ public class MessageManager extends MmsManager {
                 sender.setMMSCURL(settings.getMmsc());
                 sender.addHeader("X-NOKIA-MMSC-Charging", "100");
 
+                String str = new String(out,0,out.length);
                 Log.d(TAG, "Message Body is " + _messageBody);
                 MMResponse mmResponse = sender.send(out, isProxySet, MMSProxy, MMSPort);
                 Log.d(TAG, "Message sent to " + sender.getMMSCURL());
@@ -533,7 +535,10 @@ public class MessageManager extends MmsManager {
 
         MMContent part1 = new MMContent();
         byte[] buf = new byte[] {};
+        String mmsc = settings.getMmsc();
+
         try {
+            if(mmsc.contains("ktfwing")) text = text.replace("\n", "<br>");
             text = text + " ";
             buf = text.getBytes("euc-kr");
         } catch (UnsupportedEncodingException e) {
@@ -543,10 +548,10 @@ public class MessageManager extends MmsManager {
         String sId = String.format("<%d>", contentId);
         part1.setContentId(sId);
 
-        String mmsc = settings.getMmsc();
+
         if (mmsc.contains("ktfwing")) {
-            //part1.setType(settings.getMmsMimetype());
-            part1.setType(settings.getMmsMimetype() + ";charset=\"euc-kr\";");
+            part1.setType(settings.getMmsMimetype());
+            //part1.setType(settings.getMmsMimetype() + ";charset=\"euc-kr\";");
         }else{
             part1.setType(settings.getMmsMimetype() + ";charset=\"euc-kr\";");
         }
@@ -640,12 +645,12 @@ public class MessageManager extends MmsManager {
         // Add body
         int index = 1;
         for(LottoModel model : lottoModelArrayList) {
-            msg = msg + "【응모권" + index++ + "】\r\n";
+            msg = msg + "【응모권" + index++ + "】\n";
             for(int i=0;i<6;i++) {
                 msg = msg + model.getLotto_num().get(i);
                 if(i < 5) msg = msg + ", ";
             }
-            msg = msg + "\r\n";
+            msg = msg + "\n";
         }
 
         // Add tail
