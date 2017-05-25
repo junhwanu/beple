@@ -19,19 +19,26 @@
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="0.6">
+                android:layout_weight="0.5"> <!-- 원래 여기가 0.6 밑에 LinearLayout이 0.4 -->
 
                 <RelativeLayout
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent">
-
+                    <AdapterViewFlipper
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="fitXY"
+                        android:flipInterval="3000"
+                        android:id="@+id/imageShop"/>
+                    <!--
                     <ImageView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:scaleType="fitXY"
                         android:src="@drawable/bg_default_photo"
                         android:id="@+id/imageShop"/>
-
+                        -->
+<!--
                     <RelativeLayout
                         android:id="@+id/videoLayout"
                         android:layout_width="fill_parent"
@@ -45,7 +52,7 @@
                             android:layout_height="fill_parent">
                         </VideoView>
                     </RelativeLayout>
-
+-->
                 </RelativeLayout>
 
                 <TextView
@@ -67,14 +74,14 @@
                 android:id="@+id/viewTwo"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="0.4"
+                android:layout_weight="0.5"
                 android:orientation="vertical">
 
                 <LinearLayout
                     android:id="@+id/layout_notice"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="10dp"
+                    android:padding="15dp"
                     android:background="@color/ColorAccent"
                     android:orientation="horizontal">
 
@@ -110,6 +117,67 @@
                     android:src="@drawable/line_blue"
                     android:scaleType="fitXY"/>
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:weightSum="4"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/ColorAccent"
+                        android:layout_weight="3"
+                        android:weightSum="3">
+
+                        <ImageButton
+                            android:id="@+id/btn_simple_mms"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:background="@drawable/btn_simple_mms"/>
+                        <ImageButton
+                            android:id="@+id/btn_event"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:scaleType="fitCenter"
+                            android:layout_weight="1"
+                            android:background="@drawable/btn_event"/>
+                        <ImageButton
+                            android:id="@+id/btn_simple_event"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:background="@drawable/btn_simple_event"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/cardview_dark_background"
+                        android:layout_weight="1"
+                        android:weightSum="2">
+
+                        <ImageButton
+                            android:id="@+id/btn_home"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:scaleType="fitCenter"
+                            android:layout_weight="1"
+                            android:background="@drawable/btn_home"/>
+                        <ImageButton
+                            android:id="@+id/btn_shop"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:background="@drawable/btn_shop"/>
+                    </LinearLayout>
+
+                </LinearLayout>
+<!--
                 <GridView
                     android:id="@+id/gridMenuView"
                     android:layout_width="match_parent"
@@ -121,7 +189,7 @@
                     android:gravity="center"
                     android:choiceMode="singleChoice"
                     android:stretchMode="columnWidth"/>
-
+-->
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -133,7 +201,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="16dp"
-                    android:padding="5dp"
+                    android:padding="10dp"
                     android:ellipsize="marquee"
                     android:textColor="#ffffff"
                     android:background="@color/ColorAccent"

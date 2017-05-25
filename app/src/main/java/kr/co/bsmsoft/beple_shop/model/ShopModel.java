@@ -1,5 +1,7 @@
 package kr.co.bsmsoft.beple_shop.model;
 
+import android.util.Log;
+
 public class ShopModel {
 
     private int id;
@@ -24,6 +26,8 @@ public class ShopModel {
     private int cCount;
     private String expired;
     private String expiredDt;
+    private String type;
+    private String sign;
 
     public ShopModel() {}
 
@@ -201,5 +205,25 @@ public class ShopModel {
 
     public void setExpiredDt(String expiredDt) {
         this.expiredDt = expiredDt;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getSign() {
+        return sign;
+    }
+
+    public void setSign(String sign) {
+        if(sign == null || sign.equals("null") || sign.isEmpty() || sign.length() == 0) {
+            this.sign = "";
+        } else {
+            this.sign = sign;
+        }
     }
 }

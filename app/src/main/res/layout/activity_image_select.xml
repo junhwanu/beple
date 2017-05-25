@@ -48,7 +48,7 @@
             android:background="@drawable/bg_category"
             android:gravity="center"
             android:textStyle="bold"
-            android:text="가맹점 홍보이미지"/>
+            android:text="날씨/계절/월별인사"/>
 
         <ImageButton
             android:id="@+id/btnChange"

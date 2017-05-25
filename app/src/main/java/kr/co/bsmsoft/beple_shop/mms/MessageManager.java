@@ -44,6 +44,7 @@ public class MessageManager extends MmsManager {
     private final static String TAG = "MessageManager";
 
     private String messageBody;
+    private String signMessage = "";
     private ArrayList<String> address;
     private ArrayList<CustomerModel> customerModels;
     private LottoSetModel lottoSet;
@@ -104,7 +105,7 @@ public class MessageManager extends MmsManager {
 
 
     public MessageManager(String message,
-                          ArrayList<CustomerModel> customerModels, LottoSetModel lottoSet, Boolean useName,
+                          ArrayList<CustomerModel> customerModels, LottoSetModel lottoSet, Boolean useName, String signMessage,
                           ArrayList<String> imageList, Context context) {
 
         this.messageBody = message;
@@ -113,6 +114,7 @@ public class MessageManager extends MmsManager {
         this.context = context;
         this.imageList = imageList;
         this.useName = useName;
+        this.signMessage = signMessage;
         addLotto = true;
     }
 
@@ -245,6 +247,7 @@ public class MessageManager extends MmsManager {
     private void sendMMSwithLottoSet() {
         // 이미지 로드
         Bitmap[] images = null;
+        int sent = 1;
         if (imageList != null && imageList.size() > 0) {
             images = new Bitmap[imageList.size()];
 
@@ -258,6 +261,9 @@ public class MessageManager extends MmsManager {
         for(CustomerModel model : customerModels) {
             String _messageBody = messageBody;
 
+            int percentage = Math.round(((float)sent * 100 / (float)customerModels.size()));
+            mCallbacks.onProgress("전송 중입니다... (" + sent + " / " + customerModels.size() + ", " + String.valueOf(percentage) + "%)");
+            sent = sent + 1;
             // 선택되지 않은 Customer
             if(model.isSelected() == 0) continue;
 
@@ -280,6 +286,10 @@ public class MessageManager extends MmsManager {
 
                 // add message
                 _messageBody = _messageBody + "\n" + msgLotto;
+            }
+
+            if(!signMessage.equals("")) {
+                _messageBody = _messageBody + "\n\n" + signMessage;
             }
 
             AddText(mm, _messageBody, 0);

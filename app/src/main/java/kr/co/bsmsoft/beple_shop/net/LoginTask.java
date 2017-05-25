@@ -16,7 +16,12 @@ import kr.co.bsmsoft.beple_shop.model.ShopModel;
 
 
 public class LoginTask extends AbServerTask implements NetDefine {
-	
+
+	private String accessToken;
+	public LoginTask() {}
+	public LoginTask(String accessToken) {
+		this.accessToken = accessToken;
+	}
 	@Override
 	public void success(JSONObject ret) {
 		
@@ -36,7 +41,14 @@ public class LoginTask extends AbServerTask implements NetDefine {
 
         post(LOGIN_URL, params);
     }
-	
+
+	public void getShopInfo(int id) {
+		RequestParams params = new RequestParams();
+		params.put(KEY_ACCESS_TOKEN, this.accessToken);
+		params.put(KEY_ID, id);
+
+		get(SHOP_INFO_URL, params);
+	}
 	
 	public static ShopModel parseLogin(JSONObject json) throws JSONException {
 
@@ -65,6 +77,8 @@ public class LoginTask extends AbServerTask implements NetDefine {
 		login.setcCount(tmp.optInt(KEY_C_COUNT));
 		login.setExpired(tmp.optString(KEY_EXPIRED));
 		login.setExpiredDt(tmp.optString(KEY_EXPIRED_DT));
+		login.setSign(tmp.optString(KEY_SIGN));
+		login.setType(tmp.optString(KEY_TYPE));
 
 		return login;
 	}

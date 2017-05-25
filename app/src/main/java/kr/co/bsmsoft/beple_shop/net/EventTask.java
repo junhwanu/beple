@@ -10,6 +10,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import kr.co.bsmsoft.beple_shop.common.NetDefine;
 import kr.co.bsmsoft.beple_shop.model.CustomerModel;
@@ -36,7 +37,34 @@ public class EventTask extends AbServerTask implements NetDefine {
 		mCallbacks.onFailed(this, code, e.getLocalizedMessage());
 	}
 
+    public void createEvent(int shopId, EventModel event) {
+        RequestParams params = new RequestParams();
+        params.put(KEY_ACCESS_TOKEN, this.accessToken);
+        params.put(KEY_TIMES, event.getTimes());
+        params.put(KEY_NUM_OF_LOTTO, event.getNumberOfLotto());
+        params.put(KEY_EVENT_NAME, event.getEventNm());
+        params.put(KEY_MESSAGE, event.getMessage());
+        params.put(KEY_SHOP_ID, shopId);
+        params.put(KEY_GROUP, event.getTargetGroup());
 
+        get(CREATE_EVENT_URL, params);
+    }
+
+    public void publishEvent(int shopId, int eventId) {
+        RequestParams params = new RequestParams();
+        params.put(KEY_ACCESS_TOKEN, this.accessToken);
+        params.put(KEY_ID, eventId);
+        params.put(KEY_SHOP_ID, shopId);
+
+        get(PUBLISH_URL, params);
+    }
+
+    public void getLottoTimes() {
+        RequestParams params = new RequestParams();
+        params.put(KEY_ACCESS_TOKEN, this.accessToken);
+
+        get(LOTTO_TIMES_URL, params);
+    }
 
     public void getLottoEventList(int shopId) {
 
@@ -63,7 +91,6 @@ public class EventTask extends AbServerTask implements NetDefine {
         get(url, params);
     }
 
-
     public void getLottoEvent(int id) {
 
         RequestParams params = new RequestParams();
@@ -71,6 +98,27 @@ public class EventTask extends AbServerTask implements NetDefine {
 
         String url = String.format("%s%d", LOTTO_URL, id);
         get(url, params);
+    }
+
+    public void sendLottoEvent(EventModel event, int shop_id) {
+
+        RequestParams params = new RequestParams();
+        params.put(KEY_ACCESS_TOKEN, this.accessToken);
+        params.put(KEY_TIMES, event.getTimes());
+        params.put(KEY_COUNT, event.getNumberOfLotto());
+        params.put(KEY_LOTTO_TITLE, event.getEventNm());
+        params.put(KEY_LOTTO_MSG, event.getMessage());
+        params.put(KEY_SHOP_ID, shop_id);
+
+        ArrayList<CustomerModel> customers = event.getCustomers();
+        List<String> phoneList = new ArrayList<String>();
+        for(int i=0;i<customers.size();i++) {
+            phoneList.add(customers.get(i).getPhone());
+        }
+
+        params.put(KEY_ADDRESSES, phoneList);
+
+        get(LOTTO_EVENT_SEND_URL, params);
     }
 
     public void updateSmsEventResult(int id) {
@@ -121,36 +169,44 @@ public class EventTask extends AbServerTask implements NetDefine {
             event = parseEvent(jsonEvent);
             JSONArray arrayCustomerList = jsonEvent.optJSONArray(KEY_CUSTOMER_LIST);
 
-            int length = arrayCustomerList.length();
+            try {
+                if (arrayCustomerList != null) {
+                    int length = arrayCustomerList.length();
 
-            for (int i = 0; i < length; i++) {
-                try {
-                    CustomerModel customer = parseCustomer(arrayCustomerList.getJSONObject(i));
-                    customer.isSelected(1);
-                    event.addCustomer(customer);
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                    for (int i = 0; i < length; i++) {
+                        try {
+                            CustomerModel customer = parseCustomer(arrayCustomerList.getJSONObject(i));
+                            customer.isSelected(1);
+                            event.addCustomer(customer);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
 
             try {
                 JSONArray arrayLottoSet = jsonEvent.optJSONArray(KEY_LOTTO_SET);
 
-                length = arrayLottoSet.length();
+                if(arrayLottoSet != null) {
+                    int length = arrayLottoSet.length();
 
-                LottoSetModel lottoSet = new LottoSetModel();
+                    LottoSetModel lottoSet = new LottoSetModel();
 
-                for (int i = 0; i < length; i++) {
-                    try {
-                        LottoModel lotto = parseLotto(arrayLottoSet.getJSONObject(i));
-                        lottoSet.setTimes(lotto.getTimes());
-                        lottoSet.addLotto(lotto);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+                    for (int i = 0; i < length; i++) {
+                        try {
+                            LottoModel lotto = parseLotto(arrayLottoSet.getJSONObject(i));
+                            lottoSet.setTimes(lotto.getTimes());
+                            lottoSet.addLotto(lotto);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
-                }
 
-                event.setLottoSet(lottoSet);
+                    event.setLottoSet(lottoSet);
+                }
             } catch(Exception e) {
                 e.printStackTrace();
             }
@@ -175,6 +231,7 @@ public class EventTask extends AbServerTask implements NetDefine {
         event.setcCount(json.optInt(KEY_C_COUNT));
         event.setTimes(json.optInt(KEY_TIMES));
         event.setNumberOfLotto(json.optInt(KEY_NUM_OF_LOTTO));
+        event.setSortDt(json.optString(KEY_SORT_DT));
 
         return event;
     }
@@ -213,4 +270,27 @@ public class EventTask extends AbServerTask implements NetDefine {
         return customer;
     }
 
+    public static ArrayList<LottoModel> parseLottoTimes(JSONObject json) {
+        ArrayList<LottoModel> times = new ArrayList<>();
+
+        JSONArray arrayTimes = json.optJSONArray(KEY_LOTTO_CONF);
+
+        int length = arrayTimes.length();
+
+        for (int i = 0; i < length; i++) {
+            try {
+                LottoModel model = new LottoModel();
+                JSONObject json_model = arrayTimes.getJSONObject(i);
+
+                model.setTimes(json_model.getInt(KEY_LOTTO_TIMES));
+                model.setSort_dt(json_model.getString(KEY_SORT_DT));
+
+                times.add(model);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return times;
+    }
 }

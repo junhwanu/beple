@@ -88,6 +88,18 @@
             android:layout_marginRight="5dp"
             android:textColor="#ffffff"
             android:text="주소록 그룹"/>
+
+        <Button
+            android:id="@+id/btnShopGroup"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/PrimaryColor"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:textColor="#ffffff"
+            android:text="가맹점 그룹"/>
     </LinearLayout>
 
     <ListView

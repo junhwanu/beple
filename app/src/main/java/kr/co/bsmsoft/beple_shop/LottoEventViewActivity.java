@@ -33,6 +33,7 @@ import kr.co.bsmsoft.beple_shop.mms.MmsManager;
 import kr.co.bsmsoft.beple_shop.model.CustomerModel;
 import kr.co.bsmsoft.beple_shop.model.EventModel;
 import kr.co.bsmsoft.beple_shop.model.ImageModel;
+import kr.co.bsmsoft.beple_shop.model.LottoModel;
 import kr.co.bsmsoft.beple_shop.model.LottoSetModel;
 import kr.co.bsmsoft.beple_shop.net.AbServerTask;
 import kr.co.bsmsoft.beple_shop.net.EventTask;
@@ -52,6 +53,8 @@ public class LottoEventViewActivity extends AppCompatActivity implements NetDefi
 
     private ArrayList<String> images;
     private String msgBody;
+    private Switch swSign;
+    private Boolean useSign = true;
     private SweetAlertDialog pDialog;
     private MmsManager messageManager;
     ArrayList<CustomerModel> checked_customer;
@@ -59,6 +62,16 @@ public class LottoEventViewActivity extends AppCompatActivity implements NetDefi
     private final static int MSG_LOAD_EVENT = 1;
     private final static int MSG_SEND_MESSAGE = 2;
     private final static int MSG_UPDATE_RESULT = 3;
+
+    final Handler updateDialogMessageHandler = new Handler()
+    {
+        public void handleMessage(Message msg)
+        {
+            if(pDialog != null && pDialog.isShowing()) {
+                pDialog.setContentText(String.valueOf(msg.obj));
+            }
+        }
+    };
 
     private Handler mHandler = new Handler() {
         public void handleMessage(Message msg) {
@@ -116,8 +129,12 @@ public class LottoEventViewActivity extends AppCompatActivity implements NetDefi
                     pDialog.setCancelable(false);
                     pDialog.show();
 
+                    String msgSign = "";
+                    if(useSign) {
+                        msgSign = mainApp.getShopInfo().getSign();
+                    }
                     //messageManager = new MessageManager(msgBody, address, images, LottoEventViewActivity.this);
-                    messageManager = new MessageManager(msgBody, currentEvent.getCustomers(), currentEvent.getLottoSet(), false, images, LottoEventViewActivity.this);
+                    messageManager = new MessageManager(msgBody, currentEvent.getCustomers(), currentEvent.getLottoSet(), false, msgSign, images, LottoEventViewActivity.this);
                     messageManager.mCallbacks = LottoEventViewActivity.this;
                     messageManager.execute();
                     break;
@@ -249,6 +266,17 @@ public class LottoEventViewActivity extends AppCompatActivity implements NetDefi
         btnClose = (Button)findViewById(R.id.btnClose);
         btnCustomerList = (Button)findViewById(R.id.btnCustomerList);
 
+        swSign = (Switch)findViewById(R.id.sw_sign);
+        swSign.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                useSign = isChecked;
+                if(useSign && mainApp.getShopInfo().getSign().equals("")) {
+                    Helper.sweetAlert("광고 수신거부 문구가 설정되어 있지 않습니다. 해당 기능을 사용하시려면 가맹점 페이지에서 설정해주시기 바랍니다.", "알림", SweetAlertDialog.NORMAL_TYPE, LottoEventViewActivity.this);
+                }
+            }
+        });
+
         btnSend.setOnClickListener(this);
         btnClose.setOnClickListener(this);
         btnCustomerList.setOnClickListener(this);
@@ -257,6 +285,9 @@ public class LottoEventViewActivity extends AppCompatActivity implements NetDefi
 
         mHandler.obtainMessage(MSG_LOAD_EVENT).sendToTarget();
 
+        if(mainApp.getShopInfo().getSign().equals("")) {
+            Helper.sweetAlert("광고 수신거부 문구가 설정되어 있지 않습니다. 해당 기능을 사용하시려면 가맹점 페이지에서 설정해주시기 바랍니다.", "알림", SweetAlertDialog.NORMAL_TYPE, this);
+        }
     }
 
     private final static int MAX_IMAGE_COUNT = 1;
@@ -364,10 +395,12 @@ public class LottoEventViewActivity extends AppCompatActivity implements NetDefi
                 }
             }
 
+            /*
             if (images == null || images.size() ==0) {
                 Helper.sweetAlert("홍보 이미지가 없습니다. 이미지를 선택해 주세요.", "알림", SweetAlertDialog.WARNING_TYPE, this);
                 return;
             }
+            */
 
             new SweetAlertDialog(LottoEventViewActivity.this, SweetAlertDialog.NORMAL_TYPE)
                     .setTitleText("알림")
@@ -394,6 +427,14 @@ public class LottoEventViewActivity extends AppCompatActivity implements NetDefi
             }
             startActivityForResult(i, REQUEST_CODE_CUSTOMER_LIST_ACTIVITY);
         }
+    }
+
+    @Override
+    public void onProgress(String contentMessage) {
+        Message msg = updateDialogMessageHandler.obtainMessage();
+        msg.obj = contentMessage;
+
+        updateDialogMessageHandler.sendMessage(msg);
     }
 
     @Override

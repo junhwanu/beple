@@ -1,0 +1,300 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#dddddd"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        style="@style/Widget.MyApp.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:layout_scrollFlags="scroll|enterAlways" />
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentBottom="true"
+                android:textSize="16dp"
+                android:textStyle="bold"
+                android:textColor="@color/ColorAccent"
+                android:layout_marginBottom="5dp"
+                android:text="이벤트명"/>
+
+            <EditText
+                android:id="@+id/edt_lotto_event_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="14dp"
+                android:padding="10dp"
+                android:background="@drawable/text_form"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentBottom="true"
+                android:textSize="16dp"
+                android:textStyle="bold"
+                android:textColor="@color/ColorAccent"
+                android:layout_marginBottom="5dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:text="로또 회차"/>
+
+            <Spinner
+                android:id="@+id/sp_lotto_event_times"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="14dp"
+                android:padding="10dp"
+                android:background="@drawable/text_form"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentBottom="true"
+                android:textSize="16dp"
+                android:textStyle="bold"
+                android:textColor="@color/ColorAccent"
+                android:layout_marginBottom="5dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:text="1인당 발행수"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageButton
+                    android:id="@+id/btn_minus"
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:layout_alignParentLeft="true"
+                    android:src="@drawable/ic_arrow_left"/>
+
+                <EditText
+                    android:id="@+id/edt_lotto_event_count"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="7"
+                    android:textSize="14dp"
+                    android:gravity="center"
+                    android:text="1"
+                    android:editable="false"
+                    android:background="@drawable/text_form"/>
+
+                <ImageButton
+                    android:id="@+id/btn_plus"
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:layout_alignParentLeft="true"
+                    android:src="@drawable/ic_arrow_right"/>
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_marginTop="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_alignParentLeft="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/ColorAccent"
+                    android:text="수신거부 문구 추가"/>
+
+                <Switch
+                    android:id="@+id/sw_sign"
+                    android:layout_alignParentRight="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentBottom="true"
+                    android:textSize="16dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/ColorAccent"
+                    android:layout_marginBottom="5dp"
+                    android:text="메시지 내용"/>
+
+                <Button
+                    android:id="@+id/btnAddName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_alignParentRight="true"
+                    android:background="@color/ColorAccent"
+                    android:minHeight="0dp"
+                    android:textColor="#ffffff"
+                    android:text="현재 위치에 고객명 추가"/>
+
+            </RelativeLayout>
+
+            <EditText
+                android:id="@+id/edt_lotto_event_message"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:textSize="14dp"
+                android:padding="10dp"
+                android:background="@drawable/text_form"/>
+
+            <RelativeLayout
+                android:layout_marginTop="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_alignParentLeft="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/ColorAccent"
+                    android:text="고객명 추가 사용"/>
+
+                <Switch
+                    android:layout_alignParentRight="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/swUseName"/>
+
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:textSize="16dp"
+                android:textStyle="bold"
+                android:textColor="@color/ColorAccent"
+                android:layout_marginBottom="5dp"
+                android:text="대상 고객"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/txtCount"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/text_form"
+                    android:gravity="center"
+                    android:text="0 명"/>
+
+                <Button
+                    android:id="@+id/btnAddPhone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="@color/ColorAccent"
+                    android:minHeight="0dp"
+                    android:layout_marginLeft="5dp"
+                    android:textColor="#ffffff"
+                    android:text="추가"/>
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:textSize="16dp"
+                android:textStyle="bold"
+                android:layout_marginBottom="5dp"
+                android:textColor="@color/ColorAccent"
+                android:text="홍보 이미지"/>
+
+            <GridView
+                android:id="@+id/gridPhotoView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/text_form"
+                android:numColumns="1"
+                android:verticalSpacing="10dp"
+                android:gravity="center"
+                android:choiceMode="singleChoice"
+                android:stretchMode="columnWidth"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="(주)바암의 모든 가맹회원은 SMS모바일 문자전송용 외에 이미지를 사용할 수 없으며 이를 위반시 저작권법에 의하여 법적책임을 질 수 있습니다.\n(개인 및 매장용 홍보이미지제외)"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnSend"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/ColorAccent"
+            android:textColor="#ffffff"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:text="발송"/>
+
+        <Button
+            android:id="@+id/btnClose"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/PrimaryColor"
+            android:textColor="#ffffff"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:text="닫기"/>
+
+    </LinearLayout>
+
+</LinearLayout>

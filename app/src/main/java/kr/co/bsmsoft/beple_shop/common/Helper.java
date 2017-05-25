@@ -12,6 +12,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.telephony.TelephonyManager;
+import android.os.AsyncTask;
 
 import java.text.DateFormat;
 import java.text.ParseException;

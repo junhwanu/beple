@@ -44,12 +44,15 @@ public interface NetDefine {
     public final static String KEY_FAQ_URL = "faq_url";
     public final static String KEY_EVENT_LIST = "event_list";
     public final static String KEY_CUSTOMER_LIST = "customer_list";
+    public final static String KEY_GROUP_LIST = "group_list";
     public final static String KEY_CUSTOMER_LIST_SELECTED = "customer_list_selected";
     public final static String KEY_CUSTOMER_GROUP_LIST = "customer_group_list";
 
     public final static String KEY_EVENT = "event";
+    public final static String KEY_GROUP = "group";
     public final static String KEY_CUSTOMER_NM = "customer_nm";
     public final static String KEY_CUSTOMER_ID = "customer_id";
+    public final static String KEY_CUSTOMER_IDS = "customer_ids";
     public final static String KEY_BIRTH = "birth";
     public final static String KEY_GENDER = "gender";
     public final static String KEY_ADDRESS = "address";
@@ -61,8 +64,13 @@ public interface NetDefine {
     public final static String KEY_LOTTO_SET= "lotto_set";
     public final static String KEY_LOTTO_NUM= "lotto_num";
     public final static String KEY_LOTTO_TIMES= "times";
+    public final static String KEY_LOTTO_CONF = "lotto_conf";
+    public final static String KEY_LOTTO_TITLE = "lotto_title";
+    public final static String KEY_ADDRESSES = "customer_addr";
     public final static String KEY_EXPIRED= "expired";
     public final static String KEY_EXPIRED_DT= "expired_dt";
+    public final static String KEY_SIGN= "sign";
+    public final static String KEY_TYPE= "type";
 
     public final static String KEY_USER = "user";
     public final static String KEY_TIMESTAMP = "timestamp";
@@ -74,8 +82,12 @@ public interface NetDefine {
     public final static String KEY_URL = "url";
     public final static String KEY_ALLOW_PUSH = "allow_push";
     public final static String KEY_PUSH_ID = "push_id";
-    public final static String KEY_REG_DT= "reg_dt";
-    public final static String KEY_EVENT_NAME= "event_nm";
+    public final static String KEY_GROUP_ID = "group_id";
+    public final static String KEY_REG_DT = "reg_dt";
+    public final static String KEY_EVENT_ID = "event_id";
+    public final static String KEY_EVENT_NAME = "event_nm";
+    public final static String KEY_GROUP_NAME = "group_nm";
+    public final static String KEY_GROUP_DESC = "group_desc";
     public final static String KEY_MESSAGE= "message";
     public final static String KEY_STATUS= "status";
     public final static String KEY_TARGET_GROUP= "target_group";
@@ -106,19 +118,30 @@ public interface NetDefine {
     public final static String KEY_TYPE_CODE= "type_code";
     public final static String KEY_USER_ID= "user_id";
     public final static String KEY_USER_TYPE= "user_type";
+    public final static String KEY_AGENT_NAME = "agent_name";
     public final static String KEY_KIND= "kind";
     public final static String KEY_REQUEST_CODE= "request_code";
 
     public final static String MOBILE_URL = "/api/mobile/";
     public final static String SMS_URL = "/api/sms/";
     public final static String LOTTO_URL = "/api/lotto/";
+    public final static String LOTTO_TIMES_URL = "/api/lotto_times";
+    public final static String LOTTO_EVENT_SEND_URL = "/api/lotto_event";
     public final static String USER_URL = "/api/user/";
     public final static String LOGIN_URL = "/api/login";
+    public final static String SHOP_INFO_URL = "/api/shop/info";
     public final static String IMAGE_URL = "/api/image";
     public final static String CATEGORY_URL = "/api/category";
     public final static String MMS_URL = "/api/mms";
     public final static String SHOP_URL = "/shop";
     public final static String ADMIN_URL = "/admin";
+    public final static String AGENT_URL = "/admin/agent_name";
+    public final static String GROUP_URL = "/api/group/";
+    public final static String REGISTER_CUSTOMER_URL = "/api/customer/register";
+    public final static String CREATE_GROUP_URL = "/api/group_create";
+    public final static String ADD_GROUP_URL = "/api/group_add";
+    public final static String CREATE_EVENT_URL = "/api/event_create";
+    public final static String PUBLISH_URL = "/api/publish/point";
 
     public final static int RESPONSE_OK = 0;
     public final static int ERROR_INVALID_LOGIN_INFO = -103;
@@ -130,12 +153,14 @@ public interface NetDefine {
     public final static int REQUEST_CODE_PHONE_LIST_ACTIVITY = 1002;
     public final static int REQUEST_CODE_CONTACTS_ACTIVITY = 1003;
     public final static int REQUEST_CODE_CONTACTS_GROUP_ACTIVITY = 1004;
+    public final static int REQUEST_CODE_SHOP_GROUP_ACTIVITY = 1005;
 
     public static final int USER_TYPE_SHOP = 1;        // 가맹점
     public static final int USER_TYPE_AGENCY = 2;      // 영업점
 
     public static final String LABEL_CONTACT = "전화번호 추가";
     public static final String LABEL_CONTACT_GROUP = "전화번호 그룹 추가";
+    public static final String LABEL_SHOP_GROUP = "가맹점 그룹 추가";
 
     public final static String VIDEO_URL = "http://sites.google.com/site/ubiaccessmobile/sample_video.mp4";
 }

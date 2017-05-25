@@ -20,12 +20,17 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.klinker.android.logger.Log;
 import com.klinker.android.send_message.Utils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import kr.co.bsmsoft.beple_shop.LottoEventViewActivity;
@@ -181,10 +186,20 @@ public class LottoEventFragment extends AbFragment implements NetDefine, Adapter
         }
 
         EventModel event =  adapter.getItem(position-1);
-        Intent i = new Intent(getActivity(), LottoEventViewActivity.class);
-        i.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        i.putExtra(KEY_ID, event.getId());
-        startActivity(i);
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.KOREA);
+        String str_today = df.format(new Date());
+        String str_sort_dt = event.getSortDt() + " 18:00:00";
+
+        int compare = str_today.compareTo(str_sort_dt);
+        if(compare <= 0) {
+            Intent i = new Intent(getActivity(), LottoEventViewActivity.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            i.putExtra(KEY_ID, event.getId());
+            startActivity(i);
+        }
+        else {
+            Helper.alert("해당 회차 추첨 마감시간으로 로또 발송이 불가합니다.", getActivity());
+        }
     }
 
     private boolean checkMMSEnv() {

@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -24,6 +26,9 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 
@@ -33,12 +38,17 @@ import kr.co.bsmsoft.beple_shop.common.Helper;
 import kr.co.bsmsoft.beple_shop.common.NetDefine;
 import kr.co.bsmsoft.beple_shop.model.ContactGroupModel;
 import kr.co.bsmsoft.beple_shop.model.CustomerModel;
+import kr.co.bsmsoft.beple_shop.net.AbServerTask;
+import kr.co.bsmsoft.beple_shop.net.GroupTask;
 
 public class AddPhoneNumberActivity extends AppCompatActivity implements NetDefine, AdapterView.OnItemClickListener, View.OnClickListener {
 
+
+    private static final int MSG_LOAD_GROUP_MEMBER = 1;
+
     private Toolbar toolbar;
     private MainApp mainApp;
-    private Button btnClose, btnOk, btnAddPhone, btnContact, btnContactGroup;
+    private Button btnClose, btnOk, btnAddPhone, btnContact, btnContactGroup, btnShopGroup;
     private PhoneListAdapter adapter;
     private ListView customerListView;
     private ArrayList<CustomerModel> customerList;
@@ -46,6 +56,62 @@ public class AddPhoneNumberActivity extends AppCompatActivity implements NetDefi
     private PopupWindow pwContact;
     private int mWidthPixels, mHeightPixels;
 
+    private Context context;
+
+    private Handler mHandler = new Handler() {
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case MSG_LOAD_GROUP_MEMBER: {
+
+                    GroupTask task = new GroupTask(mainApp.getToken());
+
+                    task.mCallbacks = new AbServerTask.ServerCallbacks(){
+
+                        @Override
+                        public void onSuccess(AbServerTask sender, JSONObject ret) {
+
+                            try {
+                                int code = GroupTask.responseCode(ret);
+                                if (code == RESPONSE_OK) {
+
+                                    ArrayList<CustomerModel> customers = GroupTask.parseGroupMember(ret);
+
+                                    Log.i("AddPhoneNumberActivity", "customers phone : " + customers.get(0).getPhone());
+                                    for(CustomerModel model : customers)
+                                        adapter.addItem(model);
+                                    adapter.notifyDataSetChanged();
+
+                                }else{
+                                    Helper.sweetAlert(getString(R.string.alert_title),
+                                            GroupTask.responseMessage(ret),
+                                            SweetAlertDialog.ERROR_TYPE,
+                                            context);
+                                }
+
+                            } catch (JSONException e) {
+                                Helper.alert(e.getLocalizedMessage(), context);
+                                e.printStackTrace();
+                            }
+                        }
+
+                        @Override
+                        public void onFailed(AbServerTask sender, int code, String msg) {
+                            Helper.sweetAlert(getString(R.string.cannot_connect_server),
+                                    getString(R.string.alert_title),
+                                    SweetAlertDialog.ERROR_TYPE,
+                                    context);
+                        }
+
+                    };
+
+                    task.getGroupMember(msg.arg1);
+                    break;
+                }
+
+            }
+        }
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +121,7 @@ public class AddPhoneNumberActivity extends AppCompatActivity implements NetDefi
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        context = (Context) this;
         Intent i = getIntent();
         customerList = i.getParcelableArrayListExtra(KEY_CUSTOMER_LIST);
 
@@ -71,6 +138,7 @@ public class AddPhoneNumberActivity extends AppCompatActivity implements NetDefi
         btnAddPhone = (Button)findViewById(R.id.btnAddPhone);
         btnContact = (Button)findViewById(R.id.btnContact);
         btnContactGroup = (Button)findViewById(R.id.btnContactGroup);
+        btnShopGroup = (Button)findViewById(R.id.btnShopGroup);
         editPhone = (EditText)findViewById(R.id.editPhone);
 
         btnOk.setOnClickListener(this);
@@ -78,6 +146,7 @@ public class AddPhoneNumberActivity extends AppCompatActivity implements NetDefi
         btnAddPhone.setOnClickListener(this);
         btnContact.setOnClickListener(this);
         btnContactGroup.setOnClickListener(this);
+        btnShopGroup.setOnClickListener(this);
 
         // 화면 사이즈 계산
         WindowManager w = getWindowManager();
@@ -143,19 +212,14 @@ public class AddPhoneNumberActivity extends AppCompatActivity implements NetDefi
             mIntent.putExtra(KEY_REQUEST_CODE, REQUEST_CODE_CONTACTS_ACTIVITY);
             startActivityForResult(mIntent, REQUEST_CODE_CONTACTS_ACTIVITY);
         }else if (view.getId() == R.id.btnContactGroup) {
-/*
-            LayoutInflater inflater = (LayoutInflater) AddPhoneNumberActivity.this
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-            View layout = inflater.inflate(R.layout.popup_contact_group,
-                    (ViewGroup) findViewById(R.id.popup_layout));
-
-            pwContact = new PopupWindow(layout, mWidthPixels-500, mHeightPixels-1000, true);
-            pwContact.showAtLocation(layout, Gravity.CENTER, 0, 0);
-            */
             Intent mIntent = new Intent(AddPhoneNumberActivity.this, AddContactGroupActivity.class);
             mIntent.putExtra(KEY_REQUEST_CODE, REQUEST_CODE_CONTACTS_GROUP_ACTIVITY);
             startActivityForResult(mIntent, REQUEST_CODE_CONTACTS_GROUP_ACTIVITY);
+        }else if(view.getId() == R.id.btnShopGroup) {
+            Intent mIntent = new Intent(AddPhoneNumberActivity.this, AddContactGroupActivity.class);
+            mIntent.putExtra(KEY_REQUEST_CODE, REQUEST_CODE_SHOP_GROUP_ACTIVITY);
+            startActivityForResult(mIntent, REQUEST_CODE_SHOP_GROUP_ACTIVITY);
         }
     }
 
@@ -205,6 +269,26 @@ public class AddPhoneNumberActivity extends AppCompatActivity implements NetDefi
                             for (CustomerModel customer : contactGroup.getGroupMember()) {
                                 adapter.addItem(customer);
                             }
+                        }
+                    }
+
+                    adapter.notifyDataSetChanged();
+                    break;
+                }
+            }
+
+            case REQUEST_CODE_SHOP_GROUP_ACTIVITY: {
+
+                if(resultCode == RESULT_OK) {
+                    String TAG = "AddPhoneNumber";
+                    Log.i(TAG, "REQUEST_CODE_SHOP_GROUP_ACTIVITY, RESULT_OK");
+                    ArrayList<ContactGroupModel> contactGroupModels = data.getParcelableArrayListExtra(KEY_CUSTOMER_GROUP_LIST);
+                    Log.i(TAG, "contactGroupList count is " + contactGroupModels.size());
+                    for(ContactGroupModel contactGroup : contactGroupModels) {
+                        if(contactGroup.isSelected() == 1) {
+                            Message msg = mHandler.obtainMessage(MSG_LOAD_GROUP_MEMBER);
+                            msg.arg1 = contactGroup.getId();
+                            mHandler.sendMessage(msg);
                         }
                     }
 

@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Handler;
+import android.util.Log;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.design.widget.NavigationView;
@@ -136,7 +137,7 @@ public class MainActivity extends AppCompatActivity implements AbFragment.Callba
     }
 
     private void doAction(MenuItem menuItem) {
-
+        Log.i("adsf", "doAction");
         int action = menuItem.getItemId();
         switch (action){
 
@@ -152,13 +153,22 @@ public class MainActivity extends AppCompatActivity implements AbFragment.Callba
                 break;
             }
 
-            case R.id.item_sms_event: {
-                menuItem.setChecked(true);
-                setupFragment(action);
+            case R.id.item_auto_event: {
+                if (checkMMSEnv()) {
+                    Intent i = new Intent(this, AutoLottoEventViewActivity.class);
+                    i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    i.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+                    startActivity(i);
+                }
                 break;
             }
 
             case R.id.item_send_mms: {
+                if (mainApp.getShopInfo().getType().equals("LOTTO_ONLY")) {
+                    Helper.sweetAlert("해당 서비스는 이용하실 수 없습니다.", "알림", SweetAlertDialog.NORMAL_TYPE, this);
+                    break;
+                }
 
                 if (checkMMSEnv()) {
                     Intent i = new Intent(this, DirectMmsViewActivity.class);
@@ -186,6 +196,7 @@ public class MainActivity extends AppCompatActivity implements AbFragment.Callba
             }
 
             case R.id.item_logout: {
+                fragment.onDetach();
                 mainApp.logout();
                 Intent i = new Intent(this, LoginActivity.class);
                 startActivity(i);
@@ -247,7 +258,9 @@ public class MainActivity extends AppCompatActivity implements AbFragment.Callba
 
             case R.id.item_about:
 
-                fragment = AdminUrlFragment.newInstance();
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.beple.or.kr"));
+                startActivity(browserIntent);
+                //fragment = AdminUrlFragment.newInstance();
                 //fragment = ShopFragment.newInstance();
                 break;
 
@@ -255,7 +268,7 @@ public class MainActivity extends AppCompatActivity implements AbFragment.Callba
                 fragment = LottoEventFragment.newInstance();
                 break;
 
-            case R.id.item_sms_event:
+            case R.id.item_auto_event:
                 fragment = SmsEventFragment.newInstance();
                 break;
 
@@ -333,7 +346,7 @@ public class MainActivity extends AppCompatActivity implements AbFragment.Callba
 
     @Override
     public void onAction(AbFragment sender, int target) {
-
+        Log.i("asdfsad", "onAction, target : " + target);
         Menu menu = navigationView.getMenu();
         MenuItem menuItem = menu.findItem(target);
         doAction(menuItem);

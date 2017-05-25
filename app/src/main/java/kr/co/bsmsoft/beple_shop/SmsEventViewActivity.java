@@ -54,6 +54,16 @@ public class SmsEventViewActivity extends AppCompatActivity implements NetDefine
     private final static int MSG_SEND_MESSAGE = 2;
     private final static int MSG_UPDATE_RESULT = 3;
 
+    final Handler updateDialogMessageHandler = new Handler()
+    {
+        public void handleMessage(Message msg)
+        {
+        if(pDialog != null && pDialog.isShowing()) {
+            pDialog.setContentText(String.valueOf(msg.obj));
+        }
+        }
+    };
+
     private Handler mHandler = new Handler() {
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
@@ -373,6 +383,14 @@ public class SmsEventViewActivity extends AppCompatActivity implements NetDefine
             startActivityForResult(i, REQUEST_CODE_CUSTOMER_LIST_ACTIVITY);
         }
 
+    }
+
+    @Override
+    public void onProgress(String contentMessage) {
+        Message msg = updateDialogMessageHandler.obtainMessage();
+        msg.obj = contentMessage;
+
+        updateDialogMessageHandler.sendMessage(msg);
     }
 
     @Override

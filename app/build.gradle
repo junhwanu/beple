@@ -2,22 +2,22 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.3"
+    buildToolsVersion '25.0.2'
 
     defaultConfig {
         applicationId "kr.co.bsmsoft.beple_shop"
-        minSdkVersion 21
+        minSdkVersion 19
         targetSdkVersion 23
-        versionCode 14
-        versionName "1.8.5"
+        versionCode 21
+        versionName "1.9.2"
     }
 
     signingConfigs {
         debug {
-            storeFile file("C:/Users/Jinmo/StudioProjects/keystore/brady_debug_keystore")
+            storeFile file("C:/Users/junhw/AndroidStudioProjects/keystore/beple/brady_debug_keystore")
         }
         release {
-            storeFile file("C:/Users/Jinmo/StudioProjects/keystore/brady_keystore")
+            storeFile file("C:/Users/junhw/AndroidStudioProjects/keystore/beple/brady_keystore")
             storePassword "qwer1234"
             keyAlias "my city"
             keyPassword "qwer1234"

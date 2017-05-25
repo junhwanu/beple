@@ -52,4 +52,11 @@ public class UserTask extends AbServerTask implements NetDefine {
         get(ADMIN_URL, params);
     }
 
+    public void getAgentName(String agentName) {
+
+        RequestParams params = new RequestParams();
+
+        params.put(KEY_AGENT_NAME, agentName);
+        get(AGENT_URL, params);
+    }
 }

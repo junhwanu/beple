@@ -3,17 +3,22 @@
  */
 package kr.co.bsmsoft.beple_shop.fragment;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterViewFlipper;
 import android.widget.FrameLayout;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.MediaController;
@@ -27,18 +32,29 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.SimpleBitmapDisplayer;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
+import kr.co.bsmsoft.beple_shop.LoginActivity;
+import kr.co.bsmsoft.beple_shop.MainActivity;
 import kr.co.bsmsoft.beple_shop.MainApp;
 import kr.co.bsmsoft.beple_shop.R;
+import kr.co.bsmsoft.beple_shop.adapter.FlipperAdapter;
 import kr.co.bsmsoft.beple_shop.adapter.MainMenuGridViewAdapter;
 import kr.co.bsmsoft.beple_shop.common.CommonUtil;
+import kr.co.bsmsoft.beple_shop.common.Helper;
 import kr.co.bsmsoft.beple_shop.common.NetDefine;
 import kr.co.bsmsoft.beple_shop.globalVar;
 import kr.co.bsmsoft.beple_shop.model.MenuModel;
 import kr.co.bsmsoft.beple_shop.model.ShopModel;
+import kr.co.bsmsoft.beple_shop.net.AbServerTask;
+import kr.co.bsmsoft.beple_shop.net.LoginTask;
 import kr.co.bsmsoft.beple_shop.util.mVideoView;
 
 
@@ -56,7 +72,35 @@ public class MainFragment extends AbFragment implements NetDefine, AdapterView.O
     private VideoView videoMain;
     private TextView txtTitle, txtNotice, txtSmsPoint, txtLottoPoint;
     private View layoutNotice;
+    private updateShopInfoThread updateThread;
+    private ImageButton btnSimpleMMS, btnSimpleEvent, btnEvent, btnHomepage, btnShoppage;
+    private ArrayList<MenuModel> menuList;
+    private AdapterViewFlipper mainFlipper;
+    private List<Integer> imageId = new ArrayList<>();
 
+    private final static int MSG_GET_SHOP_INFO = 1;
+    private final static int MSG_UPDATE_SHOP_INFO = 2;
+
+    private Handler mHandler = new Handler() {
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+
+                case MSG_GET_SHOP_INFO: {
+                    getShopInfo();
+                    break;
+                }
+                case MSG_UPDATE_SHOP_INFO: {
+                    try {
+                        updateView();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                }
+            }
+        }
+    };
     public static MainFragment newInstance() {
 
         MainFragment fragment = new MainFragment();
@@ -80,9 +124,14 @@ public class MainFragment extends AbFragment implements NetDefine, AdapterView.O
                 .showImageOnFail(R.drawable.bg_default_photo)
                 .build();
 
-        imageShop = (ImageView)rootView.findViewById(R.id.imageShop);
-        videoMain = (VideoView)rootView.findViewById(R.id.videoMain);
-        videoLayout = (RelativeLayout)rootView.findViewById(R.id.videoLayout);
+        mainFlipper = (AdapterViewFlipper)rootView.findViewById(R.id.imageShop);
+        for(int i=1;i<=3;i++) {
+            imageId.add(getResources().getIdentifier("main_" + i, "drawable", getActivity().getPackageName()));
+        }
+        mainFlipper.setAdapter(new FlipperAdapter(getContext(), imageId));
+        //imageShop = (ImageView)rootView.findViewById(R.id.imageShop);
+        //videoMain = (VideoView)rootView.findViewById(R.id.videoMain);
+        //videoLayout = (RelativeLayout)rootView.findViewById(R.id.videoLayout);
         txtTitle = (TextView)rootView.findViewById(R.id.txtTitle);
         layoutNotice = rootView.findViewById(R.id.layout_notice);
         txtNotice = (TextView)rootView.findViewById(R.id.txtNotice);
@@ -91,15 +140,28 @@ public class MainFragment extends AbFragment implements NetDefine, AdapterView.O
 
         txtNotice.setSelected(true);
 
+        btnEvent = (ImageButton) rootView.findViewById(R.id.btn_event);
+        btnShoppage = (ImageButton) rootView.findViewById(R.id.btn_shop);
+        btnHomepage = (ImageButton) rootView.findViewById(R.id.btn_home);
+        btnSimpleEvent = (ImageButton) rootView.findViewById(R.id.btn_simple_event);
+        btnSimpleMMS = (ImageButton) rootView.findViewById(R.id.btn_simple_mms);
+        btnEvent.setOnClickListener(this);
+        btnShoppage.setOnClickListener(this);
+        btnHomepage.setOnClickListener(this);
+        btnSimpleEvent.setOnClickListener(this);
+        btnSimpleMMS.setOnClickListener(this);
         layoutNotice.setOnClickListener(this);
 
-        gridMenuView = (GridView)rootView.findViewById(R.id.gridMenuView);
+        //gridMenuView = (GridView)rootView.findViewById(R.id.gridMenuView);
 
         initMainMenu();
 
         updateView();
 
         setSingleLineMessage();
+
+        updateThread = new updateShopInfoThread();
+        updateThread.start();
 
         return rootView;
     }
@@ -115,6 +177,53 @@ public class MainFragment extends AbFragment implements NetDefine, AdapterView.O
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if(!mainFlipper.isFlipping()) mainFlipper.startFlipping();
+    }
+
+    private void initMainMenu() {
+        menuList = new ArrayList<MenuModel>();
+
+        MenuModel menu = new MenuModel();
+        menu.setId(R.id.item_lotto_event);
+        menu.setTitle(getString(R.string.item_lotto_event));
+        menu.setImageRes(R.drawable.btn_main_01);
+        menuList.add(menu);
+
+        menu = new MenuModel();
+        menu.setId(R.id.item_auto_event);
+        menu.setTitle(getString(R.string.item_auto_event));
+        menu.setImageRes(R.drawable.btn_main_02);
+        menuList.add(menu);
+
+        menu = new MenuModel();
+        menu.setId(R.id.item_send_mms);
+        menu.setTitle(getString(R.string.item_send_message));
+        menu.setImageRes(R.drawable.btn_main_03);
+        menuList.add(menu);
+
+        menu = new MenuModel();
+        menu.setId(R.id.item_image_manage);
+        menu.setImageRes(R.drawable.btn_main_04);
+        menu.setTitle(getString(R.string.item_image_manage));
+        menuList.add(menu);
+
+        menu = new MenuModel();
+        menu.setId(R.id.item_notices);
+        menu.setTitle(getString(R.string.item_notices));
+        menu.setImageRes(R.drawable.btn_main_05);
+        menuList.add(menu);
+
+        menu = new MenuModel();
+        menu.setId(R.id.item_about);
+        menu.setTitle(getString(R.string.item_about));
+        menu.setImageRes(R.drawable.btn_main_06);
+        menuList.add(menu);
+    }
+    /*
     private void initMainMenu() {
 
         ArrayList<MenuModel> menuList = new ArrayList<MenuModel>();
@@ -126,8 +235,8 @@ public class MainFragment extends AbFragment implements NetDefine, AdapterView.O
         menuList.add(menu);
 
         menu = new MenuModel();
-        menu.setId(R.id.item_sms_event);
-        menu.setTitle(getString(R.string.item_sms_event));
+        menu.setId(R.id.item_auto_event);
+        menu.setTitle(getString(R.string.item_auto_event));
         menu.setImageRes(R.drawable.btn_main_02);
         menuList.add(menu);
 
@@ -159,7 +268,7 @@ public class MainFragment extends AbFragment implements NetDefine, AdapterView.O
         gridMenuView.setAdapter(adapter);
         gridMenuView.setOnItemClickListener(this);
 
-    }
+    }*/
 
     private void updateView() {
 
@@ -192,7 +301,7 @@ public class MainFragment extends AbFragment implements NetDefine, AdapterView.O
 
         String shopImage = shop.getImage();
 
-
+        /*
         if (CommonUtil.isStringNullOrEmptyCheck(shopImage)) {
 
             String imageServerPath = String.format("%s/%s", SERVER_URL, shopImage);
@@ -204,6 +313,8 @@ public class MainFragment extends AbFragment implements NetDefine, AdapterView.O
         }
 
         imageShop.setVisibility(View.VISIBLE);
+        */
+        /*
         videoLayout.setVisibility(View.INVISIBLE);
         try {
             // Start the MediaController
@@ -232,6 +343,7 @@ public class MainFragment extends AbFragment implements NetDefine, AdapterView.O
                 Log.i(TAG, "videoMain start.");
             }
         });
+        */
     }
 
     public static long diffOfDate(String begin) throws Exception
@@ -259,9 +371,90 @@ public class MainFragment extends AbFragment implements NetDefine, AdapterView.O
 
     @Override
     public void onClick(View view) {
-
+        Log.i(TAG, "onClick");
         if (view.getId() == R.id.layout_notice) {
             mCallbacks.onAction(this, R.id.item_notices);
+        } else if (view.getId() == R.id.btn_simple_mms) {
+            mCallbacks.onAction(this, R.id.item_send_mms);
+        } else if (view.getId() == R.id.btn_event) {
+            mCallbacks.onAction(this, R.id.item_lotto_event);
+        } else if (view.getId() == R.id.btn_simple_event) {
+            mCallbacks.onAction(this, R.id.item_auto_event);
+        } else if (view.getId() == R.id.btn_home) {
+            mCallbacks.onAction(this, R.id.item_notices);
+        } else if (view.getId() == R.id.btn_shop) {
+            mCallbacks.onAction(this, R.id.item_about);
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+
+        if(updateThread != null && updateThread.isAlive()) {
+            updateThread.interrupt();
+        }
+    }
+
+    private void getShopInfo() {
+
+        LoginTask task = new LoginTask(mainApp.getToken());
+        task.mCallbacks = new AbServerTask.ServerCallbacks(){
+
+            @Override
+            public void onSuccess(AbServerTask sender, JSONObject ret) {
+
+                try {
+
+                    int code = LoginTask.responseCode(ret);
+                    if (code == RESPONSE_OK) {
+
+                        // 가맹점 정보 조회 성공
+                        ShopModel info = LoginTask.parseLogin(ret);
+                        mainApp.setShopInfo(info);
+
+                        mHandler.obtainMessage(MSG_UPDATE_SHOP_INFO).sendToTarget();
+                    }else{
+                        Helper.alert(LoginTask.responseMessage(ret), getActivity());
+                    }
+
+                } catch (JSONException e) {
+
+                    Helper.alert(e.getLocalizedMessage(), getActivity());
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailed(AbServerTask sender, int code, String msg) {
+                Helper.alert("서버에 접속할 수 없습니다. 네트워크 연결을 확인해 주세요.", getActivity());
+            }
+
+        };
+
+        try {
+            Log.i(TAG, "Shop Id : " + String.valueOf(mainApp.getShopInfo().getId()));
+            task.getShopInfo(mainApp.getShopInfo().getId());
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    class updateShopInfoThread extends Thread {
+        @Override
+        public void run() {
+            super.run();
+
+            while(true) {
+                try {
+                    Log.i(TAG, "request ShopInfo in updateShopInfoThread.");
+                    mHandler.obtainMessage(MSG_GET_SHOP_INFO).sendToTarget();
+                    Thread.sleep(5000);
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 }

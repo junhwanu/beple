@@ -1,20 +1,26 @@
 package kr.co.bsmsoft.beple_shop;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.NetworkRequest;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -27,13 +33,17 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.bitmap.GlideBitmapDrawable;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.load.resource.gif.GifDrawable;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -69,6 +79,7 @@ public class ImageSelectViewActivity extends AppCompatActivity implements NetDef
 
     private final static int MSG_LOAD_IMAGE_LIST = 1;
     private final static int MSG_CATEGORY_LIST = 2;
+    private final static int REQ_CODE_SELECT_IMAGE = 100;
 
     private Handler mHandler = new Handler() {
         public void handleMessage(Message msg) {
@@ -127,13 +138,19 @@ public class ImageSelectViewActivity extends AppCompatActivity implements NetDef
 
                                     categoryList = CategoryTask.parseCategoryList(ret);
                                     CategoryModel shopCategory = new CategoryModel();
-                                    shopCategory.setId(0);
+                                    shopCategory.setId(1);
                                     shopCategory.setCategoryName("가맹점 홍보이미지");
                                     categoryList.add(0, shopCategory);
-                                    selectedCategory = categoryList.get(0);
+                                    selectedCategory = categoryList.get(3);
+
+                                    CategoryModel galleryCategory = new CategoryModel();
+                                    galleryCategory.setId(0);
+                                    galleryCategory.setCategoryName("나의 갤러리");
+                                    categoryList.add(0, galleryCategory);
 
                                     obtainMessage(MSG_LOAD_IMAGE_LIST).sendToTarget();
 
+                                    selectCategory();
                                 }
 
                             } catch (JSONException e) {
@@ -164,6 +181,44 @@ public class ImageSelectViewActivity extends AppCompatActivity implements NetDef
 
         super.onActivityResult(requestCode, resultCode, data);
 
+        if(requestCode == REQ_CODE_SELECT_IMAGE)
+        {
+            if(resultCode== Activity.RESULT_OK)
+            {
+                try {
+                    Intent i = new Intent();
+                    i.putExtra(KEY_IMAGE_PATH, getPath(data.getData()));
+                    i.putExtra(KEY_SERVER_ADDR, "");
+                    i.putExtra(KEY_FILE_URL, "");
+                    setResult(RESULT_OK, i);
+                    finish();
+                } catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    /**
+     * 사진의 URI 경로를 받는 메소드
+     */
+    public String getPath(Uri uri) {
+        // uri가 null일경우 null반환
+        if( uri == null ) {
+            return null;
+        }
+        // 미디어스토어에서 유저가 선택한 사진의 URI를 받아온다.
+        String[] projection = { MediaStore.Images.Media.DATA };
+        Cursor cursor = managedQuery(uri, projection, null, null, null);
+        if( cursor != null ){
+            int column_index = cursor
+                    .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        }
+        // URI경로를 반환한다.
+        return uri.getPath();
     }
 
     @Override
@@ -368,10 +423,28 @@ public class ImageSelectViewActivity extends AppCompatActivity implements NetDef
                 try {
                     String imageServerPath = String.format("%s/%s", image.getServerAddress(), image.getFileUrl());
                     Log.i(getClass().getName(), "Download gifImage : " + imageServerPath);
-                    GifDrawable drawable = Glide.with(mContext).load(imageServerPath).asGif().diskCacheStrategy(DiskCacheStrategy.SOURCE).into(1, 1).get();
+                    byte data[];
+
+                    Log.i(getClass().getName(), "확장자 : " + imageServerPath.substring(imageServerPath.length() - 3).toUpperCase());
+                    if(imageServerPath.substring(imageServerPath.length() - 3).toUpperCase().equals("GIF")) {
+                        Log.i(getClass().getName(), "GIf");
+                        GifDrawable drawable = Glide.with(mContext).load(imageServerPath).asGif().diskCacheStrategy(DiskCacheStrategy.SOURCE).into(1, 1).get();
+                        data = drawable.getData();
+                    }
+                    else {
+                        Log.i(getClass().getName(), "not Gif");
+                        GlideDrawable drawable = Glide.with(mContext).load(imageServerPath).diskCacheStrategy(DiskCacheStrategy.SOURCE).into(1, 1).get();
+                        Bitmap bitmap = ((GlideBitmapDrawable)drawable).getBitmap();
+                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                        data = stream.toByteArray();
+                    }
                     OutputStream output = new FileOutputStream(outputFile);
 
-                    byte data[] = drawable.getData();
+                    //GifDrawable drawable = Glide.with(mContext).load(imageServerPath).asGif().diskCacheStrategy(DiskCacheStrategy.SOURCE).into(1, 1).get();
+                    //OutputStream output = new FileOutputStream(outputFile);
+
+                    //byte data[] = drawable.getData();
 
                     output.write(data);
 
@@ -442,10 +515,12 @@ public class ImageSelectViewActivity extends AppCompatActivity implements NetDef
 
                 if (selectedIndex < 0) {
                     return;
+                } else if (selectedIndex > 0) {
+                    selectedCategory = categoryList.get(selectedIndex);
+                    updateCategory();
+                } else {
+                    callGallery();
                 }
-
-                selectedCategory = categoryList.get(selectedIndex);
-                updateCategory();
 
             }
         });
@@ -462,4 +537,14 @@ public class ImageSelectViewActivity extends AppCompatActivity implements NetDef
         initDataSet();
     }
 
+    private void callGallery() {
+        Intent pictureActionIntent = null;
+
+        pictureActionIntent = new Intent(
+                Intent.ACTION_PICK,
+                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(
+                pictureActionIntent,
+                REQ_CODE_SELECT_IMAGE);
+    }
 }

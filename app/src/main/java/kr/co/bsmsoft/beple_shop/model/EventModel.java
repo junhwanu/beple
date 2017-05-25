@@ -19,6 +19,7 @@ public class EventModel {
     private String regDt;
     private String updDt;
     private String sendDt;
+    private String sortDt;
     private int cCount;
     private int times;
     private int numberOfLotto;
@@ -97,6 +98,14 @@ public class EventModel {
 
     public void setSendDt(String sendDt) {
         this.sendDt = sendDt;
+    }
+
+    public String getSortDt() {
+        return sortDt;
+    }
+
+    public void setSortDt(String sortDt) {
+        this.sortDt = sortDt;
     }
 
     public int getcCount() {

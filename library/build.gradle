@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.2'
+        classpath 'com.android.tools.build:gradle:2.2.3'
     }
 }
 
@@ -20,7 +20,7 @@ apply plugin: 'com.android.library'
 
 dependencies {
     compile 'com.google.code.gson:gson:2.3'
-    compile 'com.klinkerapps:logger:1.0.3-SNAPSHOT'
+    compile 'com.klinkerapps:logger:+'
     compile 'com.koushikdutta.ion:ion:1.1.7'
     compile 'com.squareup.okhttp:okhttp:2.5.0'
     compile 'com.squareup.okhttp:okhttp-urlconnection:2.5.0'
@@ -29,7 +29,7 @@ dependencies {
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.0"
+    buildToolsVersion '25.0.2'
 
     defaultConfig {
         minSdkVersion 14

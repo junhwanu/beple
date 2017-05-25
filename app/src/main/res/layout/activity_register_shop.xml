@@ -262,19 +262,38 @@
                 android:layout_marginTop="5dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="추천인 전화번호"/>
+                android:text="소속 지사"/>
 
-            <EditText
-                style="@style/form_edit"
-                android:id="@+id/editAgency"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:singleLine="true"
-                android:background="@drawable/text_form"
-                android:gravity="center"
-                android:maxLength="20"
-                android:inputType="phone"
-                android:ems="10" />
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <EditText
+                    style="@style/form_edit"
+                    android:id="@+id/editAgencyName"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:singleLine="true"
+                    android:background="@drawable/text_form"
+                    android:gravity="center"
+                    android:maxLength="20"
+                    android:ems="10" />
+
+                <Button
+                    android:layout_width="80dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="5dp"
+                    android:id="@+id/btnSearchAgency"
+                    android:background="@color/PrimaryColor"
+                    android:minWidth="0dp"
+                    android:minHeight="0dp"
+                    android:textColor="#ffffff"
+                    android:text="지사확인"/>
+
+            </LinearLayout>
 
         </LinearLayout>
 

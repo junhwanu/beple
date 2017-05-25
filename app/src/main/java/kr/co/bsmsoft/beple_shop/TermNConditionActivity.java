@@ -66,7 +66,10 @@ public class TermNConditionActivity extends AppCompatActivity implements NetDefi
 		if (v.getId() == R.id.btnOk) {
 
 			if (radioAgree.isChecked()) {
-				Intent i = new Intent(this, RegisterTypeActivity.class);
+				Intent i = new Intent(this, RegisterShopActivity.class);
+				i.putExtra(KEY_USER_TYPE, USER_TYPE_SHOP);
+
+				//Intent i = new Intent(this, RegisterTypeActivity.class);
 				startActivity(i);
 				finish();
 			}else{

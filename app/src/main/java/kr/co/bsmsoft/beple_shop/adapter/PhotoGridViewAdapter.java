@@ -100,9 +100,20 @@ public class PhotoGridViewAdapter extends ArrayAdapter<ImageModel> implements Ne
         }
 
         if (item.getFileUrl() != null) {
+            /*
             Glide
                     .with(context)
                     .load(item.getServerAddress() + "/" + item.getFileUrl())
+                    .centerCrop()
+                    .placeholder(R.drawable.bg_default_photo)
+                    .crossFade()
+                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                    .into(holder.imgPhoto);
+                    */
+
+            Glide
+                    .with(context)
+                    .load(item.getLocalPath())
                     .centerCrop()
                     .placeholder(R.drawable.bg_default_photo)
                     .crossFade()

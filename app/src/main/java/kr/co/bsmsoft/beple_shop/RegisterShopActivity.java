@@ -46,6 +46,7 @@ public class RegisterShopActivity extends AppCompatActivity implements View.OnCl
 
     private final static int MSG_REGISTER_USER = 1;
     private final static int MSG_GET_USER_ID = 2;
+    private final static int MSG_GET_AGENT_ID = 3;
 
     private EditText editShopName, editOwner, editUserId, editPasswd, editMobile, editAddress, editEmail, editConfirmPasswd, editPhone2, editPhone3, editAgency;
     private Indicator mIndicator;
@@ -54,6 +55,7 @@ public class RegisterShopActivity extends AppCompatActivity implements View.OnCl
     private Button btnPhone1;
     private String typeCode = "N";  // Y: 영리, N:비영리 (현재는 N: 가맹점, Y: 영업점)
     private boolean bCheckId = false;
+    private boolean bCheckAgent = false;
     private int userType = USER_TYPE_SHOP;
 
     private Handler mHandler = new Handler() {
@@ -168,6 +170,52 @@ public class RegisterShopActivity extends AppCompatActivity implements View.OnCl
 
                     break;
                 }
+                case MSG_GET_AGENT_ID: {
+
+                    UserTask task = new UserTask(mainApp.getToken());
+                    task.mCallbacks = new AbServerTask.ServerCallbacks(){
+
+                        @Override
+                        public void onSuccess(AbServerTask sender, JSONObject ret) {
+
+                            if (mIndicator.isShowing())
+                                mIndicator.hide();
+
+                            try {
+                                int code = UserTask.responseCode(ret);
+                                if (code == RESPONSE_OK) {
+                                    bCheckAgent = true;
+                                    Helper.alert("지사명이 확인되었습니다.", RegisterShopActivity.this);
+                                }else{
+                                    bCheckAgent = false;
+                                    Helper.alert(UserTask.responseMessage(ret), RegisterShopActivity.this);
+                                }
+
+                            } catch (JSONException e) {
+                                Helper.alert(e.getLocalizedMessage(), RegisterShopActivity.this);
+                                e.printStackTrace();
+                            }
+                        }
+
+                        @Override
+                        public void onFailed(AbServerTask sender, int code, String msg) {
+
+                            if (mIndicator.isShowing())
+                                mIndicator.hide();
+
+                            Helper.alert("서버에 접속할 수 없습니다. 네트워크 연결을 확인해 주세요.", RegisterShopActivity.this);
+                        }
+
+                    };
+
+                    if (!mIndicator.isShowing())
+                        mIndicator.show();
+
+                    String agentName = (String)msg.obj;
+                    task.getAgentName(agentName);
+
+                    break;
+                }
             }
         }
     };
@@ -191,11 +239,13 @@ public class RegisterShopActivity extends AppCompatActivity implements View.OnCl
         Button btnOK = (Button) findViewById(R.id.btnOK);
         Button btnCancel = (Button) findViewById(R.id.btnCancel);
         Button btnSearchId = (Button) findViewById(R.id.btnSearchId);
+        Button btnSearchAgent = (Button) findViewById(R.id.btnSearchAgency);
         btnPhone1 = (Button) findViewById(R.id.btnPhone1);
         btnOK.setOnClickListener(this);
         btnCancel.setOnClickListener(this);
         btnSearchId.setOnClickListener(this);
         btnPhone1.setOnClickListener(this);
+        btnSearchAgent.setOnClickListener(this);
 
         editShopName = (EditText) findViewById(R.id.editShopName); // 가맹점명 (가맹점 일경우만 사용)
         editOwner = (EditText) findViewById(R.id.editOwner);        // 이름
@@ -207,7 +257,7 @@ public class RegisterShopActivity extends AppCompatActivity implements View.OnCl
         editConfirmPasswd = (EditText) findViewById(R.id.editConfirmPasswd);
         editPhone2 = (EditText) findViewById(R.id.editPhone2);
         editPhone3 = (EditText) findViewById(R.id.editPhone3);
-        editAgency = (EditText) findViewById(R.id.editAgency);      //추천인
+        editAgency = (EditText) findViewById(R.id.editAgencyName);      //추천인
 
         /*
 
@@ -255,6 +305,16 @@ public class RegisterShopActivity extends AppCompatActivity implements View.OnCl
                 bCheckId = false;
             }
         });
+        editAgency.addTextChangedListener(new TextWatcher() {
+
+            public void afterTextChanged(Editable s) {}
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                bCheckAgent = false;
+            }
+        });
     }
 
 
@@ -299,6 +359,19 @@ public class RegisterShopActivity extends AppCompatActivity implements View.OnCl
             case R.id.btnPhone1:
                 selectPhoneNumber();
                 break;
+            case R.id.btnSearchAgency:
+                String agentId = editAgency.getText().toString();
+                if (agentId.length() < 1) {
+                    Toast toast = Toast.makeText(getApplicationContext(), "지사명을 입력해 주십시오.", Toast.LENGTH_LONG);
+                    toast.setGravity(Gravity.CENTER, 0, 0);
+                    toast.show();
+                }else{
+                    Message msg = new Message();
+                    msg.obj = agentId;
+                    msg.what = MSG_GET_AGENT_ID;
+                    mHandler.sendMessage(msg);
+                }
+                break;
             //case R.id.btnSelectPosition:
                 //selectUserPosition();
             //    break;
@@ -325,6 +398,13 @@ public class RegisterShopActivity extends AppCompatActivity implements View.OnCl
 
         if (!bCheckId) {
             Toast toast = Toast.makeText(getApplicationContext(), "아이디 중복확인을 해주시기 바랍니다.", Toast.LENGTH_LONG);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
+            return;
+        }
+
+        if (!bCheckAgent) {
+            Toast toast = Toast.makeText(getApplicationContext(), "소속 지사점명 확인을 해주시기 바랍니다.", Toast.LENGTH_LONG);
             toast.setGravity(Gravity.CENTER, 0, 0);
             toast.show();
             return;
@@ -389,6 +469,7 @@ public class RegisterShopActivity extends AppCompatActivity implements View.OnCl
             return;
         }
 
+        /*
         if (!CommonUtil.isStringNullOrEmptyCheck(editPhone2.getText().toString())) {
             Toast toast = Toast.makeText(getApplicationContext(), "전화번호를 입력해 주십시오.", Toast.LENGTH_LONG);
             toast.setGravity(Gravity.CENTER, 0, 0);
@@ -410,29 +491,15 @@ public class RegisterShopActivity extends AppCompatActivity implements View.OnCl
             toast.show();
             return;
         }
+        */
+        String email = editEmail.getText().toString();
 
-        if (!validateEmail(email)) {
+        if (CommonUtil.isStringNullOrEmptyCheck(email) && !validateEmail(email)) {
             Toast toast = Toast.makeText(getApplicationContext(), "올바른 이메일 형식이 아닙니다.", Toast.LENGTH_LONG);
             toast.setGravity(Gravity.CENTER, 0, 0);
             toast.show();
             return;
         }
-
-        String agencyPhone = editAgency.getText().toString();
-        if (!CommonUtil.isStringNullOrEmptyCheck(agencyPhone)) {
-            Toast toast = Toast.makeText(getApplicationContext(), "추천인 전화번호를 입력해 주십시오.", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.CENTER, 0, 0);
-            toast.show();
-            return;
-        }
-
-        if (!validateHandPhone(agencyPhone)) {
-            Toast toast = Toast.makeText(getApplicationContext(), "올바른 추천인 휴대폰 번호를 입력해 주세요.", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.CENTER, 0, 0);
-            toast.show();
-            return;
-        }
-
 
         String passwd = editPasswd.getText().toString();
         String passwdConfirm = editConfirmPasswd.getText().toString();
@@ -463,10 +530,16 @@ public class RegisterShopActivity extends AppCompatActivity implements View.OnCl
         params.put(KEY_ADDRESS, editAddress.getText().toString());
         params.put(KEY_EMAIL, editEmail.getText().toString());
 
-        params.put(KEY_PHONE1, phone1);
-        params.put(KEY_PHONE2, editPhone2.getText().toString());
-        params.put(KEY_PHONE3, editPhone3.getText().toString());
-        params.put(KEY_SALES_NAME, editAgency.getText().toString());
+        if (!CommonUtil.isStringNullOrEmptyCheck(editPhone2.getText().toString()) || !CommonUtil.isStringNullOrEmptyCheck(editPhone3.getText().toString())) {
+            params.put(KEY_PHONE1, "");
+            params.put(KEY_PHONE2, "");
+            params.put(KEY_PHONE3, "");
+        } else {
+            params.put(KEY_PHONE1, phone1);
+            params.put(KEY_PHONE2, editPhone2.getText().toString());
+            params.put(KEY_PHONE3, editPhone3.getText().toString());
+        }
+        params.put(KEY_AGENT_NAME, editAgency.getText().toString());
         params.put(KEY_TYPE_CODE, typeCode);
 
 
@@ -564,8 +637,8 @@ public class RegisterShopActivity extends AppCompatActivity implements View.OnCl
         protected String doInBackground(HashMap<String, String>... params) {
 
             postParams = params[0];
-            String content = executeClient(postParams);
-            //String content = "0";
+            //String content = executeClient(postParams);
+            String content = "0";
             return content;
         }
 

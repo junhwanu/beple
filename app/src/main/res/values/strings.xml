@@ -59,7 +59,7 @@
     <string name="item_main">초기화면</string>
     <string name="item_about">관리자 페이지</string>
     <string name="item_lotto_event">로또 발송</string>
-    <string name="item_sms_event">그룹문자발송</string>
+    <string name="item_auto_event">로또 간편 전송</string>
     <string name="item_send_message">간편 전송</string>
     <string name="item_image_manage">이미지 관리</string>
     <string name="item_notices">홈페이지</string>

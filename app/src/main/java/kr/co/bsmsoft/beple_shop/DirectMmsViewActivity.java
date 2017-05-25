@@ -89,6 +89,16 @@ public class DirectMmsViewActivity extends AppCompatActivity implements NetDefin
     private final static int MSG_SEND_MESSAGE = 2;
     private final static int MSG_UPDATE_MMS_COUNT = 3;
 
+    final Handler updateDialogMessageHandler = new Handler()
+    {
+        public void handleMessage(Message msg)
+        {
+            if(pDialog != null && pDialog.isShowing()) {
+                pDialog.setContentText(String.valueOf(msg.obj));
+            }
+        }
+    };
+
     private Handler mHandler = new Handler() {
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
@@ -104,10 +114,6 @@ public class DirectMmsViewActivity extends AppCompatActivity implements NetDefin
                     pDialog.setCancelable(false);
                     pDialog.show();
 
-                    Log.i(TAG,"phoneList size is " + phoneList.size());
-                    for(CustomerModel item : phoneList) {
-                        Log.i(TAG, "customer : " + item.getPhone());
-                    }
                     messageManager = new MessageManager(msgBody, phoneList, useName, images, DirectMmsViewActivity.this);
                     messageManager.mCallbacks = DirectMmsViewActivity.this;
                     messageManager.execute();
@@ -572,10 +578,12 @@ public class DirectMmsViewActivity extends AppCompatActivity implements NetDefin
                 }
             }
 
+            /*
             if (images == null || images.size() ==0) {
                 Helper.sweetAlert("홍보 이미지가 없습니다. 이미지를 선택해 주세요.", "알림", SweetAlertDialog.WARNING_TYPE, this);
                 return;
             }
+            */
 
             new SweetAlertDialog(DirectMmsViewActivity.this, SweetAlertDialog.NORMAL_TYPE)
                     .setTitleText("알림")
@@ -606,6 +614,14 @@ public class DirectMmsViewActivity extends AppCompatActivity implements NetDefin
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public void onProgress(String contentMessage) {
+        Message msg = updateDialogMessageHandler.obtainMessage();
+        msg.obj = contentMessage;
+
+        updateDialogMessageHandler.sendMessage(msg);
     }
 
     @Override
