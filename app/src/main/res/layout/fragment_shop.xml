@@ -171,7 +171,7 @@
                         android:drawableLeft="@drawable/ic_point_black"
                         android:textSize="16dp"
                         android:drawablePadding="5dp"
-                        android:text="로또 포인트"/>
+                        android:text="경품권"/>
 
                     <TextView
                         android:id="@+id/txtLottoPoint"

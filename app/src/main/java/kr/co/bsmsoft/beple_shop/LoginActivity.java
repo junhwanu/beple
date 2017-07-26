@@ -1,10 +1,17 @@
 package kr.co.bsmsoft.beple_shop;
 
+import android.*;
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
+import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -26,7 +33,8 @@ import kr.co.bsmsoft.beple_shop.common.Setting;
 import kr.co.bsmsoft.beple_shop.model.ShopModel;
 import kr.co.bsmsoft.beple_shop.net.AbServerTask;
 import kr.co.bsmsoft.beple_shop.net.LoginTask;
-
+import com.crashlytics.android.Crashlytics;
+import io.fabric.sdk.android.Fabric;
 
 public class LoginActivity extends AppCompatActivity implements NetDefine, OnClickListener {
 
@@ -40,6 +48,8 @@ public class LoginActivity extends AppCompatActivity implements NetDefine, OnCli
 
     private final static int MSG_LOGIN = 1;
     private final static int MSG_LAUNCH_MAIN = 2;
+
+    private final static int PERMISSIONS_REQUEST_READ_PHONE_STATE = 100;
 
     private Handler mHandler = new Handler() {
         public void handleMessage(Message msg) {
@@ -71,6 +81,7 @@ public class LoginActivity extends AppCompatActivity implements NetDefine, OnCli
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_login);
 
         mSetting = new Setting(this);
@@ -104,6 +115,32 @@ public class LoginActivity extends AppCompatActivity implements NetDefine, OnCli
             mHandler.obtainMessage(MSG_LOGIN).sendToTarget();
         }
 
+    }
+
+    public String getPhoneNumber() {
+        TelephonyManager telephony = (TelephonyManager) getApplicationContext().getSystemService(getApplicationContext().TELEPHONY_SERVICE);
+        String phoneNumber ="";
+
+        try {
+            if (telephony.getLine1Number() != null) {
+                phoneNumber = telephony.getLine1Number();
+            }
+            else {
+                if (telephony.getSimSerialNumber() != null) {
+                    phoneNumber = telephony.getSimSerialNumber();
+                }
+            }
+            if(phoneNumber.equals("")){
+                phoneNumber = telephony.getSubscriberId();
+                Log.i(getClass().getName(), "telephony.getSubscriberId() is " + phoneNumber);
+            }
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+            Helper.alert("[앱-누리통-권한] 설정에서 권한을 설정해주세요.", LoginActivity.this);
+        }
+
+        return phoneNumber;
     }
 
     private void doLogin(final String userName, final String password) {
@@ -149,6 +186,9 @@ public class LoginActivity extends AppCompatActivity implements NetDefine, OnCli
                     }else if (code == ERROR_NOT_EXIST_USERID) {
                         Helper.alert(LoginTask.responseMessage(ret), LoginActivity.this);
 
+                    }else if (code == ERROR_NOT_REGISTERED_PHONE) {
+                        Helper.alert(LoginTask.responseMessage(ret), LoginActivity.this);
+
                     }else{
                         Helper.alert(LoginTask.responseMessage(ret), LoginActivity.this);
                     }
@@ -174,7 +214,28 @@ public class LoginActivity extends AppCompatActivity implements NetDefine, OnCli
         if (!mIndicator.isShowing())
             mIndicator.show();
 
-        task.doLogin (userName, password, LoginActivity.this);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.READ_PHONE_STATE}, PERMISSIONS_REQUEST_READ_PHONE_STATE);
+            //After this point you wait for callback in onRequestPermissionsResult(int, String[], int[]) overriden method
+        } else {
+            String phoneNumber = getPhoneNumber();
+            Log.i(getClass().getName(), "Phone Number is " + phoneNumber);
+            task.doLogin(userName, password, phoneNumber, LoginActivity.this);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                           int[] grantResults) {
+        if (requestCode == PERMISSIONS_REQUEST_READ_PHONE_STATE) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission is granted
+                mHandler.obtainMessage(MSG_LOGIN).sendToTarget();
+            } else {
+                Helper.sweetAlert("[어플리케이션-누리통-권한]에서 앱 권한 설정을 해주세요.", getString(R.string.alert_title), SweetAlertDialog.WARNING_TYPE, LoginActivity.this);
+            }
+        }
     }
 
 

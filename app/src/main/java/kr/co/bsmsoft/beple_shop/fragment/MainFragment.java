@@ -3,10 +3,14 @@
  */
 package kr.co.bsmsoft.beple_shop.fragment;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -39,6 +43,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import kr.co.bsmsoft.beple_shop.LoginActivity;
@@ -50,6 +55,7 @@ import kr.co.bsmsoft.beple_shop.adapter.MainMenuGridViewAdapter;
 import kr.co.bsmsoft.beple_shop.common.CommonUtil;
 import kr.co.bsmsoft.beple_shop.common.Helper;
 import kr.co.bsmsoft.beple_shop.common.NetDefine;
+import kr.co.bsmsoft.beple_shop.common.Setting;
 import kr.co.bsmsoft.beple_shop.globalVar;
 import kr.co.bsmsoft.beple_shop.model.MenuModel;
 import kr.co.bsmsoft.beple_shop.model.ShopModel;
@@ -66,11 +72,12 @@ public class MainFragment extends AbFragment implements NetDefine, AdapterView.O
     private MainMenuGridViewAdapter adapter;
     private GridView gridMenuView;
     private MainApp mainApp;
+    private Setting mSetting;
     private DisplayImageOptions options;
     private ImageView imageShop;
     private RelativeLayout videoLayout;
     private VideoView videoMain;
-    private TextView txtTitle, txtNotice, txtSmsPoint, txtLottoPoint;
+    private TextView txtTitle, txtNotice, txtSmsPoint, txtLottoPoint, txtSmsSentCount;
     private View layoutNotice;
     private updateShopInfoThread updateThread;
     private ImageButton btnSimpleMMS, btnSimpleEvent, btnEvent, btnHomepage, btnShoppage;
@@ -114,6 +121,7 @@ public class MainFragment extends AbFragment implements NetDefine, AdapterView.O
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
         mainApp = globalVar.getInstance();
+        mSetting = new Setting(getActivity());
 
         options = new DisplayImageOptions.Builder()
                 .cacheInMemory(true)
@@ -137,6 +145,7 @@ public class MainFragment extends AbFragment implements NetDefine, AdapterView.O
         txtNotice = (TextView)rootView.findViewById(R.id.txtNotice);
         txtSmsPoint = (TextView)rootView.findViewById(R.id.txtSmsPoint);
         txtLottoPoint = (TextView)rootView.findViewById(R.id.txtLottoPoint);
+        txtSmsSentCount = (TextView)rootView.findViewById(R.id.txtSmsSentCount);
 
         txtNotice.setSelected(true);
 
@@ -270,36 +279,81 @@ public class MainFragment extends AbFragment implements NetDefine, AdapterView.O
 
     }*/
 
+    private int getSmsSentCount() {
+
+        Cursor cursor = getActivity().getContentResolver().query(Uri.parse("content://sms/sent"), null, null, null, null);
+        int count = 0;
+
+        if (cursor.moveToFirst()) { // must check the result to prevent exception
+            do {
+                String msgData = "";
+                String strSentDt = "";
+                String strTodayDt = "";
+                for(int idx=0;idx<cursor.getColumnCount();idx++)
+                {
+                    msgData += " " + cursor.getColumnName(idx) + ":" + cursor.getString(idx);
+
+                    try {
+                        if (cursor.getColumnName(idx).equals("date")) {
+                            long sentDt = cursor.getLong(idx);
+                            long todayDt = (new Date()).getTime();
+
+                            strSentDt = new SimpleDateFormat("yyyy/MM/dd").format(new Date(sentDt));
+                            strTodayDt = new SimpleDateFormat("yyyy/MM/dd").format(new Date(todayDt));
+
+                            Log.i(getClass().getName(), "strSentDt : " + strSentDt + " / strTodayDt : " + strTodayDt + "strSentDt.compareTo(strTodayDt) : " + String.valueOf(strSentDt.compareTo(strTodayDt)));
+                            break;
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                if (strSentDt.compareTo(strTodayDt) != 0) break;
+                count++;
+                // use msgData
+                //Log.i(getClass().getName(), "message Data: " + msgData);
+            } while (cursor.moveToNext());
+        } else {
+            // empty box, no SMS
+        }
+
+        return count;
+    }
+
     private void updateView() {
 
         ShopModel shop = mainApp.getShopInfo();
-        txtTitle.setText(shop.getShopName());
-        txtLottoPoint.setText("로또 포인트 : " + mainApp.getShopInfo().getPointLotto());
 
-        String expiredDt = mainApp.getShopInfo().getExpiredDt();
-        if (expiredDt.length() == 0) {
-            txtSmsPoint.setText("만료일 : 없음");
-        }else{
+        try {
+            long todayDt = (new Date()).getTime();
+            String strTodayDt = new SimpleDateFormat("yyyy/MM/dd").format(new Date(todayDt));
+            txtTitle.setText(shop.getShopName());
+            txtLottoPoint.setText(mainApp.getShopInfo().getPointLotto() + "개");
+            txtSmsSentCount.setText((getSmsSentCount() + mSetting.getInt(KEY_SENT_COUNT + "_" + strTodayDt, 0)) + "개");
 
-            try {
-                long remains =  diffOfDate(expiredDt);
-                if (remains > 0) {
-                    txtSmsPoint.setText("만료일 : " + remains + "일 남음");
-                }else if (remains == 0) {
-                    txtSmsPoint.setText("만료일 : 오늘 만료");
-                }else{
-                    txtSmsPoint.setText("만료일 : " + remains + "일");
+            String expiredDt = mainApp.getShopInfo().getExpiredDt();
+            if (expiredDt.length() == 0) {
+                txtSmsPoint.setText("없음");
+            } else {
+
+                try {
+                    long remains = diffOfDate(expiredDt);
+                    if (remains > 0) {
+                        txtSmsPoint.setText(remains + "일");
+                    } else if (remains == 0) {
+                        txtSmsPoint.setText("오늘 만료");
+                    } else {
+                        txtSmsPoint.setText(remains + "일");
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-
-            } catch (Exception e) {
-                e.printStackTrace();
             }
+            //txtLottoPoint.setText("SMS 포인트 : " + mainApp.getShopInfo().getPointLotto());
 
-
-        }
-        //txtLottoPoint.setText("SMS 포인트 : " + mainApp.getShopInfo().getPointLotto());
-
-        String shopImage = shop.getImage();
+            String shopImage = shop.getImage();
 
         /*
         if (CommonUtil.isStringNullOrEmptyCheck(shopImage)) {
@@ -344,6 +398,9 @@ public class MainFragment extends AbFragment implements NetDefine, AdapterView.O
             }
         });
         */
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static long diffOfDate(String begin) throws Exception

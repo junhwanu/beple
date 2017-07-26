@@ -17,6 +17,7 @@ public interface NetDefine {
     public final static String KEY_SYSTEM_ACTION = "system_action";
     public final static String KEY_USER_NAME = "user_name";
     public final static String KEY_USER_PASSWORD = "user_pwd";
+    public final static String KEY_USER_PHONE = "user_phone";
     public final static String KEY_LOGIN_INFO = "login_info";
     public final static String KEY_MARKET_URL = "market_url";
     public final static String KEY_ITEM_ID = "item_id";
@@ -47,6 +48,7 @@ public interface NetDefine {
     public final static String KEY_GROUP_LIST = "group_list";
     public final static String KEY_CUSTOMER_LIST_SELECTED = "customer_list_selected";
     public final static String KEY_CUSTOMER_GROUP_LIST = "customer_group_list";
+    public final static String KEY_SENT_COUNT = "sent_count";
 
     public final static String KEY_EVENT = "event";
     public final static String KEY_GROUP = "group";
@@ -79,6 +81,7 @@ public interface NetDefine {
     public final static String KEY_DEVICE_KEY = "device_key";
     public final static String KEY_ACCESS_TOKEN = "access_token";
     public final static String KEY_PHONE = "phone";
+    public final static String KEY_PHONE_LIST = "phone_list";
     public final static String KEY_URL = "url";
     public final static String KEY_ALLOW_PUSH = "allow_push";
     public final static String KEY_PUSH_ID = "push_id";
@@ -142,11 +145,14 @@ public interface NetDefine {
     public final static String ADD_GROUP_URL = "/api/group_add";
     public final static String CREATE_EVENT_URL = "/api/event_create";
     public final static String PUBLISH_URL = "/api/publish/point";
+    public final static String CREATE_MMS_HISTORY_URL = "/api/history/create_mms";
+    public final static String UPDATE_MMS_HISTORY_URL = "/api/history/update_mms";
 
     public final static int RESPONSE_OK = 0;
     public final static int ERROR_INVALID_LOGIN_INFO = -103;
     public final static int ERROR_EXIST_USERID = -104;
     public final static int ERROR_NOT_EXIST_USERID = -106;
+    public final static int ERROR_NOT_REGISTERED_PHONE = -120;
 
     public final static int REQUEST_CODE_IMAGE_SELECT_ACTIVITY = 1000;
     public final static int REQUEST_CODE_CUSTOMER_LIST_ACTIVITY = 1001;
@@ -154,6 +160,7 @@ public interface NetDefine {
     public final static int REQUEST_CODE_CONTACTS_ACTIVITY = 1003;
     public final static int REQUEST_CODE_CONTACTS_GROUP_ACTIVITY = 1004;
     public final static int REQUEST_CODE_SHOP_GROUP_ACTIVITY = 1005;
+    public final static int REQUEST_CODE_CONTACTS = 1006;
 
     public static final int USER_TYPE_SHOP = 1;        // 가맹점
     public static final int USER_TYPE_AGENCY = 2;      // 영업점

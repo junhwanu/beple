@@ -54,11 +54,15 @@ import kr.co.bsmsoft.beple_shop.model.EventModel;
 import kr.co.bsmsoft.beple_shop.model.GroupModel;
 import kr.co.bsmsoft.beple_shop.model.ImageModel;
 import kr.co.bsmsoft.beple_shop.model.LottoModel;
+import kr.co.bsmsoft.beple_shop.model.MmsModel;
 import kr.co.bsmsoft.beple_shop.net.AbServerTask;
 import kr.co.bsmsoft.beple_shop.net.CustomerTask;
 import kr.co.bsmsoft.beple_shop.net.EventTask;
 import kr.co.bsmsoft.beple_shop.net.GroupTask;
+import kr.co.bsmsoft.beple_shop.net.HistoryTask;
 import kr.co.bsmsoft.beple_shop.net.MmsTask;
+import com.crashlytics.android.Crashlytics;
+import io.fabric.sdk.android.Fabric;
 
 public class AutoLottoEventViewActivity extends AppCompatActivity implements NetDefine, AdapterView.OnItemClickListener, View.OnClickListener, MmsManager.Callbacks {
 
@@ -85,7 +89,8 @@ public class AutoLottoEventViewActivity extends AppCompatActivity implements Net
     private ArrayList<CustomerModel> phoneList = new ArrayList<CustomerModel>();
     private ArrayList<Integer> customerIds = new ArrayList<>();
     private GroupModel group = new GroupModel();
-    EventModel event = new EventModel();
+    private EventModel event = new EventModel();
+    private int mms_group_id = 0;
 
     private ConnectivityManager mConnMgr;
     private PowerManager.WakeLock mWakeLock;
@@ -112,6 +117,8 @@ public class AutoLottoEventViewActivity extends AppCompatActivity implements Net
     private final static int MSG_CREATE_EVENT = 8;
     private final static int MSG_PUBLISH_LOTTO = 9;
     private final static int MSG_LOAD_EVENT = 10;
+    private final static int MSG_UPDATE_MMS_STATE = 11;
+    private final static int MSG_CREATE_MESSAGE_GROUP = 12;
 
     final Handler updateDialogMessageHandler = new Handler()
     {
@@ -127,6 +134,104 @@ public class AutoLottoEventViewActivity extends AppCompatActivity implements Net
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what) {
+                case MSG_UPDATE_MMS_STATE: {
+
+                    HistoryTask task = new HistoryTask(mainApp.getToken());
+                    task.mCallbacks = new AbServerTask.ServerCallbacks(){
+
+                        @Override
+                        public void onSuccess(AbServerTask sender, JSONObject ret) {
+
+                            try {
+                                int code = HistoryTask.responseCode(ret);
+                                if (code == RESPONSE_OK) {
+                                }else{
+
+                                    Helper.sweetAlert(getString(R.string.alert_title),
+                                            HistoryTask.responseMessage(ret),
+                                            SweetAlertDialog.ERROR_TYPE,
+                                            AutoLottoEventViewActivity.this);
+                                }
+
+                            } catch (JSONException e) {
+                                Helper.alert(e.getLocalizedMessage(), AutoLottoEventViewActivity.this);
+                                e.printStackTrace();
+                            }
+                        }
+
+                        @Override
+                        public void onFailed(AbServerTask sender, int code, String msg) {
+
+                            Helper.sweetAlert(getString(R.string.cannot_connect_server),
+                                    getString(R.string.alert_title),
+                                    SweetAlertDialog.ERROR_TYPE,
+                                    AutoLottoEventViewActivity.this);
+
+                        }
+                    };
+                    task.updateMmsHistory(mms_group_id, msg.obj.toString());
+
+                    break;
+                }
+                case MSG_CREATE_MESSAGE_GROUP: {
+
+                    HistoryTask task = new HistoryTask(mainApp.getToken());
+                    task.mCallbacks = new AbServerTask.ServerCallbacks(){
+
+                        @Override
+                        public void onSuccess(AbServerTask sender, JSONObject ret) {
+
+                            try {
+                                int code = HistoryTask.responseCode(ret);
+                                if (code == RESPONSE_OK) {
+                                    mms_group_id = HistoryTask.getGroupId(ret);
+                                    mHandler.obtainMessage(MSG_SEND_MESSAGE).sendToTarget();
+                                }else{
+
+                                    Helper.sweetAlert(getString(R.string.alert_title),
+                                            HistoryTask.responseMessage(ret),
+                                            SweetAlertDialog.ERROR_TYPE,
+                                            AutoLottoEventViewActivity.this);
+                                }
+
+                            } catch (JSONException e) {
+                                Helper.alert(e.getLocalizedMessage(), AutoLottoEventViewActivity.this);
+                                e.printStackTrace();
+                            }
+                        }
+
+                        @Override
+                        public void onFailed(AbServerTask sender, int code, String msg) {
+
+                            Helper.sweetAlert(getString(R.string.cannot_connect_server),
+                                    getString(R.string.alert_title),
+                                    SweetAlertDialog.ERROR_TYPE,
+                                    AutoLottoEventViewActivity.this);
+
+                        }
+                    };
+                    MmsModel model = new MmsModel();
+                    model.setShopId(mainApp.getShopInfo().getId());
+                    if(adapter.getCount() > 0) {
+                        model.setImage_url(adapter.getItem(0).getServerAddress() + "/" + adapter.getItem(0).getFileUrl());
+                    } else {
+                        model.setImage_url("");
+                    }
+                    model.setType("EVENT");
+                    String message = msgBody;
+                    if(useSign) {
+                        message = message + "\n" + mainApp.getShopInfo().getSign();
+                    }
+                    model.setMessage(message);
+                    ArrayList<String> _phoneList = new ArrayList<>();
+                    for(int i=0;i<phoneList.size();i++) {
+                        _phoneList.add(phoneList.get(i).getPhone());
+                    }
+                    model.setPhoneList(_phoneList);
+
+                    task.createMmsHistory(model);
+                    break;
+                }
 
                 case MSG_SEND_MESSAGE: {
 
@@ -446,7 +551,7 @@ public class AutoLottoEventViewActivity extends AppCompatActivity implements Net
                                     event  = EventTask.parseEventDetail(ret);
 
                                     if (event != null) {
-                                        mHandler.obtainMessage(MSG_SEND_MESSAGE).sendToTarget();
+                                        mHandler.obtainMessage(MSG_CREATE_MESSAGE_GROUP).sendToTarget();
                                     }else{
                                         Helper.finishAlert("이벤트가 존재하지 않습니다.", AutoLottoEventViewActivity.this);
                                     }
@@ -521,6 +626,7 @@ public class AutoLottoEventViewActivity extends AppCompatActivity implements Net
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_auto_lotto_event_view);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -1001,6 +1107,19 @@ public class AutoLottoEventViewActivity extends AppCompatActivity implements Net
         msg.obj = contentMessage;
 
         updateDialogMessageHandler.sendMessage(msg);
+    }
+
+    @Override
+    public void onUpdate(String phone) {
+        Message msg = mHandler.obtainMessage(MSG_UPDATE_MMS_STATE);
+        msg.obj = phone;
+
+        long todayDt = (new Date()).getTime();
+        String strTodayDt = new SimpleDateFormat("yyyy/MM/dd").format(new Date(todayDt));
+        int sentCount = mSetting.getInt(KEY_SENT_COUNT + "_" + strTodayDt, 0);
+        mSetting.input(KEY_SENT_COUNT + "_" + strTodayDt, sentCount + 1);
+
+        mHandler.sendMessage(msg);
     }
 
     @Override

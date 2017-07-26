@@ -1,5 +1,6 @@
 package kr.co.bsmsoft.beple_shop;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -45,6 +46,8 @@ import kr.co.bsmsoft.beple_shop.net.GroupTask;
 import kr.co.bsmsoft.beple_shop.util.SoundSearcher;
 import kr.co.bsmsoft.beple_shop.model.ContactGroupModel;
 import kr.co.bsmsoft.beple_shop.model.CustomerModel;
+import com.crashlytics.android.Crashlytics;
+import io.fabric.sdk.android.Fabric;
 
 public class AddContactGroupActivity extends AppCompatActivity implements NetDefine, View.OnClickListener {
 
@@ -66,6 +69,10 @@ public class AddContactGroupActivity extends AppCompatActivity implements NetDef
     SweetAlertDialog pDialog;
     private MainApp mainApp;
     private Context context;
+    private static final String[] PROJECTION = new String[] {
+            ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
+            ContactsContract.CommonDataKinds.Phone.NUMBER,
+    };
 
     private Handler mHandler = new Handler() {
         public void handleMessage(Message msg) {
@@ -192,6 +199,7 @@ public class AddContactGroupActivity extends AppCompatActivity implements NetDef
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_add_contact_group);
 
         mainApp = globalVar.getInstance();
@@ -383,6 +391,23 @@ public class AddContactGroupActivity extends AppCompatActivity implements NetDef
     }
 
     public void getContactGroupList() {
+        String[] projections = { ContactsContract.Groups._ID, ContactsContract.Groups.TITLE, ContactsContract.Groups.SUMMARY_COUNT };
+        Cursor cursor = getContentResolver().query(ContactsContract.Groups.CONTENT_SUMMARY_URI, projections, null, null, null);
+
+        while (cursor.moveToNext()) {
+            String group_id = cursor.getString(cursor.getColumnIndex(ContactsContract.Groups._ID));
+            String group_title = cursor.getString(cursor.getColumnIndex(ContactsContract.Groups.TITLE));
+            int group_member_count = cursor.getInt(cursor.getColumnIndex(ContactsContract.Groups.SUMMARY_COUNT));
+
+            if(group_member_count > 0) {
+                ContactGroupModel contactGroup = new ContactGroupModel();
+                contactGroup.setGroupName(group_title);
+                contactGroup.setGroupMember( getContactList(group_id) );
+
+                contactGroupList.add(contactGroup);
+            }
+        }
+        /*
         Uri contactUri = ContactsContract.Groups.CONTENT_SUMMARY_URI;
         Cursor cursor = getContentResolver().query(contactUri, new String[] { ContactsContract.Groups._ID, ContactsContract.Groups.TITLE }, null, null, null);
 
@@ -402,7 +427,8 @@ public class AddContactGroupActivity extends AppCompatActivity implements NetDef
                 ContactGroupModel contactGroup = new ContactGroupModel();
                 contactGroup.setGroupId(group_id);
                 contactGroup.setGroupName(group_title);
-                contactGroup.setGroupMember( getContactList(group_id) );
+                //contactGroup.setGroupMember( getContactList(group_id) );
+
                 contactGroupList.add(contactGroup);
 
                 Log.i(TAG, "getContactGroupList() : group_id[" + group_id + "]");
@@ -410,11 +436,74 @@ public class AddContactGroupActivity extends AppCompatActivity implements NetDef
                 Log.i(TAG, "getContactGroupList() : count[" + count + "]");
             }
         }
+        */
     }
 
     public ArrayList<CustomerModel> getContactList(String groupID) {
-
         ArrayList<CustomerModel> contactList = new ArrayList<CustomerModel>();
+
+        if(groupID == null) {
+            ContentResolver cr = getContentResolver();
+            Cursor cursor = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, PROJECTION, null, null, null);
+            if (cursor != null) {
+                try {
+                    while (cursor.moveToNext()) {
+                        CustomerModel data = new CustomerModel();
+                        data.setCustomerName(cursor
+                                .getString(cursor
+                                        .getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)));
+
+                        data.setPhone(cursor
+                                .getString(cursor
+                                        .getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
+                        contactList.add(data);
+                    }
+                } finally {
+                    cursor.close();
+                }
+            }
+        } else {
+            String[] projection = new String[] {
+                    ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
+                    ContactsContract.CommonDataKinds.GroupMembership.CONTACT_ID };
+            Cursor cursor = getContentResolver().query(
+                    ContactsContract.Data.CONTENT_URI,
+                    projection,
+                    ContactsContract.CommonDataKinds.GroupMembership.GROUP_ROW_ID
+                            + "=" + groupID, null, null);
+
+            try {
+                while (cursor.moveToNext()) {
+                    CustomerModel data = new CustomerModel();
+                    data.setCustomerName(cursor
+                            .getString(cursor
+                                    .getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)));
+
+                    String[] projection_contact = {ContactsContract.CommonDataKinds.Phone.NUMBER};
+                    String id = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.GroupMembership.CONTACT_ID));
+                    Cursor _cursor = getContentResolver().query(
+                            ContactsContract.CommonDataKinds.Phone.CONTENT_URI, projection_contact,
+                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
+                            new String[] { id }, null);
+
+                    while(_cursor.moveToNext()) {
+                        data.setPhone(_cursor
+                                .getString(_cursor
+                                        .getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
+                        break;
+                    }
+                    _cursor.close();
+
+                    if(data.getPhone() != null)
+                        contactList.add(data);
+
+                    Log.i(TAG, "contactList Add : " + data.getCustomerName() + " / " + data.getPhone());
+                }
+            } finally {
+                cursor.close();
+            }
+        }
+        /*
         Uri groupURI = ContactsContract.Data.CONTENT_URI;
         String[] projection = new String[] {
                 ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
@@ -455,6 +544,7 @@ public class AddContactGroupActivity extends AppCompatActivity implements NetDef
                 pCur.close();
             }
         } else {
+            /*
             c = getContentResolver().query(ContactsContract.Contacts.CONTENT_URI,
                     null, null, null, null);
 
@@ -483,9 +573,11 @@ public class AddContactGroupActivity extends AppCompatActivity implements NetDef
                 }
                 pCur.close();
             }
+
         }
 
         c.close();
+        */
         return contactList;
     }
 

@@ -9,7 +9,8 @@ import android.view.View;
 import android.widget.Button;
 
 import kr.co.bsmsoft.beple_shop.common.NetDefine;
-
+import com.crashlytics.android.Crashlytics;
+import io.fabric.sdk.android.Fabric;
 
 public class RegisterTypeActivity extends AppCompatActivity implements NetDefine, View.OnClickListener {
 
@@ -19,6 +20,7 @@ public class RegisterTypeActivity extends AppCompatActivity implements NetDefine
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Fabric.with(this, new Crashlytics());
 		setContentView(R.layout.activity_register_type);
 
 		toolbar = (Toolbar) findViewById(R.id.toolbar);

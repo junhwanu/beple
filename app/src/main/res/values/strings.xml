@@ -1,6 +1,6 @@
 <resources>
 
-    <string name="app_name">베플</string>
+    <string name="app_name">누리통</string>
 
     <string-array name="array_location">
         <item>02(서울)</item>

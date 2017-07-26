@@ -13,7 +13,8 @@ import android.widget.RadioButton;
 import kr.co.bsmsoft.beple_shop.common.Indicator;
 import kr.co.bsmsoft.beple_shop.common.NetDefine;
 import kr.co.bsmsoft.beple_shop.common.Setting;
-
+import com.crashlytics.android.Crashlytics;
+import io.fabric.sdk.android.Fabric;
 
 public class PaymentInfoActivity extends AppCompatActivity implements NetDefine, View.OnClickListener {
 
@@ -27,6 +28,7 @@ public class PaymentInfoActivity extends AppCompatActivity implements NetDefine,
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Fabric.with(this, new Crashlytics());
 		setContentView(R.layout.activity_payment_info);
 
 		mSetting = new Setting(this);

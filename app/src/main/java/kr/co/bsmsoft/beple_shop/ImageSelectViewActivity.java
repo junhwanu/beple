@@ -1,10 +1,13 @@
 package kr.co.bsmsoft.beple_shop;
 
+import android.*;
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -21,6 +24,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -63,6 +69,8 @@ import kr.co.bsmsoft.beple_shop.model.ImageModel;
 import kr.co.bsmsoft.beple_shop.net.AbServerTask;
 import kr.co.bsmsoft.beple_shop.net.CategoryTask;
 import kr.co.bsmsoft.beple_shop.net.ImageTask;
+import com.crashlytics.android.Crashlytics;
+import io.fabric.sdk.android.Fabric;
 
 public class ImageSelectViewActivity extends AppCompatActivity implements NetDefine, AdapterView.OnItemClickListener, View.OnClickListener, ImageListAdapter.Callbacks {
 
@@ -80,6 +88,7 @@ public class ImageSelectViewActivity extends AppCompatActivity implements NetDef
     private final static int MSG_LOAD_IMAGE_LIST = 1;
     private final static int MSG_CATEGORY_LIST = 2;
     private final static int REQ_CODE_SELECT_IMAGE = 100;
+    private final static int REQ_PERMISSION_READ_STORAGE = 101;
 
     private Handler mHandler = new Handler() {
         public void handleMessage(Message msg) {
@@ -99,6 +108,9 @@ public class ImageSelectViewActivity extends AppCompatActivity implements NetDef
                                 if (code == RESPONSE_OK) {
 
                                     ArrayList<ImageModel> imageList = ImageTask.parseImageList(ret);
+                                    for(int i=0;i<imageList.size();i++) {
+                                        Log.i(getClass().getName().toString(), "image url : " + imageList.get(i).getFileUrl());
+                                    }
                                     updateAdapter(imageList);
                                 }else{
                                     updateAdapter(new ArrayList<ImageModel>());
@@ -188,9 +200,11 @@ public class ImageSelectViewActivity extends AppCompatActivity implements NetDef
                 try {
                     Intent i = new Intent();
                     i.putExtra(KEY_IMAGE_PATH, getPath(data.getData()));
+                    Log.i(getClass().getName().toString(), "getPath(data.getData()) : " + getPath(data.getData()).toString());
                     i.putExtra(KEY_SERVER_ADDR, "");
                     i.putExtra(KEY_FILE_URL, "");
                     setResult(RESULT_OK, i);
+                    Log.i(getClass().getName().toString(), "REQ_CODE_SELECT_IMAGE : " + getPath(data.getData()));
                     finish();
                 } catch (Exception e)
                 {
@@ -224,6 +238,7 @@ public class ImageSelectViewActivity extends AppCompatActivity implements NetDef
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_image_select);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -422,7 +437,7 @@ public class ImageSelectViewActivity extends AppCompatActivity implements NetDef
                 */
                 try {
                     String imageServerPath = String.format("%s/%s", image.getServerAddress(), image.getFileUrl());
-                    Log.i(getClass().getName(), "Download gifImage : " + imageServerPath);
+                    Log.i(getClass().getName(), "Download Image : " + imageServerPath);
                     byte data[];
 
                     Log.i(getClass().getName(), "확장자 : " + imageServerPath.substring(imageServerPath.length() - 3).toUpperCase());
@@ -430,26 +445,54 @@ public class ImageSelectViewActivity extends AppCompatActivity implements NetDef
                         Log.i(getClass().getName(), "GIf");
                         GifDrawable drawable = Glide.with(mContext).load(imageServerPath).asGif().diskCacheStrategy(DiskCacheStrategy.SOURCE).into(1, 1).get();
                         data = drawable.getData();
+
+                        OutputStream output = new FileOutputStream(outputFile);
+
+                        //GifDrawable drawable = Glide.with(mContext).load(imageServerPath).asGif().diskCacheStrategy(DiskCacheStrategy.SOURCE).into(1, 1).get();
+                        //OutputStream output = new FileOutputStream(outputFile);
+
+                        //byte data[] = drawable.getData();
+
+                        output.write(data);
+
+                        output.flush();
+                        output.close();
                     }
                     else {
                         Log.i(getClass().getName(), "not Gif");
-                        GlideDrawable drawable = Glide.with(mContext).load(imageServerPath).diskCacheStrategy(DiskCacheStrategy.SOURCE).into(1, 1).get();
-                        Bitmap bitmap = ((GlideBitmapDrawable)drawable).getBitmap();
-                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-                        data = stream.toByteArray();
+                        URL url = new URL(imageServerPath);
+                        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                        connection.connect();
+
+                        if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                            Log.d("DownloadTask", "response code : " + connection.getResponseCode());
+                            connection.disconnect();
+                            return F_ERR;
+                        }
+
+                        int lenghtOfFile = connection.getContentLength();
+                        if (lenghtOfFile == -1) {
+                            Log.d("DownloadTask", "contentLength : " + lenghtOfFile);
+                            return F_ERR;
+                        }
+
+                        InputStream input = new BufferedInputStream(connection.getInputStream());
+                        //InputStream input = new BufferedInputStream(url.openStream());
+                        OutputStream output = new FileOutputStream(outputFile);
+
+                        data = new byte[1024];
+                        long total = 0;
+
+                        while ((count = input.read(data)) != -1) {
+                            total += count;
+                            output.write(data, 0, count);
+                        }
+
+                        output.flush();
+                        output.close();
+                        input.close();
+                        connection.disconnect();
                     }
-                    OutputStream output = new FileOutputStream(outputFile);
-
-                    //GifDrawable drawable = Glide.with(mContext).load(imageServerPath).asGif().diskCacheStrategy(DiskCacheStrategy.SOURCE).into(1, 1).get();
-                    //OutputStream output = new FileOutputStream(outputFile);
-
-                    //byte data[] = drawable.getData();
-
-                    output.write(data);
-
-                    output.flush();
-                    output.close();
                 } catch (Exception e) {
                     e.printStackTrace();
                     return F_ERR;
@@ -469,6 +512,7 @@ public class ImageSelectViewActivity extends AppCompatActivity implements NetDef
 
                 Intent i = new Intent();
                 i.putExtra(KEY_IMAGE_PATH, outputFile.getAbsolutePath());
+                Log.i(getClass().getName().toString(), "outputFile.getAbsolutePath() : " + outputFile.getAbsolutePath());
                 i.putExtra(KEY_SERVER_ADDR, image.getServerAddress());
                 i.putExtra(KEY_FILE_URL, image.getFileUrl());
                 setResult(RESULT_OK, i);
@@ -540,11 +584,47 @@ public class ImageSelectViewActivity extends AppCompatActivity implements NetDef
     private void callGallery() {
         Intent pictureActionIntent = null;
 
-        pictureActionIntent = new Intent(
-                Intent.ACTION_PICK,
-                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(
-                pictureActionIntent,
-                REQ_CODE_SELECT_IMAGE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE}, REQ_PERMISSION_READ_STORAGE);
+
+        } else {
+            pictureActionIntent = new Intent(
+                    Intent.ACTION_PICK,
+                    android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            startActivityForResult(
+                    pictureActionIntent,
+                    REQ_CODE_SELECT_IMAGE);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case REQ_PERMISSION_READ_STORAGE: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    Intent pictureActionIntent = null;
+
+                    pictureActionIntent = new Intent(
+                            Intent.ACTION_PICK,
+                            android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    startActivityForResult(
+                            pictureActionIntent,
+                            REQ_CODE_SELECT_IMAGE);
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
     }
 }

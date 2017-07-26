@@ -17,6 +17,8 @@ import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.SimpleBitmapDisplayer;
 
 import kr.co.bsmsoft.beple_shop.common.NetDefine;
+import com.crashlytics.android.Crashlytics;
+import io.fabric.sdk.android.Fabric;
 
 public class PhotoViewActivity extends AppCompatActivity implements NetDefine, OnClickListener {
 
@@ -26,6 +28,7 @@ public class PhotoViewActivity extends AppCompatActivity implements NetDefine, O
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Fabric.with(this, new Crashlytics());
 		setContentView(R.layout.activity_photo_view);
 
 		mainApp = globalVar.getInstance();

@@ -33,7 +33,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import kr.co.bsmsoft.beple_shop.adapter.PhotoGridViewAdapter;
@@ -45,8 +47,12 @@ import kr.co.bsmsoft.beple_shop.mms.MessageManager;
 import kr.co.bsmsoft.beple_shop.mms.MmsManager;
 import kr.co.bsmsoft.beple_shop.model.CustomerModel;
 import kr.co.bsmsoft.beple_shop.model.ImageModel;
+import kr.co.bsmsoft.beple_shop.model.MmsModel;
 import kr.co.bsmsoft.beple_shop.net.AbServerTask;
+import kr.co.bsmsoft.beple_shop.net.HistoryTask;
 import kr.co.bsmsoft.beple_shop.net.MmsTask;
+import com.crashlytics.android.Crashlytics;
+import io.fabric.sdk.android.Fabric;
 
 public class DirectMmsViewActivity extends AppCompatActivity implements NetDefine, AdapterView.OnItemClickListener, View.OnClickListener, MmsManager.Callbacks {
 
@@ -59,11 +65,12 @@ public class DirectMmsViewActivity extends AppCompatActivity implements NetDefin
     private PhotoGridViewAdapter adapter;
     private EditText editMessage;
     private TextView txtCount;
-    private Switch swUseName;
-    private Boolean useName = false;
+    private Switch swUseName, swSign;
+    private Boolean useName = false, useSign = false;
 
     private Button btnSend, btnClose, btnAddPhone, btnAddName;
     private int selectedPhoto = 0;
+    private int mms_group_id = 0;
     private ArrayList<String> images;
     private String msgBody;
     private SweetAlertDialog pDialog;
@@ -88,6 +95,9 @@ public class DirectMmsViewActivity extends AppCompatActivity implements NetDefin
 
     private final static int MSG_SEND_MESSAGE = 2;
     private final static int MSG_UPDATE_MMS_COUNT = 3;
+    private final static int MSG_CREATE_MESSAGE_GROUP = 4;
+    private final static int MSG_UPDATE_MMS_STATE = 5;
+
 
     final Handler updateDialogMessageHandler = new Handler()
     {
@@ -104,6 +114,104 @@ public class DirectMmsViewActivity extends AppCompatActivity implements NetDefin
             super.handleMessage(msg);
             switch (msg.what) {
 
+                case MSG_UPDATE_MMS_STATE: {
+
+                    HistoryTask task = new HistoryTask(mainApp.getToken());
+                    task.mCallbacks = new AbServerTask.ServerCallbacks(){
+
+                        @Override
+                        public void onSuccess(AbServerTask sender, JSONObject ret) {
+
+                            try {
+                                int code = HistoryTask.responseCode(ret);
+                                if (code == RESPONSE_OK) {
+                                }else{
+
+                                    Helper.sweetAlert(getString(R.string.alert_title),
+                                            HistoryTask.responseMessage(ret),
+                                            SweetAlertDialog.ERROR_TYPE,
+                                            DirectMmsViewActivity.this);
+                                }
+
+                            } catch (JSONException e) {
+                                Helper.alert(e.getLocalizedMessage(), DirectMmsViewActivity.this);
+                                e.printStackTrace();
+                            }
+                        }
+
+                        @Override
+                        public void onFailed(AbServerTask sender, int code, String msg) {
+
+                            Helper.sweetAlert(getString(R.string.cannot_connect_server),
+                                    getString(R.string.alert_title),
+                                    SweetAlertDialog.ERROR_TYPE,
+                                    DirectMmsViewActivity.this);
+
+                        }
+                    };
+                    task.updateMmsHistory(mms_group_id, msg.obj.toString());
+
+                    break;
+                }
+                case MSG_CREATE_MESSAGE_GROUP: {
+
+                    HistoryTask task = new HistoryTask(mainApp.getToken());
+                    task.mCallbacks = new AbServerTask.ServerCallbacks(){
+
+                        @Override
+                        public void onSuccess(AbServerTask sender, JSONObject ret) {
+
+                            try {
+                                int code = HistoryTask.responseCode(ret);
+                                if (code == RESPONSE_OK) {
+                                    mms_group_id = HistoryTask.getGroupId(ret);
+                                    mHandler.obtainMessage(MSG_SEND_MESSAGE).sendToTarget();
+                                }else{
+
+                                    Helper.sweetAlert(getString(R.string.alert_title),
+                                            HistoryTask.responseMessage(ret),
+                                            SweetAlertDialog.ERROR_TYPE,
+                                            DirectMmsViewActivity.this);
+                                }
+
+                            } catch (JSONException e) {
+                                Helper.alert(e.getLocalizedMessage(), DirectMmsViewActivity.this);
+                                e.printStackTrace();
+                            }
+                        }
+
+                        @Override
+                        public void onFailed(AbServerTask sender, int code, String msg) {
+
+                            Helper.sweetAlert(getString(R.string.cannot_connect_server),
+                                    getString(R.string.alert_title),
+                                    SweetAlertDialog.ERROR_TYPE,
+                                    DirectMmsViewActivity.this);
+
+                        }
+                    };
+                    MmsModel model = new MmsModel();
+                    model.setShopId(mainApp.getShopInfo().getId());
+                    if(adapter.getCount() > 0 && adapter.getItem(0).getServerAddress() != null && adapter.getItem(0).getFileUrl() != null && adapter.getItem(0).getServerAddress().length() > 0 && adapter.getItem(0).getFileUrl().length() > 0) {
+                        model.setImage_url(adapter.getItem(0).getServerAddress() + "/" + adapter.getItem(0).getFileUrl());
+                    } else {
+                        model.setImage_url("");
+                    }
+                    model.setType("NORMAL");
+                    String message = msgBody;
+                    if(useSign) {
+                        message = message + "\n" + mainApp.getShopInfo().getSign();
+                    }
+                    model.setMessage(message);
+                    ArrayList<String> _phoneList = new ArrayList<>();
+                    for(int i=0;i<phoneList.size();i++) {
+                        _phoneList.add(phoneList.get(i).getPhone());
+                    }
+                    model.setPhoneList(_phoneList);
+
+                    task.createMmsHistory(model);
+                    break;
+                }
                 case MSG_SEND_MESSAGE: {
 
                     // 메시지 내용
@@ -114,9 +222,15 @@ public class DirectMmsViewActivity extends AppCompatActivity implements NetDefin
                     pDialog.setCancelable(false);
                     pDialog.show();
 
-                    messageManager = new MessageManager(msgBody, phoneList, useName, images, DirectMmsViewActivity.this);
+                    String signMessage = "";
+                    if(useSign)
+                        signMessage = mainApp.getShopInfo().getSign();
+
+
+                    messageManager = new MessageManager(msgBody, phoneList, useName, signMessage, images, DirectMmsViewActivity.this);
                     messageManager.mCallbacks = DirectMmsViewActivity.this;
                     messageManager.execute();
+
                     break;
                 }
                 case MSG_UPDATE_MMS_COUNT: {
@@ -179,6 +293,10 @@ public class DirectMmsViewActivity extends AppCompatActivity implements NetDefin
                 String filePath = data.getStringExtra(KEY_IMAGE_PATH);
                 String serverURL = data.getStringExtra(KEY_SERVER_ADDR);
                 String fileURL = data.getStringExtra(KEY_FILE_URL);
+                Log.i(TAG, "filePath : " + filePath);
+                Log.i(TAG, "serverURL : " + serverURL);
+                Log.i(TAG, "fileURL : " + fileURL);
+
                 if (filePath != null) {
                     ImageModel image = adapter.getItem(selectedPhoto);
                     image.setLocalPath(filePath);
@@ -209,6 +327,7 @@ public class DirectMmsViewActivity extends AppCompatActivity implements NetDefin
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_direct_mms_view);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -226,6 +345,7 @@ public class DirectMmsViewActivity extends AppCompatActivity implements NetDefin
         btnAddName = (Button)findViewById(R.id.btnAddName);
         txtCount = (TextView)findViewById(R.id.txtCount);
         swUseName = (Switch) findViewById(R.id.swUseName);
+        swSign = (Switch) findViewById(R.id.sw_sign);
 
         btnSend.setOnClickListener(this);
         btnClose.setOnClickListener(this);
@@ -239,6 +359,16 @@ public class DirectMmsViewActivity extends AppCompatActivity implements NetDefin
                 if(isChecked) btnAddName.setVisibility(View.VISIBLE);
                 else btnAddName.setVisibility(View.INVISIBLE);
                 Log.i(TAG, "swUseName isChecked : " + isChecked);
+            }
+        });
+
+        swSign.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                useSign = isChecked;
+                if(useSign && mainApp.getShopInfo().getSign().equals("")) {
+                    Helper.sweetAlert("광고 수신거부 문구가 설정되어 있지 않습니다. 해당 기능을 사용하시려면 가맹점 페이지에서 설정해주시기 바랍니다.", "알림", SweetAlertDialog.NORMAL_TYPE, DirectMmsViewActivity.this);
+                }
             }
         });
 
@@ -575,6 +705,7 @@ public class DirectMmsViewActivity extends AppCompatActivity implements NetDefin
             for (ImageModel image : adapter.getItems()) {
                 if (image.getLocalPath() != null) {
                     images.add(image.getLocalPath());
+                    Log.i(TAG, "image Local path is " + image.getLocalPath());
                 }
             }
 
@@ -595,7 +726,7 @@ public class DirectMmsViewActivity extends AppCompatActivity implements NetDefin
                         public void onClick(SweetAlertDialog sweetAlertDialog) {
 
                             sweetAlertDialog.dismissWithAnimation();
-                            mHandler.obtainMessage(MSG_SEND_MESSAGE).sendToTarget();
+                            mHandler.obtainMessage(MSG_CREATE_MESSAGE_GROUP).sendToTarget();
                         }
                     })
                     .show();
@@ -622,6 +753,19 @@ public class DirectMmsViewActivity extends AppCompatActivity implements NetDefin
         msg.obj = contentMessage;
 
         updateDialogMessageHandler.sendMessage(msg);
+    }
+
+    @Override
+    public void onUpdate(String phone) {
+        Message msg = mHandler.obtainMessage(MSG_UPDATE_MMS_STATE);
+        msg.obj = phone;
+
+        long todayDt = (new Date()).getTime();
+        String strTodayDt = new SimpleDateFormat("yyyy/MM/dd").format(new Date(todayDt));
+        int sentCount = mSetting.getInt(KEY_SENT_COUNT + "_" + strTodayDt, 0);
+        mSetting.input(KEY_SENT_COUNT + "_" + strTodayDt, sentCount + 1);
+
+        mHandler.sendMessage(msg);
     }
 
     @Override

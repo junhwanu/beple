@@ -38,6 +38,8 @@ import kr.co.bsmsoft.beple_shop.common.Indicator;
 import kr.co.bsmsoft.beple_shop.common.NetDefine;
 import kr.co.bsmsoft.beple_shop.net.AbServerTask;
 import kr.co.bsmsoft.beple_shop.net.UserTask;
+import com.crashlytics.android.Crashlytics;
+import io.fabric.sdk.android.Fabric;
 
 public class RegisterShopActivity extends AppCompatActivity implements View.OnClickListener, NetDefine {
 
@@ -92,7 +94,7 @@ public class RegisterShopActivity extends AppCompatActivity implements View.OnCl
 
                                     AlertDialog alert = altBld.create();
                                     alert.setTitle(R.string.app_name);
-                                    alert.setMessage("베플회원 되신걸 감사드리며 회원님의 가맹비(본인직접회사)납부를 완료해주시고 승인시까지 잠시만 기다려주십시요!.");
+                                    alert.setMessage("누리통 회원 되신걸 감사드리며 회원님의 가맹비(본인직접회사)납부를 완료해주시고 승인시까지 잠시만 기다려주십시요!.");
                                     alert.setIcon(R.mipmap.ic_launcher);
                                     alert.show();
 
@@ -223,6 +225,7 @@ public class RegisterShopActivity extends AppCompatActivity implements View.OnCl
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
 
         Intent i = getIntent();
         userType = i.getIntExtra(KEY_USER_TYPE, USER_TYPE_SHOP);
@@ -240,11 +243,11 @@ public class RegisterShopActivity extends AppCompatActivity implements View.OnCl
         Button btnCancel = (Button) findViewById(R.id.btnCancel);
         Button btnSearchId = (Button) findViewById(R.id.btnSearchId);
         Button btnSearchAgent = (Button) findViewById(R.id.btnSearchAgency);
-        btnPhone1 = (Button) findViewById(R.id.btnPhone1);
+//        btnPhone1 = (Button) findViewById(R.id.btnPhone1);
         btnOK.setOnClickListener(this);
         btnCancel.setOnClickListener(this);
         btnSearchId.setOnClickListener(this);
-        btnPhone1.setOnClickListener(this);
+//        btnPhone1.setOnClickListener(this);
         btnSearchAgent.setOnClickListener(this);
 
         editShopName = (EditText) findViewById(R.id.editShopName); // 가맹점명 (가맹점 일경우만 사용)
@@ -356,9 +359,11 @@ public class RegisterShopActivity extends AppCompatActivity implements View.OnCl
             case R.id.btnCancel:
                 finish();
                 break;
+            /*
             case R.id.btnPhone1:
                 selectPhoneNumber();
                 break;
+                */
             case R.id.btnSearchAgency:
                 String agentId = editAgency.getText().toString();
                 if (agentId.length() < 1) {
@@ -448,7 +453,7 @@ public class RegisterShopActivity extends AppCompatActivity implements View.OnCl
         }
 
         if (!CommonUtil.isStringNullOrEmptyCheck(editAddress.getText().toString())) {
-            Toast toast = Toast.makeText(getApplicationContext(), "주소를 검색하여 입력해 주십시오.", Toast.LENGTH_LONG);
+            Toast toast = Toast.makeText(getApplicationContext(), "지역명을 입력해 주십시오.", Toast.LENGTH_LONG);
             toast.setGravity(Gravity.CENTER, 0, 0);
             toast.show();
             return;
@@ -529,7 +534,7 @@ public class RegisterShopActivity extends AppCompatActivity implements View.OnCl
         params.put(KEY_MOBILE, editMobile.getText().toString());
         params.put(KEY_ADDRESS, editAddress.getText().toString());
         params.put(KEY_EMAIL, editEmail.getText().toString());
-
+/*
         if (!CommonUtil.isStringNullOrEmptyCheck(editPhone2.getText().toString()) || !CommonUtil.isStringNullOrEmptyCheck(editPhone3.getText().toString())) {
             params.put(KEY_PHONE1, "");
             params.put(KEY_PHONE2, "");
@@ -538,7 +543,12 @@ public class RegisterShopActivity extends AppCompatActivity implements View.OnCl
             params.put(KEY_PHONE1, phone1);
             params.put(KEY_PHONE2, editPhone2.getText().toString());
             params.put(KEY_PHONE3, editPhone3.getText().toString());
-        }
+        } */
+        params.put(KEY_PHONE1, "");
+        params.put(KEY_PHONE2, "");
+        params.put(KEY_PHONE3, "");
+
+
         params.put(KEY_AGENT_NAME, editAgency.getText().toString());
         params.put(KEY_TYPE_CODE, typeCode);
 

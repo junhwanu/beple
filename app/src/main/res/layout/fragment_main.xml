@@ -81,33 +81,107 @@
                     android:id="@+id/layout_notice"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="15dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
                     android:background="@color/ColorAccent"
-                    android:orientation="horizontal">
+                    android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/txtLottoPoint"
-                        android:layout_width="0dp"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:textSize="14dp"
-                        android:textColor="#ffffff"
-                        android:drawableLeft="@drawable/ic_point_white"
-                        android:drawablePadding="5dp"
-                        android:paddingLeft="5dp"
-                        android:text="로또 포인트 : "/>
+                        android:paddingTop="2dp">
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:paddingRight="12dp"
+                            android:gravity="center_horizontal">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:textSize="14dp"
+                                android:textColor="#ffffff"
+                                android:drawableLeft="@drawable/ic_point_white"
+                                android:drawablePadding="5dp"
+                                android:gravity="center_horizontal"
+                                android:text="경품권"/></LinearLayout>
 
-                    <TextView
-                        android:id="@+id/txtSmsPoint"
-                        android:layout_width="0dp"
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:paddingRight="12dp"
+                            android:gravity="center_horizontal">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="14dp"
+                                android:textColor="#ffffff"
+                                android:drawableLeft="@drawable/ic_menu_sms"
+                                android:drawablePadding="5dp"
+                                android:text="금일발송량"/></LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:paddingRight="12dp"
+                            android:gravity="center_horizontal">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="14dp"
+                                android:textColor="#ffffff"
+                                android:drawableLeft="@drawable/ic_expired"
+                                android:drawablePadding="5dp"
+                                android:text="만료일"/></LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:textSize="14dp"
-                        android:textColor="#ffffff"
-                        android:drawableLeft="@drawable/ic_expired"
-                        android:drawablePadding="5dp"
-                        android:paddingLeft="5dp"
-                        android:text="만료일 : "/>
+                        android:paddingBottom="2dp">
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center_horizontal">
+                            <TextView
+                                android:id="@+id/txtLottoPoint"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="14dp"
+                                android:textColor="#ffffff"
+                                android:text="1000개"/></LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center_horizontal">
+                            <TextView
+                                android:id="@+id/txtSmsSentCount"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="14dp"
+                                android:textColor="#ffffff"
+                                android:text=""/></LinearLayout>
+
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center_horizontal">
+                            <TextView
+                                android:id="@+id/txtSmsPoint"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="14dp"
+                                android:textColor="#ffffff"
+                                android:text=""/></LinearLayout>
+                    </LinearLayout>
 
                 </LinearLayout>
 

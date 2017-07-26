@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import kr.co.bsmsoft.beple_shop.adapter.CustomerListAdapter;
 import kr.co.bsmsoft.beple_shop.common.NetDefine;
 import kr.co.bsmsoft.beple_shop.model.CustomerModel;
+import com.crashlytics.android.Crashlytics;
+import io.fabric.sdk.android.Fabric;
 
 public class CustomerListActivity extends AppCompatActivity implements NetDefine, AdapterView.OnItemClickListener, View.OnClickListener {
 
@@ -33,6 +35,7 @@ public class CustomerListActivity extends AppCompatActivity implements NetDefine
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_customer_list);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);

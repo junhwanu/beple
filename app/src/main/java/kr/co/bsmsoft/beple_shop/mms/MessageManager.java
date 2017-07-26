@@ -1,6 +1,7 @@
 package kr.co.bsmsoft.beple_shop.mms;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
@@ -92,7 +93,7 @@ public class MessageManager extends MmsManager {
     }
 
     public MessageManager(String message,
-                          ArrayList<CustomerModel> customerModels, Boolean useName,
+                          ArrayList<CustomerModel> customerModels, Boolean useName, String signMessage,
                           ArrayList<String> imageList, Context context) {
 
         this.messageBody = message;
@@ -100,6 +101,7 @@ public class MessageManager extends MmsManager {
         this.context = context;
         this.imageList = imageList;
         this.useName = useName;
+        this.signMessage = signMessage;
         addLotto = false;
     }
 
@@ -265,7 +267,7 @@ public class MessageManager extends MmsManager {
             mCallbacks.onProgress("전송 중입니다... (" + sent + " / " + customerModels.size() + ", " + String.valueOf(percentage) + "%)");
             sent = sent + 1;
             // 선택되지 않은 Customer
-            if(model.isSelected() == 0) continue;
+            //if(model.isSelected() == 0) continue;
 
             MMMessage mm = new MMMessage();
             SetMessage(mm, model.getPhone(), "");
@@ -305,17 +307,39 @@ public class MessageManager extends MmsManager {
                         File file = new File(imagePath);
                         InputStream inputStream = new FileInputStream(file);
                         ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                        String fileName = file.getName().toLowerCase();
+                        String fileExt = fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length());
                         byte[] b = new byte[1024 * 8];
                         int bytesRead = 0;
 
-                        while ((bytesRead = inputStream.read(b)) != -1) {
-                            bos.write(b, 0, bytesRead);
+                        if(fileExt.equals("gif")) {
+                            while ((bytesRead = inputStream.read(b)) != -1) {
+                                bos.write(b, 0, bytesRead);
+                            }
+
+                            byteArray = bos.toByteArray();
+                        } else {
+                            Bitmap img = null;
+                            long maxFileSize = 500 * 1024; // 500 kbyte
+                            if(file.length() > maxFileSize) {
+                                BitmapFactory.Options options = new BitmapFactory.Options();
+
+                                options.inSampleSize = ( (int) (file.length() / maxFileSize) ) + 1;
+                                img = BitmapFactory.decodeFile(imagePath, options);
+                            } else {
+                                img = BitmapFactory.decodeFile(imagePath);
+                            }
+                            int width = img.getWidth(), height = img.getHeight();
+                            int resized_width = 320, resizec_height = height * 320 / width;
+                            Bitmap resized = Bitmap.createScaledBitmap(img, resized_width, resizec_height, true);
+                            if (fileExt.equals("png")) {
+                                resized.compress(Bitmap.CompressFormat.PNG, 100, bos);
+                            } else {
+                                resized.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+                            }
+                            byteArray = bos.toByteArray();
                         }
-
-                        byteArray = bos.toByteArray();
-
-                        String fileName = file.getName().toLowerCase();
-                        String fileExt = fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length());
+                        Log.i(getClass().getName().toString(), "byteArray length : " + byteArray.length);
 
                         String imageType = IMMConstants.CT_IMAGE_JPEG;
                         if (fileExt.equals("gif")) {
@@ -371,6 +395,8 @@ public class MessageManager extends MmsManager {
                     //endMmsConnectivity();
                     //mSending = false;
                     //mListening = false;
+                    Log.i(TAG, "message send success. " + model.getPhone());
+                    mCallbacks.onUpdate(model.getPhone());
                 } else {
 
                 }

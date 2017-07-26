@@ -22,10 +22,10 @@
             app:layout_scrollFlags="scroll|enterAlways" >
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="68dp"
+                android:layout_height="30dp"
                 android:layout_gravity="top|center_horizontal"
-                android:src="@drawable/logo"/>
+                android:src="@drawable/logo_nuritong"/>
 
         </android.support.v7.widget.Toolbar>
 

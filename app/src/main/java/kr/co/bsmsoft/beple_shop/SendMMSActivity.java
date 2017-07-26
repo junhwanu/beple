@@ -33,6 +33,8 @@ import kr.co.bsmsoft.beple_shop.nokia.MMEncoder;
 import kr.co.bsmsoft.beple_shop.nokia.MMMessage;
 import kr.co.bsmsoft.beple_shop.nokia.MMResponse;
 import kr.co.bsmsoft.beple_shop.nokia.MMSender;
+import com.crashlytics.android.Crashlytics;
+import io.fabric.sdk.android.Fabric;
 
 public class SendMMSActivity extends Activity {
 
@@ -57,6 +59,7 @@ public class SendMMSActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Fabric.with(this, new Crashlytics());
 		setContentView(R.layout.main);
 
 		mListening = true;

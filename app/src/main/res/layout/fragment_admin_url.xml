@@ -31,7 +31,7 @@
             android:textColor="#ffffff"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:text="베플 영업 관리자"/>
+            android:text="누리통 영업 관리자"/>
 
     </LinearLayout>
 </RelativeLayout>

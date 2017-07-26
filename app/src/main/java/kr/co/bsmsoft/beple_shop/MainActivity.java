@@ -1,7 +1,10 @@
 package kr.co.bsmsoft.beple_shop;
 
+import android.*;
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -22,6 +25,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import com.crashlytics.android.Crashlytics;
+import io.fabric.sdk.android.Fabric;
 
 import com.klinker.android.send_message.Utils;
 
@@ -61,8 +66,22 @@ public class MainActivity extends AppCompatActivity implements AbFragment.Callba
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Fabric.with(this, new Crashlytics());
+
         mSetting = new Setting(this);
+        /*
         if (!mSetting.getBoolean("request_permissions", false) &&
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            startActivity(new Intent(this, PermissionActivity.class));
+            finish();
+            return;
+        }*/
+
+        if ((checkSelfPermission(android.Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED ||
+                checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED ||
+                checkSelfPermission(Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED ||
+                checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
+                !mSetting.getBoolean("request_permissions", false) ) &&
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             startActivity(new Intent(this, PermissionActivity.class));
             finish();
@@ -137,7 +156,6 @@ public class MainActivity extends AppCompatActivity implements AbFragment.Callba
     }
 
     private void doAction(MenuItem menuItem) {
-        Log.i("adsf", "doAction");
         int action = menuItem.getItemId();
         switch (action){
 
@@ -346,7 +364,6 @@ public class MainActivity extends AppCompatActivity implements AbFragment.Callba
 
     @Override
     public void onAction(AbFragment sender, int target) {
-        Log.i("asdfsad", "onAction, target : " + target);
         Menu menu = navigationView.getMenu();
         MenuItem menuItem = menu.findItem(target);
         doAction(menuItem);

@@ -121,7 +121,7 @@ public class SmsEventViewActivity extends AppCompatActivity implements NetDefine
                     pDialog.setCancelable(false);
                     pDialog.show();
 
-                    messageManager = new MessageManager(msgBody, checked_customer, false, images, SmsEventViewActivity.this);
+                    messageManager = new MessageManager(msgBody, checked_customer, false, "", images, SmsEventViewActivity.this);
                     messageManager.mCallbacks = SmsEventViewActivity.this;
                     messageManager.execute();
                     break;
@@ -391,6 +391,14 @@ public class SmsEventViewActivity extends AppCompatActivity implements NetDefine
         msg.obj = contentMessage;
 
         updateDialogMessageHandler.sendMessage(msg);
+    }
+
+    @Override
+    public void onUpdate(String phone) {/*
+        Message msg = mHandler.obtainMessage(MSG_UPDATE_MMS_STATE);
+        msg.obj = phone;
+
+        mHandler.sendMessage(msg);*/
     }
 
     @Override

@@ -15,6 +15,7 @@ public class MmsManager extends AsyncTask<Void, Void, Integer> {
         public void onComplete();
         public void onFailed(String errMessage);
         public void onProgress(String contentMessage);
+        public void onUpdate(String phone);
     }
 
     private static Callbacks sDummyCallbacks = new Callbacks() {
@@ -31,6 +32,11 @@ public class MmsManager extends AsyncTask<Void, Void, Integer> {
 
         @Override
         public void onProgress(String contentMessage) {
+
+        }
+
+        @Override
+        public void onUpdate(String phone) {
 
         }
     };

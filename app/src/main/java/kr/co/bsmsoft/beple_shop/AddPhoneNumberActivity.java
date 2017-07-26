@@ -40,6 +40,8 @@ import kr.co.bsmsoft.beple_shop.model.ContactGroupModel;
 import kr.co.bsmsoft.beple_shop.model.CustomerModel;
 import kr.co.bsmsoft.beple_shop.net.AbServerTask;
 import kr.co.bsmsoft.beple_shop.net.GroupTask;
+import com.crashlytics.android.Crashlytics;
+import io.fabric.sdk.android.Fabric;
 
 public class AddPhoneNumberActivity extends AppCompatActivity implements NetDefine, AdapterView.OnItemClickListener, View.OnClickListener {
 
@@ -115,6 +117,7 @@ public class AddPhoneNumberActivity extends AppCompatActivity implements NetDefi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_add_phone_number);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -207,12 +210,15 @@ public class AddPhoneNumberActivity extends AppCompatActivity implements NetDefi
             editPhone.setText("");
 
         }else if (view.getId() == R.id.btnContact) {
-
+            /*
+            Intent intent = new Intent(Intent.ACTION_PICK);
+            intent.setData(ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
+            startActivityForResult(intent, REQUEST_CODE_CONTACTS);
+            */
             Intent mIntent = new Intent(AddPhoneNumberActivity.this, AddContactGroupActivity.class);
             mIntent.putExtra(KEY_REQUEST_CODE, REQUEST_CODE_CONTACTS_ACTIVITY);
             startActivityForResult(mIntent, REQUEST_CODE_CONTACTS_ACTIVITY);
         }else if (view.getId() == R.id.btnContactGroup) {
-
             Intent mIntent = new Intent(AddPhoneNumberActivity.this, AddContactGroupActivity.class);
             mIntent.putExtra(KEY_REQUEST_CODE, REQUEST_CODE_CONTACTS_GROUP_ACTIVITY);
             startActivityForResult(mIntent, REQUEST_CODE_CONTACTS_GROUP_ACTIVITY);
@@ -296,6 +302,21 @@ public class AddPhoneNumberActivity extends AppCompatActivity implements NetDefi
                     break;
                 }
             }
+
+            case REQUEST_CODE_CONTACTS:
+                Log.i(getClass().getName(), "REQUEST_CODE_CONTANCTS");
+                if(resultCode == RESULT_OK) {
+                    Cursor cursor = getContentResolver().query(data.getData(),
+                            new String[]{ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
+                                    ContactsContract.CommonDataKinds.Phone.NUMBER}, null, null, null);
+                    cursor.moveToFirst();
+                    do {
+                        String name = cursor.getString(0);        //0은 이름을 얻어옵니다.
+                        String number = cursor.getString(1);   //1은 번호를 받아옵니다.
+                        Log.i(getClass().getName(), "name : " + name + " / number : " + number);
+                    } while(cursor.moveToNext());
+                    cursor.close();
+                }
         }
     }
 

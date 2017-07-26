@@ -9,8 +9,8 @@
     android:orientation="vertical">
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
         android:src="@drawable/logo_round"/>
 
     <TextView
@@ -19,6 +19,6 @@
         android:textColor="#ffffff"
         android:layout_marginTop="5dp"
         android:textSize="12dp"
-        android:text="고객을 행복하게 하는 베플"/>
+        android:text="고객을 행복하게 하는 누리통"/>
 
 </LinearLayout>

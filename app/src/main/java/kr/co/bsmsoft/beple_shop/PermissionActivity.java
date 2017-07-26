@@ -25,6 +25,8 @@ import android.preference.PreferenceManager;
 import android.provider.Settings;
 
 import kr.co.bsmsoft.beple_shop.common.Setting;
+import com.crashlytics.android.Crashlytics;
+import io.fabric.sdk.android.Fabric;
 
 public class PermissionActivity extends Activity {
 
@@ -33,11 +35,11 @@ public class PermissionActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        Fabric.with(this, new Crashlytics());
         mSetting = new Setting(this);
 
         requestPermissions(new String[]{
-                //Manifest.permission.READ_SMS,
+                Manifest.permission.READ_SMS,
                 //Manifest.permission.SEND_SMS,
                 //Manifest.permission.RECEIVE_SMS,
                 //Manifest.permission.RECEIVE_MMS,

@@ -28,7 +28,7 @@
                 android:textSize="20dp"
                 android:textStyle="bold"
                 android:layout_margin="20dp"
-                android:text="베플 가맹점 로그인"/>
+                android:text="누리통 가맹점 로그인"/>
 
             <EditText
                 style="@style/form_edit"

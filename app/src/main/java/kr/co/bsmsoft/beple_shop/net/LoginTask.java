@@ -33,12 +33,12 @@ public class LoginTask extends AbServerTask implements NetDefine {
 		mCallbacks.onFailed(this, code, e.getLocalizedMessage());
 	}
 
-    public void doLogin(String userName, String password, Context context) {
+    public void doLogin(String userName, String password, String phoneNumber, Context context) {
 
         RequestParams params = new RequestParams();
         params.put(KEY_USER_NAME, userName);
         params.put(KEY_USER_PASSWORD, password);
-
+		params.put(KEY_USER_PHONE, phoneNumber);
         post(LOGIN_URL, params);
     }
 

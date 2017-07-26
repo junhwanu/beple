@@ -20,6 +20,8 @@ import kr.co.bsmsoft.beple_shop.common.Setting;
 import kr.co.bsmsoft.beple_shop.model.InitModel;
 import kr.co.bsmsoft.beple_shop.net.AbServerTask;
 import kr.co.bsmsoft.beple_shop.net.InitInfoTask;
+import com.crashlytics.android.Crashlytics;
+import io.fabric.sdk.android.Fabric;
 
 public class SplashActivity extends Activity implements NetDefine {
 
@@ -80,6 +82,7 @@ public class SplashActivity extends Activity implements NetDefine {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Fabric.with(this, new Crashlytics());
 		setContentView(R.layout.activity_splash);
 
 		mSetting = new Setting(this);
@@ -246,7 +249,7 @@ public class SplashActivity extends Activity implements NetDefine {
 		AlertDialog alert = alt_bld.create();
 		alert.setTitle(R.string.app_name);
 		alert.setMessage(msg);
-		alert.setIcon(R.drawable.ic_launcher);
+		alert.setIcon(R.mipmap.ic_launcher);
 		alert.show();
 	}
 
